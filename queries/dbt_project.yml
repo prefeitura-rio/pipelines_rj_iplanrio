@@ -21,6 +21,9 @@ models:
     relation: true
     columns: true
   queries:
-    example:
-      +materialized: view
-      +schema: example
+    adm_processo_interno_processorio:
+          +materialized: table
+          +schema: adm_processo_interno_processorio
+    adm_processo_interno_sicop:
+      +materialized: table
+      +schema: adm_processo_interno_sicop

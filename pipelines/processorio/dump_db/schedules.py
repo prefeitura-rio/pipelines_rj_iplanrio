@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Schedules for the database dump pipeline
+Schedules for the database dump pipeline.
 """
 
 from datetime import datetime, timedelta
@@ -11,7 +11,6 @@ from prefeitura_rio.pipelines_utils.io import untuple_clocks as untuple
 from prefeitura_rio.pipelines_utils.prefect import generate_dump_db_schedules
 
 from pipelines.constants import constants
-
 
 #####################################
 #
@@ -244,5 +243,4 @@ processorio_infra_clocks = generate_dump_db_schedules(
     table_parameters=_processorio_infra_query,
 )
 
-processorio_infra_daily_update_schedule = Schedule(
-    clocks=untuple(processorio_infra_clocks)
+processorio_infra_daily_update_schedule = Schedule(clocks=untuple(processorio_infra_clocks))

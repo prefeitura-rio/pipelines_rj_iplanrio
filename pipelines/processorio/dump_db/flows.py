@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Database dumping flows for processorio
+Database dumping flows for processorio.
 """
 
 
@@ -19,7 +19,6 @@ from pipelines.constants import constants
 from pipelines.processorio.dump_db.schedules import (
     processorio_infra_daily_update_schedule,
 )
-
 
 rj_iplanrio_processorio_flow = deepcopy(dump_sql_flow)
 rj_iplanrio_processorio_flow.state_handlers = [

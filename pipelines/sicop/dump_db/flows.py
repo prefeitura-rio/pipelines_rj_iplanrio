@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Database dumping flows for processo.rio sicop
+Database dumping flows for processo.rio sicop.
 """
 from copy import deepcopy
 
@@ -14,9 +14,7 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
 )
 
 from pipelines.constants import constants
-from pipelines.sicop.dump_db.schedules import (
-    sicop_infra_daily_update_schedule,
-)
+from pipelines.sicop.dump_db.schedules import sicop_infra_daily_update_schedule
 
 # sicop dump db flow
 rj_iplanrio_sicop_flow = deepcopy(dump_sql_flow)

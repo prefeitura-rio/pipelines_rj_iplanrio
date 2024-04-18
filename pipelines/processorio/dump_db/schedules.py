@@ -239,7 +239,7 @@ processorio_infra_clocks = generate_dump_db_schedules(
     db_port="1521",
     db_type="oracle",
     dataset_id="adm_processo_interno_processorio",
-    vault_secret_path="processorio-prod",
+    infisical_secret_path="/db-processorio-prod",
     table_parameters=_processorio_infra_query,
 )
 

@@ -123,7 +123,7 @@ sicop_infra_clocks = generate_dump_db_schedules(
     db_port="1521",
     db_type="oracle",
     dataset_id="adm_processo_interno_sicop",
-    vault_secret_path="sicop-sql",
+    infisical_secret_path="/db-sicop",
     table_parameters=_sicop_queries,
 )
 

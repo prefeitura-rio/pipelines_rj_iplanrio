@@ -60,7 +60,7 @@ def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
     dest_table_id = dest_table["tableId"]
     log(f"Query results were stored in {dest_project_id}.{dest_dataset_id}.{dest_table_id}")
 
-    blob_path = f"gs://datario/share/{dataset_id}/{table_id}/data.csv.gz"
+    blob_path = f"gs://datario-public/share/{dataset_id}/{table_id}/data.csv.gz"
     log(f"Loading data to {blob_path}")
     dataset_ref = bigquery.DatasetReference(dest_project_id, dest_dataset_id)
     table_ref = dataset_ref.table(dest_table_id)

@@ -74,11 +74,11 @@ def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
     extract_job.result()
     log("Data was loaded successfully")
 
-    # Get the BLOB we've just created and make it public
-    blobs = list_blobs_with_prefix("datario-public", f"share/{dataset_id}/{table_id}/")
+    # Get the BLOB URL we've just created
+    blobs = list_blobs_with_prefix(
+        "datario-public", f"share/{dataset_id}/{table_id}/", mode=bd_project_mode
+    )
     if not blobs:
         raise ValueError(f"No blob found at {blob_path}")
     for blob in blobs:
-        log(f"Blob found at {blob.name}")
-        blob.make_public()
-        log("Blob was made public")
+        log(f"Blob found at {blob.name}. URL: {blob.public_url}")

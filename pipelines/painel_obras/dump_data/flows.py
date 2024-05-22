@@ -3,7 +3,9 @@ from copy import deepcopy
 
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
-from prefeitura_rio.pipelines_templates.dump_to_gcs.flows import flow as dump_to_gcs_flow
+from prefeitura_rio.pipelines_templates.dump_to_gcs.flows import (
+    flow as dump_to_gcs_flow,
+)
 from prefeitura_rio.pipelines_utils.prefect import set_default_parameters
 from prefeitura_rio.pipelines_utils.state_handlers import (
     handler_initialize_sentry,

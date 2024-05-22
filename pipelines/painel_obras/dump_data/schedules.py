@@ -280,10 +280,22 @@ SELECT
 os.cd_obra AS id_obra,
 os.ds_titulo_objeto,
 FORMAT_TIMESTAMP('%d/%m/%Y', PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S', os.dt_suspensao)) AS dt_suspensao,
+ol.nm_sistema,
+ol.nm_sub_sistema,
+ol.nm_planilha,
+CAST(ol.nr_item AS INT64) AS nr_item,
+ol.cd_chave_externa,
+ol.ds_item_servico,
+ol.tx_unidade_medida,
+CAST(ol.vl_unitario AS FLOAT64) AS vl_unitario,
+CAST(ol.vl_total AS FLOAT64) AS vl_total,
+CAST(ol.qt_contratado AS FLOAT64) AS qt_contratado,
 os.ds_motivo AS motivo,
 os.ds_previsao,
-nm_responsavel
+o.favorecido as nm_responsavel
 FROM `rj-smi.infraestrutura_siscob_obras.obras_suspensas` os
+INNER JOIN rj-smi.infraestrutura_siscob_obras_staging.orcamento_licitado ol
+ON os.cd_obra = ol.cd_obra
 INNER JOIN `rj-smi.infraestrutura_siscob_obras.obra` AS o
   ON os.cd_obra = o.id_obra
 WHERE (
@@ -291,8 +303,7 @@ WHERE (
   EXTRACT(YEAR FROM(o.data_termino_atual)) >= 2021
   ) OR
   EXTRACT(YEAR FROM(o.data_inicio)) >= 2021
-  AND o.id_obra <> "7875"
-                """,
+  AND o.id_obra <> "7875"                """,
                 "billing_project_id": "rj-iplanrio",
             },
         ),

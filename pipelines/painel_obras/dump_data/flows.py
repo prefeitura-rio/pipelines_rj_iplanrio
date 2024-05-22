@@ -20,9 +20,7 @@ rj_iplanrio__painel_obras__dump_data_flow.state_handlers = [
     handler_inject_bd_credentials,
     handler_initialize_sentry,
 ]
-rj_iplanrio__painel_obras__dump_data_flow.name = (
-    "IPLANRIO: processo.rio - Ingerir tabelas de banco SQL"
-)
+rj_iplanrio__painel_obras__dump_data_flow.name = "IPLANRIO: Painel de obras - Dump to GCS"
 rj_iplanrio__painel_obras__dump_data_flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 
 rj_iplanrio__painel_obras__dump_data_flow.run_config = KubernetesRun(

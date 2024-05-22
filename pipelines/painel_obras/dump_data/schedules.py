@@ -19,7 +19,6 @@ painel_obras__dump_data_schedule = Schedule(
                 constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
             parameter_defaults={
-                "project_id": "rj-iplanrio",
                 "dataset_id": "painel_obras",
                 "table_id": "obra",
                 "query": """
@@ -238,7 +237,6 @@ ORDER BY f.qtd_fonte_recurso DESC
                 constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
             parameter_defaults={
-                "project_id": "rj-iplanrio",
                 "dataset_id": "painel_obras",
                 "table_id": "orcamento_licitado",
                 "query": """
@@ -275,7 +273,6 @@ AND o.id_obra <> "7875"
                 constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
             parameter_defaults={
-                "project_id": "rj-iplanrio",
                 "dataset_id": "painel_obras",
                 "table_id": "obras_suspensas",
                 "query": """
@@ -306,7 +303,6 @@ WHERE (
                 constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
             parameter_defaults={
-                "project_id": "rj-iplanrio",
                 "dataset_id": "painel_obras",
                 "table_id": "itens_medidos_finalizado_1",
                 "query": """

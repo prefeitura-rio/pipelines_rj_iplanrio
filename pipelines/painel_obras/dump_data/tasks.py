@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from time import sleep
 
-from basedosdados.download.base import google_client
 from basedosdados.upload.base import Base
 from google.cloud import bigquery
 from prefect import task
@@ -11,7 +10,6 @@ from prefeitura_rio.pipelines_utils.logging import log
 
 @task
 def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
-    project_id: str,
     dataset_id: str,
     table_id: str,
     query: str,
@@ -47,8 +45,11 @@ def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
 
     # Get data
     log("Querying data from BigQuery")
-    client = google_client(project_id, billing_project_id, from_file=True, reauth=False)
-    job = client["bigquery"].query(query)
+    bq_client = bigquery.Client(
+        credentials=Base()._load_credentials(mode="prod"),
+        project=billing_project_id,
+    )
+    job = bq_client.query(query)
     while not job.done():
         sleep(1)
     dest_table = job._properties["configuration"]["query"]["destinationTable"]
@@ -62,7 +63,7 @@ def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
     dataset_ref = bigquery.DatasetReference(dest_project_id, dest_dataset_id)
     table_ref = dataset_ref.table(dest_table_id)
     job_config = bigquery.job.ExtractJobConfig(compression="GZIP")
-    extract_job = client["bigquery"].extract_table(
+    extract_job = bq_client.extract_table(
         table_ref,
         blob_path,
         location=location,

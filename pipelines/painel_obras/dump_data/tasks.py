@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import gzip
 from time import sleep
 
 from basedosdados.upload.base import Base
 from google.cloud import bigquery
+from google.cloud.storage.bucket import Bucket
 from prefect import task
 from prefeitura_rio.pipelines_utils.gcs import list_blobs_with_prefix
 from prefeitura_rio.pipelines_utils.logging import log
@@ -81,4 +83,15 @@ def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
     if not blobs:
         raise ValueError(f"No blob found at {blob_path}")
     for blob in blobs:
-        log(f"Blob found at {blob.name}. URL: {blob.public_url}")
+        log(f"Blob found at {blob.name}. Will now unzip it and upload it back to GCS")
+        blob.download_to_filename("/tmp/data.csv.gz")
+        log("Blob was downloaded")
+        with gzip.open("/tmp/data.csv.gz", "rb") as f_in:
+            with open("/tmp/data.csv", "wb") as f_out:
+                f_out.write(f_in.read())
+        log("Blob was unzipped")
+        bucket: Bucket = blob.bucket
+        new_blob = bucket.blob(blob.name.replace(".gz", ""))
+        new_blob.upload_from_filename("/tmp/data.csv")
+        log("Blob was uploaded back to GCS")
+        log(f"Blob URL: {new_blob.public_url}")

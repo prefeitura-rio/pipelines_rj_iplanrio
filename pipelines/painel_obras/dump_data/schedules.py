@@ -209,23 +209,68 @@ WITH
     SELECT
       o.id_obra,
       COUNT(f.fonte_recurso) AS qtd_fonte_recurso,
-      ARRAY_TO_STRING(ARRAY_AGG (f.fonte_recurso),', ') fontes_recurso
+      ARRAY_TO_STRING(ARRAY_AGG (f.fonte_recurso),",") fontes_recurso
     FROM `rj-smi.infraestrutura_siscob_obras.obra` o
     LEFT JOIN fonte f
       ON f.id_obra = o.id_obra
     GROUP BY o.id_obra
     ORDER BY 2 DESC
+  ),
+
+  medicao AS (
+	SELECT
+	  m.id_obra,
+	  ROUND(SUM(m.valor_final), 2) AS valor_final,
+	FROM
+	  `rj-smi.infraestrutura_siscob_obras.medicao` AS m
+	INNER JOIN `rj-smi.infraestrutura_siscob_obras.obra` AS o ON m.id_obra = o.id_obra
+	WHERE (
+		situacao IN("EXECUTANDO","SUSPENSA")
+		AND EXTRACT(YEAR FROM(o.data_termino_atual)) >= 2021
+		)
+		OR EXTRACT(YEAR FROM(o.data_inicio)) >= 2021
+		AND o.id_obra <> "7875"
+	GROUP BY m.id_obra
+  ),
+
+ localizacao AS (
+    SELECT
+      o.id_obra,
+      ARRAY_TO_STRING(ARRAY_AGG (DISTINCT l.bairro_regiao_planejamento),",") as localizacao,
+    FROM `rj-smi.infraestrutura_siscob_obras.obra` o
+    LEFT JOIN `rj-smi.infraestrutura_siscob_obras.localizacao` l
+      ON l.id_obra = o.id_obra
+    GROUP BY o.id_obra
+    ORDER BY 2 DESC
   )
 
 SELECT
-  o.*,
-  f.qtd_fonte_recurso,
-  f.fontes_recurso
+	o.id_processo AS `Nº do processo`,
+	o.titulo AS `Objeto`,
+	o.nome_orgao_contratante AS `Órgão Contratante`,
+	o.nome_orgao_executor AS `Órgão Executor`,
+	o.favorecido_cnpj AS `Empresa Contratada`,
+	o.situacao AS `Situação`,
+	o.modalidade AS `Modalidade de contratação`,
+	o.percentual_medido AS `Percentual da execução financeira`,
+	o.data_inicio AS `Data de início`,
+	o.data_termino_previsto AS `Data de término previsto`,
+	o.valor_contratado AS `Valor total contratado`,
+	o.valor_vigente AS `Valor total vigente`,
+	m.valor_final AS `Valor total medido`,
+	o.id_contrato AS `Nº do contrato`,
+	o.id_obra AS `Nº da obra`,
+	o.ano_inicio_contrato AS `Ano do contrato`,
+	f.fontes_recurso AS `Fonte de recurso`,
+  l.localizacao AS `Localização`
 FROM obras_final o
 LEFT JOIN obra_fonte f
   ON f.id_obra = o.id_obra
+LEFT JOIN medicao m
+  ON m.id_obra = o.id_obra
+LEFT JOIN localizacao l
+  ON l.id_obra = o.id_obra
 WHERE o.id_obra <> "7875"
-ORDER BY f.qtd_fonte_recurso DESC
                 """,
                 "billing_project_id": "rj-iplanrio",
             },
@@ -241,18 +286,17 @@ ORDER BY f.qtd_fonte_recurso DESC
                 "table_id": "orcamento_licitado",
                 "query": """
 SELECT
-  ol.cd_obra AS id_obra,
-  ol.ds_titulo_objeto,
-  ol.nm_sistema,
-  ol.nm_sub_sistema,
-  ol.nm_planilha,
-  CAST(ol.nr_item AS INT64) AS nr_item,
-  ol.cd_chave_externa,
-  ol.ds_item_servico,
-  ol.tx_unidade_medida,
-  CAST(ol.vl_unitario AS FLOAT64) AS vl_unitario,
-  CAST(ol.vl_total AS FLOAT64) AS vl_total,
-  CAST(ol.qt_contratado AS FLOAT64) AS qt_contratado
+  ol.cd_obra AS `Nº da Obra`,
+  ol.nm_sistema AS `Sistema`,
+  ol.nm_sub_sistema AS `Subsistema`,
+  ol.nm_planilha AS `Planilha`,
+  CAST(ol.nr_item AS INT64) AS `Nº do item`,
+  ol.cd_chave_externa AS `Código do item`,
+  ol.ds_item_servico AS `Descrição do item`,
+  ol.tx_unidade_medida AS `Unidade medida`,
+  CAST(ol.qt_contratado AS FLOAT64) AS `Quantidade licitada`,
+  CAST(ol.vl_unitario AS FLOAT64) AS `Valor unitário licitado`,
+  CAST(ol.vl_total AS FLOAT64) AS `Valor total licitado`
 FROM `rj-smi.infraestrutura_siscob_obras.orcamento_licitado` ol
 INNER JOIN `rj-smi.infraestrutura_siscob_obras.obra` AS o
   ON ol.cd_obra = o.id_obra
@@ -277,25 +321,14 @@ AND o.id_obra <> "7875"
                 "table_id": "obras_suspensas",
                 "query": """
 SELECT
-os.cd_obra AS id_obra,
-os.ds_titulo_objeto,
-FORMAT_TIMESTAMP('%d/%m/%Y', PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S', os.dt_suspensao)) AS dt_suspensao,
-ol.nm_sistema,
-ol.nm_sub_sistema,
-ol.nm_planilha,
-CAST(ol.nr_item AS INT64) AS nr_item,
-ol.cd_chave_externa,
-ol.ds_item_servico,
-ol.tx_unidade_medida,
-CAST(ol.vl_unitario AS FLOAT64) AS vl_unitario,
-CAST(ol.vl_total AS FLOAT64) AS vl_total,
-CAST(ol.qt_contratado AS FLOAT64) AS qt_contratado,
-os.ds_motivo AS motivo,
-os.ds_previsao,
-o.favorecido as nm_responsavel
+os.cd_obra AS `Nº da Obra`,
+os.ds_titulo_objeto AS `Objeto`,
+CONCAT(o.favorecido, " - ", o.cnpj) AS `Empresa Contratada`,
+FORMAT_TIMESTAMP('%d/%m/%Y', PARSE_TIMESTAMP('%Y-%m-%d %H:%M:%S', os.dt_suspensao)) AS `Data de Suspensão`,
+os.ds_motivo AS `Motivo de paralisação`,
+os.ds_previsao as `Data de reinício previsto`,
+CONCAT(o.favorecido, " - ", o.cnpj) AS  `Responsável pela inexecução temporária`
 FROM `rj-smi.infraestrutura_siscob_obras.obras_suspensas` os
-INNER JOIN rj-smi.infraestrutura_siscob_obras_staging.orcamento_licitado ol
-ON os.cd_obra = ol.cd_obra
 INNER JOIN `rj-smi.infraestrutura_siscob_obras.obra` AS o
   ON os.cd_obra = o.id_obra
 WHERE (
@@ -303,7 +336,8 @@ WHERE (
   EXTRACT(YEAR FROM(o.data_termino_atual)) >= 2021
   ) OR
   EXTRACT(YEAR FROM(o.data_inicio)) >= 2021
-  AND o.id_obra <> "7875"                """,
+  AND o.id_obra <> "7875"
+                """,
                 "billing_project_id": "rj-iplanrio",
             },
         ),
@@ -318,19 +352,19 @@ WHERE (
                 "table_id": "itens_medidos_finalizado_1",
                 "query": """
 SELECT
-imf.cd_obra as id_obra,
-imf.nm_sistema,
-imf.nm_sub_sistema,
-imf.nm_planilha,
-imf.nr_item,
-imf.cd_chave_externa,
-imf.ds_item_servico,
-imf.tx_unidade_medida,
-CAST(imf.qt_contratada AS FLOAT64) AS qt_contratada,
-CAST(imf.vl_unitario_licitacao AS FLOAT64) AS vl_unitario_licitado,
-CAST(imf.qt_acumulada AS FLOAT64) AS qt_acumulada,
-CAST(imf.vl_acumulado_medido AS FLOAT64) AS vl_acumulado_medido,
-FORMAT_TIMESTAMP('%d/%m/%Y', PARSE_TIMESTAMP('%Y-%m-%d', imf.dt_fim_obra)) AS dt_fim_obra,
+imf.cd_obra AS `Nº da Obra`,
+imf.nm_sistema AS `Sistema`,
+imf.nm_sub_sistema AS `Susbstima`,
+imf.nm_planilha AS `Planilha`,
+imf.nr_item AS `Nº do item`,
+imf.cd_chave_externa AS `Código do item`,
+imf.ds_item_servico AS `Descrição do item`,
+imf.tx_unidade_medida AS `Unidade medida`,
+CAST(imf.qt_contratada AS FLOAT64) AS `Quantidade licitada`,
+CAST(imf.vl_unitario_licitacao AS FLOAT64) AS `Valor unitário licitado`,
+TRUNC(CAST(imf.qt_contratada AS FLOAT64) * CAST(imf.vl_unitario_licitacao AS FLOAT64), 2) AS `Valor total licitado`,
+CAST(imf.qt_acumulada AS FLOAT64) AS `Quantidade Medida`,
+CAST(imf.vl_acumulado_medido AS FLOAT64) AS `Valor total medido`
 FROM `rj-smi.infraestrutura_siscob_obras_staging.itens_medidos_finalizados` imf
 INNER JOIN `rj-smi.infraestrutura_siscob_obras.obra` AS o
   ON imf.cd_obra = o.id_obra
@@ -340,6 +374,7 @@ WHERE (
   ) OR
   EXTRACT(YEAR FROM(o.data_inicio)) >= 2021
   AND o.id_obra <> "7875"
+
                 """,
                 "billing_project_id": "rj-iplanrio",
             },

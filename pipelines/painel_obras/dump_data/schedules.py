@@ -238,7 +238,7 @@ WITH
       o.id_obra,
       ARRAY_TO_STRING(ARRAY_AGG (DISTINCT l.bairro_regiao_planejamento),",") as localizacao,
     FROM `rj-smi.infraestrutura_siscob_obras.obra` o
-    LEFT JOIN `rj-smi.infraestrutura_siscob_obras.localizacao` l
+    LEFT JOIN `rj-smi.infraestrutura_siscob_obras.localizacao_obra` l
       ON l.id_obra = o.id_obra
     GROUP BY o.id_obra
     ORDER BY 2 DESC
@@ -365,7 +365,7 @@ CAST(imf.vl_unitario_licitacao AS FLOAT64) AS `Valor unitário licitado`,
 TRUNC(CAST(imf.qt_contratada AS FLOAT64) * CAST(imf.vl_unitario_licitacao AS FLOAT64), 2) AS `Valor total licitado`,
 CAST(imf.qt_acumulada AS FLOAT64) AS `Quantidade Medida`,
 CAST(imf.vl_acumulado_medido AS FLOAT64) AS `Valor total medido`
-FROM `rj-smi.infraestrutura_siscob_obras_staging.itens_medidos_finalizados` imf
+FROM `rj-smi.infraestrutura_siscob_obras.itens_medidos_finalizados` imf
 INNER JOIN `rj-smi.infraestrutura_siscob_obras.obra` AS o
   ON imf.cd_obra = o.id_obra
 WHERE (

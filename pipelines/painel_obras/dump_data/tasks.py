@@ -83,15 +83,16 @@ def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
     if not blobs:
         raise ValueError(f"No blob found at {blob_path}")
     for blob in blobs:
-        log(f"Blob found at {blob.name}. Will now unzip it and upload it back to GCS")
-        blob.download_to_filename("/tmp/data.csv.gz")
-        log("Blob was downloaded")
-        with gzip.open("/tmp/data.csv.gz", "rb") as f_in:
-            with open("/tmp/data.csv", "wb") as f_out:
-                f_out.write(f_in.read())
-        log("Blob was unzipped")
-        bucket: Bucket = blob.bucket
-        new_blob = bucket.blob(blob.name.replace(".gz", ""))
-        new_blob.upload_from_filename("/tmp/data.csv")
-        log("Blob was uploaded back to GCS")
-        log(f"Blob URL: {new_blob.public_url}")
+        if blob.name.endswith(".gz"):
+            log(f"Blob found at {blob.name}. Will now unzip it and upload it back to GCS")
+            blob.download_to_filename("/tmp/data.csv.gz")
+            log("Blob was downloaded")
+            with gzip.open("/tmp/data.csv.gz", "rb") as f_in:
+                with open("/tmp/data.csv", "wb") as f_out:
+                    f_out.write(f_in.read())
+            log("Blob was unzipped")
+            bucket: Bucket = blob.bucket
+            new_blob = bucket.blob(blob.name.replace(".gz", ""))
+            new_blob.upload_from_filename("/tmp/data.csv")
+            log("Blob was uploaded back to GCS")
+            log(f"Blob URL: {new_blob.public_url}")

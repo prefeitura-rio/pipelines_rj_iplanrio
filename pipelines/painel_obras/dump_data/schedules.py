@@ -9,19 +9,7 @@ from prefect.schedules.clocks import IntervalClock
 from pipelines.constants import constants
 
 TIMEDELTA_ONCE_A_MONTH = timedelta(minutes=43830)
-
-painel_obras__dump_data_schedule = Schedule(
-    clocks=[
-        IntervalClock(
-            interval=TIMEDELTA_ONCE_A_MONTH,
-            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
-            labels=[
-                constants.RJ_IPLANRIO_AGENT_LABEL.value,
-            ],
-            parameter_defaults={
-                "dataset_id": "painel_obras",
-                "table_id": "obra",
-                "query": """
+obra = """
 WITH
   obra AS (
     SELECT
@@ -271,20 +259,10 @@ LEFT JOIN medicao m
 LEFT JOIN localizacao l
   ON l.id_obra = o.id_obra
 WHERE o.id_obra <> "7875"
-                """,
-                "billing_project_id": "rj-iplanrio",
-            },
-        ),
-        IntervalClock(
-            interval=TIMEDELTA_ONCE_A_MONTH,
-            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
-            labels=[
-                constants.RJ_IPLANRIO_AGENT_LABEL.value,
-            ],
-            parameter_defaults={
-                "dataset_id": "painel_obras",
-                "table_id": "orcamento_licitado",
-                "query": """
+"""
+
+
+orcamento_licenciado = """
 SELECT
   ol.cd_obra AS `Nº da Obra`,
   ol.nm_sistema AS `Sistema`,
@@ -306,20 +284,9 @@ WHERE (
   ) OR
   EXTRACT(YEAR FROM(o.data_inicio)) >= 2021
 AND o.id_obra <> "7875"
-                """,
-                "billing_project_id": "rj-iplanrio",
-            },
-        ),
-        IntervalClock(
-            interval=TIMEDELTA_ONCE_A_MONTH,
-            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
-            labels=[
-                constants.RJ_IPLANRIO_AGENT_LABEL.value,
-            ],
-            parameter_defaults={
-                "dataset_id": "painel_obras",
-                "table_id": "obras_suspensas",
-                "query": """
+"""
+
+obras_suspensas = """
 SELECT
 os.cd_obra AS `Nº da Obra`,
 os.ds_titulo_objeto AS `Objeto`,
@@ -337,20 +304,10 @@ WHERE (
   ) OR
   EXTRACT(YEAR FROM(o.data_inicio)) >= 2021
   AND o.id_obra <> "7875"
-                """,
-                "billing_project_id": "rj-iplanrio",
-            },
-        ),
-        IntervalClock(
-            interval=TIMEDELTA_ONCE_A_MONTH,
-            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
-            labels=[
-                constants.RJ_IPLANRIO_AGENT_LABEL.value,
-            ],
-            parameter_defaults={
-                "dataset_id": "painel_obras",
-                "table_id": "itens_medidos_finalizado_1",
-                "query": """
+"""
+
+
+itens_medidos_finalizado_1 = """
 SELECT
 imf.cd_obra AS `Nº da Obra`,
 imf.nm_sistema AS `Sistema`,
@@ -374,8 +331,59 @@ WHERE (
   ) OR
   EXTRACT(YEAR FROM(o.data_inicio)) >= 2021
   AND o.id_obra <> "7875"
+"""
 
-                """,
+painel_obras__dump_data_schedule = Schedule(
+    clocks=[
+        IntervalClock(
+            interval=TIMEDELTA_ONCE_A_MONTH,
+            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
+            labels=[
+                constants.RJ_IPLANRIO_AGENT_LABEL.value,
+            ],
+            parameter_defaults={
+                "dataset_id": "painel_obras",
+                "table_id": "obra",
+                "query": obra,
+                "billing_project_id": "rj-iplanrio",
+            },
+        ),
+        IntervalClock(
+            interval=TIMEDELTA_ONCE_A_MONTH,
+            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
+            labels=[
+                constants.RJ_IPLANRIO_AGENT_LABEL.value,
+            ],
+            parameter_defaults={
+                "dataset_id": "painel_obras",
+                "table_id": "orcamento_licitado",
+                "query": orcamento_licenciado,
+                "billing_project_id": "rj-iplanrio",
+            },
+        ),
+        IntervalClock(
+            interval=TIMEDELTA_ONCE_A_MONTH,
+            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
+            labels=[
+                constants.RJ_IPLANRIO_AGENT_LABEL.value,
+            ],
+            parameter_defaults={
+                "dataset_id": "painel_obras",
+                "table_id": "obras_suspensas",
+                "query": obras_suspensas,
+                "billing_project_id": "rj-iplanrio",
+            },
+        ),
+        IntervalClock(
+            interval=TIMEDELTA_ONCE_A_MONTH,
+            start_date=datetime(2024, 1, 19, tzinfo=pytz.timezone("America/Sao_Paulo")),
+            labels=[
+                constants.RJ_IPLANRIO_AGENT_LABEL.value,
+            ],
+            parameter_defaults={
+                "dataset_id": "painel_obras",
+                "table_id": "itens_medidos_finalizado_1",
+                "query": itens_medidos_finalizado_1,
                 "billing_project_id": "rj-iplanrio",
             },
         ),

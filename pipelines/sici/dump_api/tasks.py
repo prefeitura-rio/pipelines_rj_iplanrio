@@ -52,7 +52,6 @@ def get_sici_api_credentials():
             #environment = "Production",
             path= "/api-sici",
         )
-        log(f"Consumidor: {consumidor['CONSUMIDOR']}")
     except Exception as e:
         log.error(f"An error occurred while fetching the SICI API credentials for consumidor: {e}")
         raise

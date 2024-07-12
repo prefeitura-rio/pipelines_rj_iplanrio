@@ -2,7 +2,7 @@ from pipelines.sici.dump_api.utils import xml_to_dataframe
 from prefect import task
 from prefeitura_rio.pipelines_utils.logging import log
 from prefeitura_rio.pipelines_utils.infisical import get_secret
-from zeep import Client, Fault, TransportError, XMLSyntaxError
+from zeep import Client
 
 @task
 def get_data_from_api_soap_sici(
@@ -37,15 +37,6 @@ def get_data_from_api_soap_sici(
         # Return the dataframe and the true path of the csv file
         return df, "sici_data.csv"
 
-    except Fault as e:
-        log.error(f"SOAP Fault occurred: {e}")
-        raise
-    except TransportError as e:
-        log.error(f"Transport error occurred: {e}")
-        raise
-    except XMLSyntaxError as e:
-        log.error(f"XML syntax error occurred: {e}")
-        raise
     except Exception as e:
         log.error(f"An unexpected error occurred: {e}")
         raise

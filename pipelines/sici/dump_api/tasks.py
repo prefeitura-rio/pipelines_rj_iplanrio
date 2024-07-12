@@ -34,8 +34,8 @@ def get_data_from_api_soap_sici(
         # Safe the dataframe to a CSV file
         df.to_csv("sici_data.csv", index=False)
 
-        # Return the dataframe and the true path of the csv file
-        return df, "sici_data.csv"
+        # Return the true path of the csv file
+        return "sici_data.csv"
 
     except Exception as e:
         log.error(f"An unexpected error occurred: {e}")

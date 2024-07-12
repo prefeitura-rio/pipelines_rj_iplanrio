@@ -33,7 +33,7 @@ with Flow(
 
     get_credentials = get_sici_api_credentials()
 
-    data, path = get_data_from_api_soap_sici(
+    path = get_data_from_api_soap_sici(
         wsdl=constants.SICI_SOAP_API_WSDL.value,
         params=get_credentials,
     )

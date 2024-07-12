@@ -10,7 +10,7 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
 from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table, create_table_and_upload_to_gcs
 
 from pipelines.constants import constants
-from pipelines.sici.dump_api.schedules import rj_iplanrio__sici__dump_api__schedule
+from pipelines.sici.dump_api.schedules import sici_dump_api_schedule
 from pipelines.sici.dump_api.tasks import get_data_from_api_soap_sici, get_sici_api_credentials
 
 with Flow(
@@ -51,4 +51,4 @@ rj_iplanrio__sici__dump_api__flow.run_config = KubernetesRun(
     image=constants.DOCKER_IMAGE.value,
     labels=[constants.RJ_IPLANRIO_AGENT_LABEL.value],
 )
-rj_iplanrio__sici__dump_api__flow.schedule = rj_iplanrio__sici__dump_api__schedule
+rj_iplanrio__sici__dump_api__flow.schedule = sici_dump_api_schedule

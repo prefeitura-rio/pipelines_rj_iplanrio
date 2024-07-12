@@ -10,7 +10,7 @@ from pipelines.constants import constants
 
 TIMEDELTA_ONCE_A_MONTH = timedelta(minutes=43830)
 
-sici__dump_api__schedule = Schedule(
+sici_dump_api_schedule = Schedule(
     clocks=[
         IntervalClock(
             interval=TIMEDELTA_ONCE_A_MONTH,

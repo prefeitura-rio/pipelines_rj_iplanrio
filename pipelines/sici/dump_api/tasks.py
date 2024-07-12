@@ -52,7 +52,7 @@ def get_sici_api_credentials():
             #environment = "Production",
             path= "/api-sici",
         )
-        log(f"Consumidor: {consumidor}")
+        log(f"Consumidor: {consumidor['CONSUMIDOR']}")
     except Exception as e:
         log.error(f"An error occurred while fetching the SICI API credentials for consumidor: {e}")
         raise
@@ -71,6 +71,6 @@ def get_sici_api_credentials():
         "Codigo_UA": "",
         "Nivel": "",
         "Tipo_Arvore": "",
-        "consumidor": str(consumidor),
-        "chaveAcesso": str(chave_acesso),
+        "consumidor": consumidor['CONSUMIDOR'],
+        "chaveAcesso": chave_acesso['CHAVE_ACESSO'],
    }

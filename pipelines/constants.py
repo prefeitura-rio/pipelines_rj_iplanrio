@@ -23,3 +23,4 @@ class constants(Enum):
     # Other constants
     ######################################
     # EXAMPLE_CONSTANT = "example_constant"
+    SICI_SOAP_API_WSDL = "http://sici.rio.rj.gov.br/Servico/WebServiceSICI.asmx?wsdl"

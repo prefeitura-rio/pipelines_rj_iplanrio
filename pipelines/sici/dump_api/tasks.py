@@ -49,7 +49,7 @@ def get_sici_api_credentials():
     try:
         consumidor = get_secret(
             secret_name = "CONSUMIDOR",
-            environment = "Production",
+            #environment = "Production",
             path= "/api-sici",
         )
     except Exception as e:
@@ -59,7 +59,7 @@ def get_sici_api_credentials():
     try:
         chave_acesso = get_secret(
             secret_name="CHAVE_ACESSO",
-            environment="Production",
+            #environment="Production",
             path="/api-sici",
         )
     except Exception as e:

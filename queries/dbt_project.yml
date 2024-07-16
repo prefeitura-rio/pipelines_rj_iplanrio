@@ -27,3 +27,6 @@ models:
     adm_processo_interno_sicop:
       +materialized: table
       +schema: adm_processo_interno_sicop
+    unidades_administrativas:
+      +materialized: table
+      +schema: unidades_administrativas

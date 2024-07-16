@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from prefect import Parameter
+from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
 from prefeitura_rio.pipelines_utils.custom import Flow
@@ -51,11 +51,12 @@ with Flow(
     )
     create_table.set_upstream(path)
 
-    run_dbt = task_run_dbt_model_task(
-        dataset_id="unidades_administrativas",
-        table_id="orgaos",
-    )
-    run_dbt.set_upstream(create_table)
+    with case(materialize_after_dump, True):
+        run_dbt = task_run_dbt_model_task(
+            dataset_id="unidades_administrativas",
+            table_id="orgaos",
+        )
+        run_dbt.set_upstream(create_table)
 
 # Flow configuration
 rj_iplanrio__sici__dump_api__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)

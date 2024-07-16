@@ -52,7 +52,7 @@ with Flow(
         table_id="orgaos",
     )
 
-
+# Flow configuration
 rj_iplanrio__sici__dump_api__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 rj_iplanrio__sici__dump_api__flow.run_config = KubernetesRun(
     image=constants.DOCKER_IMAGE.value,

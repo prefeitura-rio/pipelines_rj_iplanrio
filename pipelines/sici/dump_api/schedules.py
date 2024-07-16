@@ -19,7 +19,7 @@ sici_dump_api_schedule = Schedule(
                 constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
             parameter_defaults={
-                "dataset_id": "unidade_administrativa",
+                "dataset_id": "unidades_administrativas",
                 "table_id": "orgaos",
                 "billing_project_id": "rj-iplanrio",
             },

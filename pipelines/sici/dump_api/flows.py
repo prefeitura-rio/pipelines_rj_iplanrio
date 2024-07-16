@@ -8,6 +8,7 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
     handler_inject_bd_credentials,
 )
 from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table, create_table_and_upload_to_gcs
+from prefeitura_rio.pipelines_utils.dbt import run_dbt_model
 
 from pipelines.constants import constants
 from pipelines.sici.dump_api.schedules import sici_dump_api_schedule
@@ -45,6 +46,12 @@ with Flow(
         dump_mode="overwrite",
         biglake_table=False,
     )
+
+    run_dbt_model(
+        dataset_id="unidades_administrativas",
+        table_id="orgaos",
+    )
+
 
 rj_iplanrio__sici__dump_api__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 rj_iplanrio__sici__dump_api__flow.run_config = KubernetesRun(

@@ -22,6 +22,7 @@ sici_dump_api_schedule = Schedule(
                 "dataset_id": "unidades_administrativas",
                 "table_id": "orgaos",
                 "billing_project_id": "rj-iplanrio",
+                "materialize_after_dump": True,
             },
         )
     ]

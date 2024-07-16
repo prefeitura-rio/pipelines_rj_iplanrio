@@ -7,8 +7,7 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
     handler_initialize_sentry,
     handler_inject_bd_credentials,
 )
-from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table, create_table_and_upload_to_gcs
-from prefeitura_rio.pipelines_utils.dbt import run_dbt_model
+from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table, create_table_and_upload_to_gcs, task_run_dbt_model_task
 
 from pipelines.constants import constants
 from pipelines.sici.dump_api.schedules import sici_dump_api_schedule
@@ -27,30 +26,36 @@ with Flow(
     table_id = Parameter("table_id")
     billing_project_id = Parameter("billing_project_id", required=False)
     bd_project_mode = Parameter("bd_project_mode", required=False, default="prod")
+    materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
 
     rename_flow_run = rename_current_flow_run_dataset_table(
         prefix="Dump SICI API: ", dataset_id=dataset_id, table_id=table_id
     )
 
     get_credentials = get_sici_api_credentials()
+    get_credentials.set_upstream(rename_flow_run)
 
     path = get_data_from_api_soap_sici(
         wsdl=constants.SICI_SOAP_API_WSDL.value,
         params=get_credentials,
     )
 
-    create_table_and_upload_to_gcs(
+    path.set_upstream(get_credentials)
+
+    create_table = create_table_and_upload_to_gcs(
         data_path=path,
         dataset_id=dataset_id,
         table_id=table_id,
         dump_mode="overwrite",
         biglake_table=False,
     )
+    create_table.set_upstream(path)
 
-    run_dbt_model(
+    run_dbt = task_run_dbt_model_task(
         dataset_id="unidades_administrativas",
         table_id="orgaos",
     )
+    run_dbt.set_upstream(create_table)
 
 # Flow configuration
 rj_iplanrio__sici__dump_api__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)

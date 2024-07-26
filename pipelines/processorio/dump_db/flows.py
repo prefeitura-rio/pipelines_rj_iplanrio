@@ -33,10 +33,10 @@ rj_iplanrio_processorio_flow.run_config = KubernetesRun(
     labels=[
         constants.RJ_IPLANRIO_AGENT_LABEL.value,  # label do agente
     ],
-    cpu_limit="500m",
-    cpu_request="500m",
-    memory_limit="2Gi",
-    memory_request="2Gi",
+    # cpu_limit="500m",
+    # cpu_request="500m",
+    # memory_limit="2Gi",
+    # memory_request="2Gi",
 )
 
 processorio_default_parameters = {

@@ -33,6 +33,10 @@ rj_iplanrio_processorio_flow.run_config = KubernetesRun(
     labels=[
         constants.RJ_IPLANRIO_AGENT_LABEL.value,  # label do agente
     ],
+    cpu_limit="500m",
+    cpu_request="500m",
+    memory_limit="2Gi",
+    memory_request="2Gi",
 )
 
 processorio_default_parameters = {
@@ -40,7 +44,7 @@ processorio_default_parameters = {
     "db_host": "10.2.231.73",
     "db_port": "3306",
     "db_type": "mysql",
-    "dataset_id": "administracao_servicos_publicos",
+    "dataset_id": "adm_processo_interno_processorio",
     "infisical_secret_path": "/db-processorio",
 }
 

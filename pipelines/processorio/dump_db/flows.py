@@ -36,10 +36,10 @@ rj_iplanrio_processorio_flow.run_config = KubernetesRun(
 )
 
 processorio_default_parameters = {
-    "db_database": "SIGADOC.PCRJ",
-    "db_host": "10.70.6.64",
-    "db_port": "1521",
-    "db_type": "oracle",
+    "db_database": "DW_BI_PROCESSO_RIO",
+    "db_host": "10.2.231.73",
+    "db_port": "3306",
+    "db_type": "mysql",
     "dataset_id": "administracao_servicos_publicos",
     "vault_secret_path": "processorio-prod",
 }

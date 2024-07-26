@@ -19,7 +19,7 @@ from pipelines.constants import constants
 #####################################
 
 _processorio_infra_query = {
-    "classificacao": {
+    "dim_data": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -28,14 +28,38 @@ _processorio_infra_query = {
         "dump_mode": "overwrite",
         "execute_query": """
             SELECT
-                ID_CLASSIFICACAO,
-                DESCR_CLASSIFICACAO,
-                HIS_ATIVO,
-                CODIFICACAO
-            FROM SIGA.VW_CLASSIFICACAO
+                IDDATA,
+                DATA,
+                DATA_INICIO_SEMANA,
+                DATA_FIM_SEMANA,
+                NUMERO_DIA_SEMANA,
+                NOME_DIA_SEMANA,
+                NUMERO_DIA_MES,
+                IDSEMANA,
+                NUMERO_SEMANA_NO_MES,
+                NUMERO_SEMANA_NO_ANO,
+                NOME_SEMANA_NO_MES,
+                NOME_SEMANA_NO_ANO,
+                IDQUINZENA,
+                NUMERO_QUINZENA,
+                NOME_QUINZENA,
+                NOME_QUINZENA_ANO,
+                IDMES,
+                NUMERO_MES,
+                NOME_MES,
+                IDTRIMESTRE,
+                NOME_TRIMESTRE,
+                IDSEMESTRE,
+                NOME_SEMESTRE,
+                IDANO,
+                NOME_ANO,
+                IDDIA_UTIL,
+                DESC_DIA_UTIL
+            FROM
+                DW_BI_PROCESSO_RIO.DIM_DATA;
         """,  # noqa
     },
-    "documento_tempo": {
+    "dim_setor_orgao": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -44,20 +68,17 @@ _processorio_infra_query = {
         "dump_mode": "overwrite",
         "execute_query": """
             SELECT
-                SIGLA_DOC,
-                DT_PRIMEIRAASSINATURA,
-                ULTIMO_ID_MOV,
-                DT_FINALIZACAO,
-                ARQUIVADO,
-                ID_MOBIL,
-                TEMPO_TRAMITACAO,
-                ID_LOTA_RESP,
-                LOTACAO_RESP,
-                DATA_COM_RESP_ATUAL
-            FROM SIGA.DOCUMENTOS_TEMPO
+                IDSETOR,
+                IDORGAO,
+                SIGLA_ORGAO,
+                NOME_ORGAO,
+                SIGLA_SETOR,
+                NOME_SETOR
+            FROM
+                DW_BI_PROCESSO_RIO.DIM_SETOR_ORGAO;
         """,  # noqa
     },
-    "forma_documento": {
+    "dim_tipo_evento": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -66,14 +87,15 @@ _processorio_infra_query = {
         "dump_mode": "overwrite",
         "execute_query": """
             SELECT
-                ID_FORMA_DOC,
-                DESCR_FORMA_DOC,
-                SIGLA_FORMA_DOC,
-                ID_TIPO_FORMA_DOC
-            FROM SIGA.VW_FORMA_DOCUMENTO
+                IDTIPO_EVENTO,
+                NOME_EVENTO,
+                IDGRUPO_EVENTO,
+                NOME_GRUPO_EVENTO
+            FROM
+                DW_BI_PROCESSO_RIO.DIM_TIPO_EVENTO;
         """,  # noqa
     },
-    "lotacao": {
+    "dim_documento": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -82,18 +104,26 @@ _processorio_infra_query = {
         "dump_mode": "overwrite",
         "execute_query": """
             SELECT
-                ID_LOTACAO,
-                DATA_INI_LOT,
-                DATA_FIM_LOT,
-                NOME_LOTACAO,
-                ID_LOTACAO_PAI,
-                SIGLA_LOTACAO,
-                ID_ORGAO_USU,
-                IS_EXTERNA_LOTACAO
-            FROM CORPORATIVO.VW_LOTACAO
+                IDDOCUMENTO,
+                NUMERO_DOCUMENTO,
+                IDCLASSIFICACAO,
+                NOME_CLASSIFICACAO,
+                CODIGO_CLASSIFICACAO,
+                IDSUBCLASSE,
+                NOME_SUBCLASSE,
+                IDCLASSE,
+                NOME_CLASSE,
+                IDASSUNTO,
+                NOME_ASSUNTO,
+                IDFORMA_DOCUMENTO,
+                NOME_FORMA_DOCUMENTO,
+                IDTIPO_FORMA_DOCUMENTO,
+                NOME_TIPO_FORMA_DOCUMENTO
+            FROM
+                DW_BI_PROCESSO_RIO.DIM_DOCUMENTO;
         """,  # noqa
     },
-    "mobil": {
+    "fato_tramitacao_documento": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -102,144 +132,35 @@ _processorio_infra_query = {
         "dump_mode": "overwrite",
         "execute_query": """
             SELECT
-                ID_MOBIL,
-                ID_DOC
-            FROM SIGA.VW_MOBIL
+                IDACAO,
+                IDDOCUMENTO,
+                IDSETOR,
+                IDTIPO_EVENTO,
+                IDDATA_INICIO,
+                IDDATA_FIM,
+                HORA_REGISTRO_INICIO,
+                HORA_REGISTRO_FIM,
+                IDDATA_INICIO_CICLO,
+                IDDATA_FIM_CICLO,
+                DATA_HORA_CARGA,
+            FROM
+                DW_BI_PROCESSO_RIO.FATO_TRAMITACAO_DOCUMENTO;
         """,  # noqa
-    },
-    "mobil_tipo": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                *
-            FROM SIGA.VW_TIPO_MOBIL
-        """,  # noqa
-    },
-    "modelo": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_MOD,
-                NM_MOD,
-                DESC_MOD,
-                HIS_ID_INI,
-                HIS_IDC_INI,
-                HIS_IDC_FIM,
-                HIS_ATIVO,
-                IS_PETICIONAMENTO
-            FROM SIGA.VW_MODELO
-        """,  # noqa
-    },
-    "movimentacao": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "append",
-        "partition_columns": "DT_MOV",
-        "partition_date_format": "%Y-%m-%d",
-        "lower_bound_date": "current_month",
-        "execute_query": """
-            SELECT
-                ID_MOV,
-                ID_TP_MOV,
-                ID_CADASTRANTE,
-                ID_LOTA_CADASTRANTE,
-                CAST(CAST(DT_MOV AS VARCHAR(23)) AS DATE) DT_MOV,
-                CAST(CAST(DT_FIM_MOV AS VARCHAR(23)) AS DATE) DT_FIM_MOV,
-                ID_MOV_REF,
-                ID_MOBIL
-            FROM SIGA.VW_MOVIMENTACAO
-        """,  # noqa
-    },
-    "movimentacao_tipo": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                *
-            FROM SIGA.VW_TIPO_MOVIMENTACAO
-        """,  # noqa
-    },
-    "nivel_acesso": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_NIVEL_ACESSO,
-                NM_NIVEL_ACESSO
-            FROM SIGA.VW_NIVEL_ACESSO
-        """,  # noqa
-    },
-    "orgao_usuario": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_ORGAO_USU,
-                NM_ORGAO_USU,
-                SIGLA_ORGAO_USU,
-                COD_ORGAO_USU,
-                IS_EXTERNO_ORGAO_USU,
-                HIS_ATIVO,
-                IS_PETICIONAMENTO
-            FROM CORPORATIVO.VW_ORGAO_USUARIO
-        """,  # noqa
-    },
-    "documento": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "append",
-        "partition_columns": "DT_DOC",
-        "partition_date_format": "%Y-%m-%d",
-        "lower_bound_date": "current_month",
-        "execute_query": """
-            SELECT
-                *
-            FROM SIGA.VW_DOCUMENTO
-        """,  # noqa
-        "dbt_alias": True,
     },
 }
 
 processorio_infra_clocks = generate_dump_db_schedules(
     interval=timedelta(days=1),
-    start_date=datetime(2022, 3, 21, 2, 0, tzinfo=pytz.timezone("America/Sao_Paulo")),
+    start_date=datetime(2024, 7, 26, 2, 0, tzinfo=pytz.timezone("America/Sao_Paulo")),
     labels=[
         constants.RJ_IPLANRIO_AGENT_LABEL.value,
     ],
-    db_database="SIGADOC.PCRJ",
-    db_host="10.70.6.64",
-    db_port="1521",
-    db_type="oracle",
+    db_database="DW_BI_PROCESSO_RIO",
+    db_host="10.2.231.73",
+    db_port="3306",
+    db_type="mysql",
     dataset_id="adm_processo_interno_processorio",
-    infisical_secret_path="/db-processorio-prod",
+    infisical_secret_path="/db-processorio",
     table_parameters=_processorio_infra_query,
 )
 

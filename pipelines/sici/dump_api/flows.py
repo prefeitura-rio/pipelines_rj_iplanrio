@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Data dumping
+"""
 from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
@@ -7,11 +10,18 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
     handler_initialize_sentry,
     handler_inject_bd_credentials,
 )
-from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table, create_table_and_upload_to_gcs, task_run_dbt_model_task
+from prefeitura_rio.pipelines_utils.tasks import (
+    create_table_and_upload_to_gcs,
+    rename_current_flow_run_dataset_table,
+    task_run_dbt_model_task,
+)
 
 from pipelines.constants import constants
 from pipelines.sici.dump_api.schedules import sici_dump_api_schedule
-from pipelines.sici.dump_api.tasks import get_data_from_api_soap_sici, get_sici_api_credentials
+from pipelines.sici.dump_api.tasks import (
+    get_data_from_api_soap_sici,
+    get_sici_api_credentials,
+)
 
 with Flow(
     name="IPLANRIO: SICI API - Dump to GCS",

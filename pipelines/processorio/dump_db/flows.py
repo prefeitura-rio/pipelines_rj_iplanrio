@@ -41,7 +41,7 @@ processorio_default_parameters = {
     "db_port": "3306",
     "db_type": "mysql",
     "dataset_id": "administracao_servicos_publicos",
-    "vault_secret_path": "processorio-prod",
+    "infisical_secret_path": "/db-processorio",
 }
 
 rj_iplanrio_processorio_flow = set_default_parameters(

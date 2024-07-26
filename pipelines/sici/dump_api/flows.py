@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Data dumping
+Data dumping.
 """
 from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun

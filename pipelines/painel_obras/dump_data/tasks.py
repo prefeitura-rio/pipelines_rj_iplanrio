@@ -2,7 +2,7 @@
 import gzip
 from time import sleep
 
-from basedosdados.upload.base import Base
+from basedosdados import Base
 from google.cloud import bigquery
 from google.cloud.storage.bucket import Bucket
 from prefect import task

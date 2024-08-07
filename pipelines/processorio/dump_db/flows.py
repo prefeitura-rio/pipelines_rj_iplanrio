@@ -41,9 +41,9 @@ rj_iplanrio_processorio_flow.run_config = KubernetesRun(
 
 processorio_default_parameters = {
     "db_database": "DW_BI_PROCESSO_RIO",
-    "db_host": "10.2.231.73",
-    "db_port": "3306",
-    "db_type": "mysql",
+    "db_host": "10.70.6.47",
+    "db_port": "1433",
+    "db_type": "sqlserver",
     "dataset_id": "adm_processo_interno_processorio",
     "infisical_secret_path": "/db-processorio",
 }

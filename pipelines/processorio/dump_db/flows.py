@@ -43,7 +43,7 @@ processorio_default_parameters = {
     "db_database": "DW_BI_PROCESSO_RIO",
     "db_host": "10.70.6.47",
     "db_port": "1433",
-    "db_type": "sqlserver",
+    "db_type": "sql_server",
     "dataset_id": "adm_processo_interno_processorio",
     "infisical_secret_path": "/db-processorio",
 }

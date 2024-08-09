@@ -56,7 +56,7 @@ _processorio_infra_query = {
                 IDDIA_UTIL,
                 DESC_DIA_UTIL
             FROM
-                DW_BI_PROCESSO_RIO.DIM_DATA;
+                DW_BI_PROCESSO_RIO.dbo.DIM_DATA;
         """,  # noqa
     },
     "dim_setor_orgao": {
@@ -75,7 +75,7 @@ _processorio_infra_query = {
                 SIGLA_SETOR,
                 NOME_SETOR
             FROM
-                DW_BI_PROCESSO_RIO.DIM_SETOR_ORGAO;
+                DW_BI_PROCESSO_RIO.dbo.DIM_SETOR_ORGAO;
         """,  # noqa
     },
     "dim_tipo_evento": {
@@ -92,7 +92,7 @@ _processorio_infra_query = {
                 IDGRUPO_EVENTO,
                 NOME_GRUPO_EVENTO
             FROM
-                DW_BI_PROCESSO_RIO.DIM_TIPO_EVENTO;
+                DW_BI_PROCESSO_RIO.dbo.DIM_TIPO_EVENTO;
         """,  # noqa
     },
     "dim_documento": {
@@ -120,7 +120,7 @@ _processorio_infra_query = {
                 IDTIPO_FORMA_DOCUMENTO,
                 NOME_TIPO_FORMA_DOCUMENTO
             FROM
-                DW_BI_PROCESSO_RIO.DIM_DOCUMENTO;
+                DW_BI_PROCESSO_RIO.dbo.DIM_DOCUMENTO;
         """,  # noqa
     },
     "fato_tramitacao_documento": {
@@ -144,7 +144,7 @@ _processorio_infra_query = {
                 IDDATA_FIM_CICLO,
                 DATA_HORA_CARGA,
             FROM
-                DW_BI_PROCESSO_RIO.FATO_TRAMITACAO_DOCUMENTO;
+                DW_BI_PROCESSO_RIO.dbo.FATO_TRAMITACAO_DOCUMENTO;
         """,  # noqa
     },
     "dim_status_ciclo": {
@@ -159,7 +159,7 @@ _processorio_infra_query = {
                 IDSTATUS_CICLO,
                 NOME_STATUS_CICLO
             FROM
-                DW_BI_PROCESSO_RIO.DIM_STATUS_CICLO;
+                DW_BI_PROCESSO_RIO.dbo.DIM_STATUS_CICLO;
         """,  # noqa
     },
 }

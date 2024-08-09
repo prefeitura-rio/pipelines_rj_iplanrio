@@ -147,6 +147,21 @@ _processorio_infra_query = {
                 DW_BI_PROCESSO_RIO.FATO_TRAMITACAO_DOCUMENTO;
         """,  # noqa
     },
+    "dim_status_ciclo": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT
+                IDSTATUS_CICLO,
+                NOME_STATUS_CICLO
+            FROM
+                DW_BI_PROCESSO_RIO.DIM_STATUS_CICLO;
+        """,  # noqa
+    },
 }
 
 processorio_infra_clocks = generate_dump_db_schedules(

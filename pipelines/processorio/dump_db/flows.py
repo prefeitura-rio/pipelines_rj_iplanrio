@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Database dumping flows for processorio.
+Database dumping flows for processorio..
 """
 
 
@@ -33,15 +33,19 @@ rj_iplanrio_processorio_flow.run_config = KubernetesRun(
     labels=[
         constants.RJ_IPLANRIO_AGENT_LABEL.value,  # label do agente
     ],
+    # cpu_limit="500m",
+    # cpu_request="500m",
+    # memory_limit="2Gi",
+    # memory_request="2Gi",
 )
 
 processorio_default_parameters = {
-    "db_database": "SIGADOC.PCRJ",
-    "db_host": "10.70.6.64",
-    "db_port": "1521",
-    "db_type": "oracle",
-    "dataset_id": "administracao_servicos_publicos",
-    "vault_secret_path": "processorio-prod",
+    "db_database": "DW_BI_PROCESSO_RIO",
+    "db_host": "10.70.6.47",
+    "db_port": "1433",
+    "db_type": "sql_server",
+    "dataset_id": "adm_processo_interno_processorio",
+    "infisical_secret_path": "/db-processorio",
 }
 
 rj_iplanrio_processorio_flow = set_default_parameters(

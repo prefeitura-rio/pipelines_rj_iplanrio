@@ -133,6 +133,7 @@ _processorio_infra_query = {
         "execute_query": """
             SELECT
                 IDACAO,
+                IDSTATUS_CICLO,
                 IDDOCUMENTO,
                 IDSETOR,
                 IDTIPO_EVENTO,

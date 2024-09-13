@@ -1,9 +1,10 @@
 import pandas as pd
 
+
 def xml_to_dataframe(xml: object) -> pd.DataFrame:
-    '''
+    """
     This function receives an XML object and returns a DataFrame.
-    '''
+    """
     # Parse the XML string
     root = xml
 
@@ -17,5 +18,5 @@ def xml_to_dataframe(xml: object) -> pd.DataFrame:
 
     # Create the DataFrame
     df = pd.DataFrame(data, columns=columns)
-    
+
     return df

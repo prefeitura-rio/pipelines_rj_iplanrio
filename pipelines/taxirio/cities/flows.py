@@ -2,9 +2,9 @@ from prefect import Flow
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
 
-from pipelines.constants import constants as global_constants
+from pipelines.constants import Constants as global_constants
 from pipelines.taxirio.cities.tasks import convert_to_df, get_data, save_to_csv
-from pipelines.taxirio.constants import constants as local_constants
+from pipelines.taxirio.constants import Constants as local_constants
 from pipelines.taxirio.utils import MongoTaxiRio
 
 with Flow(

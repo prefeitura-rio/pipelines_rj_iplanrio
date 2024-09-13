@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
@@ -7,9 +6,13 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
     handler_initialize_sentry,
     handler_inject_bd_credentials,
 )
-from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table, create_table_and_upload_to_gcs, task_run_dbt_model_task
+from prefeitura_rio.pipelines_utils.tasks import (
+    create_table_and_upload_to_gcs,
+    rename_current_flow_run_dataset_table,
+    task_run_dbt_model_task,
+)
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 from pipelines.sici.dump_api.schedules import sici_dump_api_schedule
 from pipelines.sici.dump_api.tasks import get_data_from_api_soap_sici, get_sici_api_credentials
 
@@ -29,14 +32,14 @@ with Flow(
     materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
 
     rename_flow_run = rename_current_flow_run_dataset_table(
-        prefix="Dump SICI API: ", dataset_id=dataset_id, table_id=table_id
+        prefix="Dump SICI API: ", dataset_id=dataset_id, table_id=table_id,
     )
 
     get_credentials = get_sici_api_credentials()
     get_credentials.set_upstream(rename_flow_run)
 
     path = get_data_from_api_soap_sici(
-        wsdl=constants.SICI_SOAP_API_WSDL.value,
+        wsdl=Constants.SICI_SOAP_API_WSDL.value,
         params=get_credentials,
     )
 
@@ -59,9 +62,9 @@ with Flow(
         run_dbt.set_upstream(create_table)
 
 # Flow configuration
-rj_iplanrio__sici__dump_api__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
+rj_iplanrio__sici__dump_api__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 rj_iplanrio__sici__dump_api__flow.run_config = KubernetesRun(
-    image=constants.DOCKER_IMAGE.value,
-    labels=[constants.RJ_IPLANRIO_AGENT_LABEL.value],
+    image=Constants.DOCKER_IMAGE.value,
+    labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],
 )
 rj_iplanrio__sici__dump_api__flow.schedule = sici_dump_api_schedule

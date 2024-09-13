@@ -1,8 +1,10 @@
-from pipelines.sici.dump_api.utils import xml_to_dataframe
 from prefect import task
-from prefeitura_rio.pipelines_utils.logging import log
 from prefeitura_rio.pipelines_utils.infisical import get_secret
+from prefeitura_rio.pipelines_utils.logging import log
 from zeep import Client
+
+from pipelines.sici.dump_api.utils import xml_to_dataframe
+
 
 @task
 def get_data_from_api_soap_sici(
@@ -70,6 +72,6 @@ def get_sici_api_credentials():
         "Codigo_UA": "",
         "Nivel": "",
         "Tipo_Arvore": "",
-        "consumidor": consumidor['CONSUMIDOR'],
-        "chaveAcesso": chave_acesso['CHAVE_ACESSO'],
+        "consumidor": consumidor["CONSUMIDOR"],
+        "chaveAcesso": chave_acesso["CHAVE_ACESSO"],
    }

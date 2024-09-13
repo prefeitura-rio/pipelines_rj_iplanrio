@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Constants(Enum):
+    """Constants for the pipelines project."""
+
     ######################################
     # Automatically managed,
     # please do not change these values

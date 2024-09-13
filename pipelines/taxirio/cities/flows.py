@@ -3,9 +3,9 @@ from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
 
 from pipelines.constants import constants as global_constants
-from pipelines.taxi_rio.cities.tasks import convert_to_df, get_data, save_to_csv
-from pipelines.taxi_rio.constants import constants as local_constants
-from pipelines.taxi_rio.utils import MongoTaxiRio
+from pipelines.taxirio.cities.tasks import convert_to_df, get_data, save_to_csv
+from pipelines.taxirio.constants import constants as local_constants
+from pipelines.taxirio.utils import MongoTaxiRio
 
 with Flow(
     "IPLANRIO: cities - Dump da tabela do MongoDB do TaxiRio",

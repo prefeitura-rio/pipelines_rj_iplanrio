@@ -4,7 +4,7 @@ import pandas as pd
 from prefect import task
 from pymongo.collection import Collection
 
-from pipelines.taxi_rio.utils import MongoTaxiRio
+from pipelines.taxirio.utils import MongoTaxiRio
 from pipelines.utils import log
 
 mongo = MongoTaxiRio()

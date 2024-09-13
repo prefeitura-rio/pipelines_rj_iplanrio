@@ -18,21 +18,25 @@
           config.allowUnfree = true;
         };
       in {
-        devShells.default = with pkgs;
+        devShells.default = with pkgs; let
+          custom_poetry = poetry.override {
+            python3 = python310;
+          };
+        in
           mkShell {
-            packages = [
-              infisical
-              python310
-              (poetry.override {python3 = python310;})
-            ];
+            packages = [infisical python310 custom_poetry];
 
             shellHook = ''
-              source ./.venv/bin/activate
+              VENV="./.venv/bin/activate"
+
+              if [[ ! -f $VENV ]]; then
+                ${custom_poetry}/bin/poetry install --with dev --with ci
+              fi
+
+              source "$VENV"
             '';
 
-            LD_LIBRARY_PATH = lib.makeLibraryPath [
-              stdenv.cc.cc
-            ];
+            LD_LIBRARY_PATH = lib.makeLibraryPath [stdenv.cc.cc];
           };
       }
     );

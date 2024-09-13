@@ -66,6 +66,8 @@ ignore = [
   "D103",   # missing docstring in public function
   "S603",   # subprocess call - check for execution of untrusted input
   "T201",   # print statement used in code
+  "D203",   # 1 blank line required before class docstring
+  "D212",   # multiline summary in first line
 ]
 
 [tool.ruff.format]

@@ -1,4 +1,4 @@
-SELECT 
+SELECT
   SAFE_CAST(
     REGEXP_REPLACE(cd_ua, r'\.0$', '') AS STRING
   ) as id_unidade_administrativa,

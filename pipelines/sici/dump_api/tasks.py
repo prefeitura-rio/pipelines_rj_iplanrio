@@ -1,8 +1,11 @@
-from pipelines.sici.dump_api.utils import xml_to_dataframe
+# -*- coding: utf-8 -*-
 from prefect import task
-from prefeitura_rio.pipelines_utils.logging import log
 from prefeitura_rio.pipelines_utils.infisical import get_secret
+from prefeitura_rio.pipelines_utils.logging import log
 from zeep import Client
+
+from pipelines.sici.dump_api.utils import xml_to_dataframe
+
 
 @task
 def get_data_from_api_soap_sici(
@@ -41,6 +44,7 @@ def get_data_from_api_soap_sici(
         log.error(f"An unexpected error occurred: {e}")
         raise
 
+
 @task
 def get_sici_api_credentials():
     """
@@ -48,9 +52,9 @@ def get_sici_api_credentials():
     """
     try:
         consumidor = get_secret(
-            secret_name = "CONSUMIDOR",
-            #environment = "Production",
-            path= "/api-sici",
+            secret_name="CONSUMIDOR",
+            # environment = "Production",
+            path="/api-sici",
         )
     except Exception as e:
         log.error(f"An error occurred while fetching the SICI API credentials for consumidor: {e}")
@@ -59,17 +63,19 @@ def get_sici_api_credentials():
     try:
         chave_acesso = get_secret(
             secret_name="CHAVE_ACESSO",
-            #environment="Production",
+            # environment="Production",
             path="/api-sici",
         )
     except Exception as e:
-        log.error(f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}")
+        log.error(
+            f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}"
+        )
         raise
 
     return {
         "Codigo_UA": "",
         "Nivel": "",
         "Tipo_Arvore": "",
-        "consumidor": consumidor['CONSUMIDOR'],
-        "chaveAcesso": chave_acesso['CHAVE_ACESSO'],
-   }
+        "consumidor": consumidor["CONSUMIDOR"],
+        "chaveAcesso": chave_acesso["CHAVE_ACESSO"],
+    }

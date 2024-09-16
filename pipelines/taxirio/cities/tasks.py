@@ -2,19 +2,40 @@ from typing import Any
 
 import pandas as pd
 from prefect import task
+from prefeitura_rio.pipelines_utils.infisical import get_secret
+from pymongo import MongoClient
+from pymongo.collection import Collection
 
-from pipelines.taxirio.utils import MongoTaxiRio
+from pipelines.taxirio.constants import constants
 from pipelines.utils import log
 
 
 @task
-def get_cities_data() -> list[dict[str, Any]]:
+def get_mongo_client(connection_string: str) -> MongoClient:
+    return MongoClient(connection_string)
+
+
+@task
+def get_mongo_connection_string() -> str:
+    connection_string = get_secret(
+        secret_name=constants.MONGO_CONNECTION.value,
+        path="/taxirio",
+    )
+
+    return connection_string[constants.MONGO_CONNECTION.value]
+
+
+@task
+def get_cities_collection(client: MongoClient) -> Collection:
+    return client[constants.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value][constants.TABLE_ID.value]
+
+
+@task
+def get_cities_data(cities: Collection) -> list[dict[str, Any]]:
     """Get data from MongoDB."""
     log("Getting data from MongoDB")
 
-    mongo = MongoTaxiRio()
-    collection = mongo.get_collection("cities")
-    return list(collection.find())
+    return list(cities.find())
 
 
 @task

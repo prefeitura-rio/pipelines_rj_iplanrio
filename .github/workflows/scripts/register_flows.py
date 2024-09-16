@@ -451,7 +451,7 @@ def get_declared(python_file: str | Path) -> list[str]:
 def get_affected_flows(fpath: str = None):
     if not fpath:
         fpath = "dependent_files.txt"
-    with open(fpath, "r+") as f:
+    with open(fpath) as f:
         fnames = f.read().splitlines()
     fnames = [fname for fname in fnames if fname.endswith(".py")]
     flow_files = set()

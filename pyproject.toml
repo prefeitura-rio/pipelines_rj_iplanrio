@@ -53,7 +53,7 @@ target-version = "py310"
 line-length = 100
 indent-width = 4
 include = ["\\.pyi?$"]
-exclude = [".git", ".ruff_cache", "__pycache__"]
+exclude = [".git", ".ruff_cache", "__pycache__", ".github"]
 
 [tool.ruff.lint]
 select = ["ALL"]

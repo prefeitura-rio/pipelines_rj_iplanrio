@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Custom script for registering flows.
 """
@@ -13,7 +14,7 @@ import traceback
 from collections import Counter, defaultdict
 from pathlib import Path
 from time import sleep
-from typing import Union
+from typing import Dict, List, Tuple, Union
 
 import box
 import prefect
@@ -32,7 +33,7 @@ FlowLike = Union[box.Box, "prefect.Flow"]
 
 def build_and_register(  # pylint: disable=too-many-branches
     client: "prefect.Client",
-    flows: "list[FlowLike]",
+    flows: "List[FlowLike]",
     project_id: str,
     max_retries: int = 5,
     retry_interval: int = 5,
@@ -50,7 +51,6 @@ def build_and_register(  # pylint: disable=too-many-branches
 
     Returns:
         - Counter: stats about the number of successful, failed, and skipped flows.
-
     """
     # Finish preparing flows to ensure a stable hash later
     prepare_flows(flows)
@@ -91,7 +91,7 @@ def build_and_register(  # pylint: disable=too-many-branches
                 while attempts < max_retries:
                     attempts += 1
                     try:
-                        (flow_id, flow_version, is_new) = register_serialized_flow(
+                        (flow_id, flow_version, is_new,) = register_serialized_flow(
                             client=client,
                             serialized_flow=serialized_flow,
                             project_id=project_id,
@@ -125,8 +125,8 @@ def build_and_register(  # pylint: disable=too-many-branches
 
 
 def collect_flows(
-    paths: list[str],
-) -> dict[str, list[FlowLike]]:
+    paths: List[str],
+) -> Dict[str, List[FlowLike]]:
     """
     (Adapted from Prefect original code.)
 
@@ -134,8 +134,8 @@ def collect_flows(
 
     Args:
         - paths (List[str]): file paths to load flows from.
-
     """
+
     out = {}
     for p in paths:  # pylint: disable=invalid-name
         flows = load_flows_from_script(p)
@@ -147,7 +147,7 @@ def collect_flows(
     return out
 
 
-def expand_paths(paths: list[str]) -> list[str]:
+def expand_paths(paths: List[str]) -> List[str]:
     """
     (Adapted from Prefect original code.)
 
@@ -181,17 +181,16 @@ def get_project_id(client: "prefect.Client", project: str) -> str:
 
     Returns:
         - str: the project id
-
     """
     resp = client.graphql(
-        {"query": {with_args("project", {"where": {"name": {"_eq": project}}}): {"id"}}},
+        {"query": {with_args("project", {"where": {"name": {"_eq": project}}}): {"id"}}}
     )
     if resp.data.project:
         return resp.data.project[0].id
     raise Exception(f"Project {project!r} does not exist")
 
 
-def load_flows_from_script(path: str) -> "list[prefect.Flow]":
+def load_flows_from_script(path: str) -> "List[prefect.Flow]":
     """
     (Adapted from Prefect original code.)
 
@@ -223,7 +222,7 @@ def load_flows_from_script(path: str) -> "list[prefect.Flow]":
     return flows
 
 
-def prepare_flows(flows: "list[FlowLike]") -> None:
+def prepare_flows(flows: "List[FlowLike]") -> None:
     """
     (Adapted from Prefect original code.)
 
@@ -269,7 +268,7 @@ def register_serialized_flow(
     project_id: str,
     force: bool = False,
     schedule: bool = True,
-) -> tuple[str, int, bool]:
+) -> Tuple[str, int, bool]:
     """
     (Adapted from Prefect original code.)
 
@@ -290,7 +289,6 @@ def register_serialized_flow(
         - flow_version (int): the flow version
         - is_new (bool): True if this is a new flow version, false if
             re-registration was skipped.
-
     """
     # Get most recent flow id for this flow. This can be removed once
     # the registration graphql routes return more information
@@ -305,14 +303,14 @@ def register_serialized_flow(
                             "_and": {
                                 "name": {"_eq": flow_name},
                                 "project": {"id": {"_eq": project_id}},
-                            },
+                            }
                         },
                         "order_by": {"version": EnumValue("desc")},
                         "limit": 1,
                     },
-                ): {"id", "version"},
-            },
-        },
+                ): {"id", "version"}
+            }
+        }
     )
     if resp.data.flow:
         prev_id = resp.data.flow[0].id
@@ -328,14 +326,14 @@ def register_serialized_flow(
     )
     if not force:
         inputs["idempotency_key"] = hashlib.sha256(
-            json.dumps(serialized_flow, sort_keys=True).encode(),
+            json.dumps(serialized_flow, sort_keys=True).encode()
         ).hexdigest()
 
     res = client.graphql(
         {
             "mutation($input: create_flow_from_compressed_string_input!)": {
-                "create_flow_from_compressed_string(input: $input)": {"id"},
-            },
+                "create_flow_from_compressed_string(input: $input)": {"id"}
+            }
         },
         variables=dict(input=inputs),
         retry_on_api_error=False,
@@ -353,16 +351,17 @@ def filename_to_python_module(filename: str) -> str:
     Returns the Python module name from a filename.
 
     Example:
+
     - Filename:
 
     ```py
-    path / to / file.py
+    path/to/file.py
     ```
 
     - Output:
 
     ```py
-    "path.to.file"
+    'path.to.file'
     ```
 
     Args:
@@ -370,7 +369,6 @@ def filename_to_python_module(filename: str) -> str:
 
     Returns:
         str: The Python module name.
-
     """
     # Get the file path in Python module format.
     file_path = Path(filename).with_suffix("").as_posix().replace("/", ".")
@@ -378,22 +376,21 @@ def filename_to_python_module(filename: str) -> str:
     return file_path
 
 
-def get_declared(python_file: str | Path) -> list[str]:
+def get_declared(python_file: Union[str, Path]) -> List[str]:
     """
     Returns a list of declared variables, functions and classes
     in a Python file. The output must be fully qualified.
 
     Example:
+
     - Python file (path/to/file.py):
 
     ```py
     x = 1
     y = 2
 
-
     def func1():
         pass
-
 
     class Class1:
         pass
@@ -402,7 +399,7 @@ def get_declared(python_file: str | Path) -> list[str]:
     - Output:
 
     ```py
-    ["path.to.file.x", "path.to.file.y", "path.to.file.func1", "path.to.file.Class1"]
+    ['path.to.file.x', 'path.to.file.y', 'path.to.file.func1', 'path.to.file.Class1']
     ```
 
     Args:
@@ -410,10 +407,9 @@ def get_declared(python_file: str | Path) -> list[str]:
 
     Returns:
         list: A list of declared variables from the Python file.
-
     """
     # We need to get the contents of the Python file.
-    with open(python_file) as f:
+    with open(python_file, "r") as f:
         content = f.read()
 
     # Get file path in Python module format.
@@ -430,7 +426,10 @@ def get_declared(python_file: str | Path) -> list[str]:
             for target in node.targets:
                 if isinstance(target, ast.Name):
                     declared.append(f"{file_path}.{target.id}")
-        elif isinstance(node, ast.AugAssign) or isinstance(node, ast.AnnAssign):
+        elif isinstance(node, ast.AugAssign):
+            if isinstance(node.target, ast.Name):
+                declared.append(f"{file_path}.{node.target.id}")
+        elif isinstance(node, ast.AnnAssign):
             if isinstance(node.target, ast.Name):
                 declared.append(f"{file_path}.{node.target.id}")
         elif isinstance(node, ast.With):
@@ -438,11 +437,11 @@ def get_declared(python_file: str | Path) -> list[str]:
                 if isinstance(item, ast.withitem):
                     if isinstance(item.optional_vars, ast.Name):
                         declared.append(f"{file_path}.{item.optional_vars.id}")
-        elif (
-            isinstance(node, ast.FunctionDef)
-            or isinstance(node, ast.AsyncFunctionDef)
-            or isinstance(node, ast.ClassDef)
-        ):
+        elif isinstance(node, ast.FunctionDef):
+            declared.append(f"{file_path}.{node.name}")
+        elif isinstance(node, ast.AsyncFunctionDef):
+            declared.append(f"{file_path}.{node.name}")
+        elif isinstance(node, ast.ClassDef):
             declared.append(f"{file_path}.{node.name}")
 
     return declared
@@ -451,7 +450,7 @@ def get_declared(python_file: str | Path) -> list[str]:
 def get_affected_flows(fpath: str = None):
     if not fpath:
         fpath = "dependent_files.txt"
-    with open(fpath) as f:
+    with open(fpath, "r") as f:
         fnames = f.read().splitlines()
     fnames = [fname for fname in fnames if fname.endswith(".py")]
     flow_files = set()
@@ -489,8 +488,8 @@ def main(
         - path (str): The paths to the flows to register.
         - max_retries (int, optional): The maximum number of retries to attempt.
         - retry_interval (int, optional): The number of seconds to wait between
-
     """
+
     if not (project and path):
         raise ValueError("Must specify a project and path")
 
@@ -534,7 +533,7 @@ def main(
     skipped = stats["skipped"]
     errored = stats["errored"]
     logger.info(
-        f"Registered {registered} flows, skipped {skipped} flows, and errored {errored} flows.",
+        f"Registered {registered} flows, skipped {skipped} flows, " f"and errored {errored} flows."
     )
 
     # If not in a watch call, exit with appropriate exit code

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """
 Database dumping flows for processorio.
 """
-
 
 from copy import deepcopy
 

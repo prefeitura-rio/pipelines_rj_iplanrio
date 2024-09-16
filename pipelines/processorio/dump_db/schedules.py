@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Schedules for the database dump pipeline.
 """
@@ -33,7 +32,7 @@ _processorio_infra_query = {
                 HIS_ATIVO,
                 CODIFICACAO
             FROM SIGA.VW_CLASSIFICACAO
-        """,  # noqa
+        """,
     },
     "documento_tempo": {
         "biglake_table": True,
@@ -55,7 +54,7 @@ _processorio_infra_query = {
                 LOTACAO_RESP,
                 DATA_COM_RESP_ATUAL
             FROM SIGA.DOCUMENTOS_TEMPO
-        """,  # noqa
+        """,
     },
     "forma_documento": {
         "biglake_table": True,
@@ -71,7 +70,7 @@ _processorio_infra_query = {
                 SIGLA_FORMA_DOC,
                 ID_TIPO_FORMA_DOC
             FROM SIGA.VW_FORMA_DOCUMENTO
-        """,  # noqa
+        """,
     },
     "lotacao": {
         "biglake_table": True,
@@ -91,7 +90,7 @@ _processorio_infra_query = {
                 ID_ORGAO_USU,
                 IS_EXTERNA_LOTACAO
             FROM CORPORATIVO.VW_LOTACAO
-        """,  # noqa
+        """,
     },
     "mobil": {
         "biglake_table": True,
@@ -105,7 +104,7 @@ _processorio_infra_query = {
                 ID_MOBIL,
                 ID_DOC
             FROM SIGA.VW_MOBIL
-        """,  # noqa
+        """,
     },
     "mobil_tipo": {
         "biglake_table": True,
@@ -118,7 +117,7 @@ _processorio_infra_query = {
             SELECT
                 *
             FROM SIGA.VW_TIPO_MOBIL
-        """,  # noqa
+        """,
     },
     "modelo": {
         "biglake_table": True,
@@ -138,7 +137,7 @@ _processorio_infra_query = {
                 HIS_ATIVO,
                 IS_PETICIONAMENTO
             FROM SIGA.VW_MODELO
-        """,  # noqa
+        """,
     },
     "movimentacao": {
         "biglake_table": True,
@@ -161,7 +160,7 @@ _processorio_infra_query = {
                 ID_MOV_REF,
                 ID_MOBIL
             FROM SIGA.VW_MOVIMENTACAO
-        """,  # noqa
+        """,
     },
     "movimentacao_tipo": {
         "biglake_table": True,
@@ -174,7 +173,7 @@ _processorio_infra_query = {
             SELECT
                 *
             FROM SIGA.VW_TIPO_MOVIMENTACAO
-        """,  # noqa
+        """,
     },
     "nivel_acesso": {
         "biglake_table": True,
@@ -188,7 +187,7 @@ _processorio_infra_query = {
                 ID_NIVEL_ACESSO,
                 NM_NIVEL_ACESSO
             FROM SIGA.VW_NIVEL_ACESSO
-        """,  # noqa
+        """,
     },
     "orgao_usuario": {
         "biglake_table": True,
@@ -207,7 +206,7 @@ _processorio_infra_query = {
                 HIS_ATIVO,
                 IS_PETICIONAMENTO
             FROM CORPORATIVO.VW_ORGAO_USUARIO
-        """,  # noqa
+        """,
     },
     "documento": {
         "biglake_table": True,
@@ -223,7 +222,7 @@ _processorio_infra_query = {
             SELECT
                 *
             FROM SIGA.VW_DOCUMENTO
-        """,  # noqa
+        """,
         "dbt_alias": True,
     },
 }

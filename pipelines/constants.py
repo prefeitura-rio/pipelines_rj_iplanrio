@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Constants(Enum):
+class constants(Enum):
     """Constants for the pipelines project."""
 
     ######################################

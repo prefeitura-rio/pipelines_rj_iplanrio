@@ -2,15 +2,23 @@ from typing import Any
 
 import pandas as pd
 from prefect import task
-from pymongo.collection import Collection
 
+from pipelines.taxirio.utils import MongoTaxiRio
 from pipelines.utils import log
 
 
 @task
-def get_data(collection: Collection) -> list[dict[str, Any]]:
+def get_mongo_instance() -> MongoTaxiRio:
+    """Get MongoDB instance."""
+    return MongoTaxiRio()
+
+
+@task
+def get_cities_data(mongo: MongoTaxiRio) -> list[dict[str, Any]]:
     """Get data from MongoDB."""
     log("Getting data from MongoDB")
+
+    collection = mongo.get_collection("cities")
     return list(collection.find())
 
 
@@ -22,7 +30,7 @@ def convert_to_df(data: list) -> pd.DataFrame:
 
 
 @task
-def save_to_csv(data: pd.DataFrame) -> None:
-    """Save data to Parquet."""
-    log("Saving data to Parquet")
-    data.to_csv("cities.csv", index=False)
+def save_to_csv(dataframe: pd.DataFrame) -> None:
+    """Save data to .csv file."""
+    log("Saving data to .csv")
+    dataframe.to_csv("cities.csv", index=False)

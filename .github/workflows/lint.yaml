@@ -30,6 +30,7 @@ jobs:
         run: |
           poetry config virtualenvs.create false && poetry install --with dev --with ci
 
-      - name: Lint with black, isort and flake8
+      - name: Lint
         run: |
           task lint
+

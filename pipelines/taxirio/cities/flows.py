@@ -9,8 +9,7 @@ from pipelines.taxirio.constants import constants as local_constants
 with Flow(
     "IPLANRIO: cities - Dump da tabela do MongoDB do TaxiRio",
 ) as rj_iplanrio_taxirio_cities_flow:
-    mongo = tasks.get_mongo_instance()
-    data = tasks.get_cities_data(mongo)
+    data = tasks.get_cities_data()
     dataframe = tasks.convert_to_df(data)
     tasks.save_to_csv(dataframe)
 

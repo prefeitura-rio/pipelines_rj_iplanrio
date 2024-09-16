@@ -24,6 +24,6 @@ class MongoTaxiRio:
 
     def get_collection(self, collection: str) -> Collection:
         """Get a MongoDB collection by name."""
-        database = self.client[constants.TAXIRIO_MONGODB_NAME.value]
+        database = self.client[constants.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value]
 
         return database[collection]

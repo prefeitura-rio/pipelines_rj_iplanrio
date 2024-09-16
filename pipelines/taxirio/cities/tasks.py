@@ -8,16 +8,11 @@ from pipelines.utils import log
 
 
 @task
-def get_mongo_instance() -> MongoTaxiRio:
-    """Get MongoDB instance."""
-    return MongoTaxiRio()
-
-
-@task
-def get_cities_data(mongo: MongoTaxiRio) -> list[dict[str, Any]]:
+def get_cities_data() -> list[dict[str, Any]]:
     """Get data from MongoDB."""
     log("Getting data from MongoDB")
 
+    mongo = MongoTaxiRio()
     collection = mongo.get_collection("cities")
     return list(collection.find())
 

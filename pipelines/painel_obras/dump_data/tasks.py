@@ -77,7 +77,9 @@ def download_data_to_gcs(  # pylint: disable=R0912,R0913,R0914,R0915
 
     # Get the BLOB URL we've just created
     blobs = list_blobs_with_prefix(
-        "datario-public", f"share/{dataset_id}/{table_id}/", mode=bd_project_mode,
+        "datario-public",
+        f"share/{dataset_id}/{table_id}/",
+        mode=bd_project_mode,
     )
     if not blobs:
         raise ValueError(f"No blob found at {blob_path}")

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 import ast
 import sys
 from pathlib import Path
-from typing import List, Tuple, Union
 
 import networkx as nx
 from prefect import Flow
@@ -15,17 +13,16 @@ def filename_to_python_module(filename: str) -> str:
     Returns the Python module name from a filename.
 
     Example:
-
     - Filename:
 
     ```py
-    path/to/file.py
+    path / to / file.py
     ```
 
     - Output:
 
     ```py
-    'path.to.file'
+    "path.to.file"
     ```
 
     Args:
@@ -33,6 +30,7 @@ def filename_to_python_module(filename: str) -> str:
 
     Returns:
         str: The Python module name.
+
     """
     # Get the file path in Python module format.
     file_path = Path(filename).with_suffix("").as_posix().replace("/", ".")
@@ -45,17 +43,16 @@ def python_module_to_filename(python_module: str) -> str:
     Returns the filename from a Python module.
 
     Example:
-
     - Python module:
 
     ```py
-    'path.to.file'
+    "path.to.file"
     ```
 
     - Output:
 
     ```py
-    'path/to/file.py'
+    "path/to/file.py"
     ```
 
     Args:
@@ -63,6 +60,7 @@ def python_module_to_filename(python_module: str) -> str:
 
     Returns:
         str: The filename from the Python module.
+
     """
     # Get the file path in Python module format.
     file_path = Path(python_module).with_suffix("").as_posix().replace(".", "/")
@@ -70,28 +68,28 @@ def python_module_to_filename(python_module: str) -> str:
     return f"{file_path}.py"
 
 
-def get_dependencies(python_file: Union[str, Path]) -> List[str]:
+def get_dependencies(python_file: str | Path) -> list[str]:
     """
     Returns a list of dependencies from a Python file. The dependencies are
     defined as the import statements in the file. Their names on the output
     must be fully qualified.
 
     Example:
-
     - Python file:
 
     ```py
     from prefect import task
     from prefect.tasks.secrets import Secret
     from some_package import (
-        func1, func2,
+        func1,
+        func2,
     )
     ```
 
     - Output:
 
     ```py
-    ['prefect.task', 'prefect.tasks.secrets.Secret', 'some_package.func1', 'some_package.func2']
+    ["prefect.task", "prefect.tasks.secrets.Secret", "some_package.func1", "some_package.func2"]
     ```
 
     Args:
@@ -99,9 +97,10 @@ def get_dependencies(python_file: Union[str, Path]) -> List[str]:
 
     Returns:
         list: A list of dependencies from the Python file.
+
     """
     # We need to get the contents of the Python file.
-    with open(python_file, "r") as f:
+    with open(python_file) as f:
         content = f.read()
 
     # Parse it into an AST.
@@ -122,21 +121,22 @@ def get_dependencies(python_file: Union[str, Path]) -> List[str]:
     return dependencies
 
 
-def get_declared(python_file: Union[str, Path]) -> List[str]:
+def get_declared(python_file: str | Path) -> list[str]:
     """
     Returns a list of declared variables, functions and classes
     in a Python file. The output must be fully qualified.
 
     Example:
-
     - Python file (path/to/file.py):
 
     ```py
     x = 1
     y = 2
 
+
     def func1():
         pass
+
 
     class Class1:
         pass
@@ -145,7 +145,7 @@ def get_declared(python_file: Union[str, Path]) -> List[str]:
     - Output:
 
     ```py
-    ['path.to.file.x', 'path.to.file.y', 'path.to.file.func1', 'path.to.file.Class1']
+    ["path.to.file.x", "path.to.file.y", "path.to.file.func1", "path.to.file.Class1"]
     ```
 
     Args:
@@ -153,9 +153,10 @@ def get_declared(python_file: Union[str, Path]) -> List[str]:
 
     Returns:
         list: A list of declared variables from the Python file.
+
     """
     # We need to get the contents of the Python file.
-    with open(python_file, "r") as f:
+    with open(python_file) as f:
         content = f.read()
 
     # Get file path in Python module format.
@@ -172,10 +173,7 @@ def get_declared(python_file: Union[str, Path]) -> List[str]:
             for target in node.targets:
                 if isinstance(target, ast.Name):
                     declared.append(f"{file_path}.{target.id}")
-        elif isinstance(node, ast.AugAssign):
-            if isinstance(node.target, ast.Name):
-                declared.append(f"{file_path}.{node.target.id}")
-        elif isinstance(node, ast.AnnAssign):
+        elif isinstance(node, ast.AugAssign) or isinstance(node, ast.AnnAssign):
             if isinstance(node.target, ast.Name):
                 declared.append(f"{file_path}.{node.target.id}")
         elif isinstance(node, ast.With):
@@ -183,34 +181,33 @@ def get_declared(python_file: Union[str, Path]) -> List[str]:
                 if isinstance(item, ast.withitem):
                     if isinstance(item.optional_vars, ast.Name):
                         declared.append(f"{file_path}.{item.optional_vars.id}")
-        elif isinstance(node, ast.FunctionDef):
-            declared.append(f"{file_path}.{node.name}")
-        elif isinstance(node, ast.AsyncFunctionDef):
-            declared.append(f"{file_path}.{node.name}")
-        elif isinstance(node, ast.ClassDef):
+        elif (
+            isinstance(node, ast.FunctionDef)
+            or isinstance(node, ast.AsyncFunctionDef)
+            or isinstance(node, ast.ClassDef)
+        ):
             declared.append(f"{file_path}.{node.name}")
 
     return declared
 
 
-def list_all_python_files(directory: Union[str, Path]) -> List[Path]:
+def list_all_python_files(directory: str | Path) -> list[Path]:
     """
     Returns a list of all Python files in a directory.
 
     Example:
-
     - Directory:
 
     ```py
-    path/to/file1.py
-    path/to/file2.py
-    path/to/file3.py
+    path / to / file1.py
+    path / to / file2.py
+    path / to / file3.py
     ```
 
     - Output:
 
     ```py
-    ['path/to/file1.py', 'path/to/file2.py', 'path/to/file3.py']
+    ["path/to/file1.py", "path/to/file2.py", "path/to/file3.py"]
     ```
 
     Args:
@@ -218,6 +215,7 @@ def list_all_python_files(directory: Union[str, Path]) -> List[Path]:
 
     Returns:
         list: A list of all Python files in the directory.
+
     """
     # Get the directory path.
     directory = Path(directory)
@@ -241,6 +239,7 @@ def object_is_instance(fully_qualified_import: str, compare_to: type) -> bool:
 
     Returns:
         bool: Whether the object is an instance of the class.
+
     """
     # Get the module and class name.
     module, class_name = fully_qualified_import.rsplit(".", 1)
@@ -298,6 +297,7 @@ def build_dependency_graph(root_directory: str) -> nx.DiGraph:
 
     Returns:
         nx.DiGraph: The dependency graph.
+
     """
     # Get all Python files.
     files = [
@@ -308,7 +308,7 @@ def build_dependency_graph(root_directory: str) -> nx.DiGraph:
     dependencies_by_file = {}
     for file_ in files:
         file_dependencies = set(
-            [item for item in get_dependencies(file_) if item.startswith("pipelines")]
+            [item for item in get_dependencies(file_) if item.startswith("pipelines")],
         )
         dependencies_by_file[file_] = file_dependencies
 
@@ -357,8 +357,9 @@ def build_dependency_graph(root_directory: str) -> nx.DiGraph:
 
 
 def check_for_variable_name_conflicts(
-    changed_files: List[str], root_directory: str
-) -> List[Tuple[str, str]]:
+    changed_files: list[str],
+    root_directory: str,
+) -> list[tuple[str, str]]:
     """
     Checks if there will be any conflicts with variable names.
     """
@@ -415,7 +416,7 @@ if __name__ == "__main__":
     write_to_file = "--write-to-file" in sys.argv
 
     # Get modified files
-    changed_files: List[str] = sys.argv[1].split(" ")
+    changed_files: list[str] = sys.argv[1].split(" ")
     print("These are all the changed files:")
     for file_ in changed_files:
         print(f"\t- {file_}")

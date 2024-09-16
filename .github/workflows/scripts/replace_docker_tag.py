@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Opens the `constants.py` file and updates the
 `DOCKER_TAG` variable with the provided argument.
@@ -6,14 +5,13 @@ Opens the `constants.py` file and updates the
 
 from pathlib import Path
 from sys import argv, exit
-from typing import List
 
 FILE_PATH = Path("./pipelines/constants.py")
 REPLACE_TAG = "AUTO_REPLACE_DOCKER_TAG"
 REPLACE_IMAGE = "AUTO_REPLACE_DOCKER_IMAGE"
 
 
-def get_name_version_from_args() -> List[str]:
+def get_name_version_from_args() -> list[str]:
     """
     Returns the version from the command line arguments.
     """

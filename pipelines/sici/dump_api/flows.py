@@ -32,7 +32,9 @@ with Flow(
     materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
 
     rename_flow_run = rename_current_flow_run_dataset_table(
-        prefix="Dump SICI API: ", dataset_id=dataset_id, table_id=table_id,
+        prefix="Dump SICI API: ",
+        dataset_id=dataset_id,
+        table_id=table_id,
     )
 
     get_credentials = get_sici_api_credentials()

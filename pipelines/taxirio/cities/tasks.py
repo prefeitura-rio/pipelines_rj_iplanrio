@@ -54,7 +54,7 @@ def convert_to_df(data: CollectionResult) -> pd.DataFrame:
     """Convert data to DataFrame."""
     log("Converting data to DataFrame")
 
-    return pd.DataFrame(data).drop("_id", axis=1)
+    return pd.DataFrame(data)
 
 
 @task

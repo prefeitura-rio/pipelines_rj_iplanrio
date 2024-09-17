@@ -67,7 +67,7 @@ def get_sici_api_credentials():
         )
     except Exception as e:
         log.error(
-            f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}"
+            f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}",
         )
         raise
 

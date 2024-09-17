@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -58,8 +59,14 @@ def convert_to_df(data: CollectionResult) -> pd.DataFrame:
 
 
 @task
-def save_to_csv(dataframe: pd.DataFrame) -> None:
+def save_to_csv(dataframe: pd.DataFrame, name: str) -> Path:
     """Save data to .csv file."""
     log("Saving data to .csv")
 
-    dataframe.to_csv("cities.csv", index=False)
+    path = Path(f"output/{name}.csv")
+
+    path.parent.mkdir(exist_ok=True)
+
+    dataframe.to_csv(path, index=False)
+
+    return path

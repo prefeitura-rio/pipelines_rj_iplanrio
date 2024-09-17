@@ -13,13 +13,13 @@ with Flow(
 
     client = tasks.get_mongo_client(connection)
 
-    cities = tasks.get_mongo_collection(
+    data = tasks.get_mongo_collection(
         client,
         local_constants.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value,
         local_constants.TABLE_ID.value,
     )
 
-    data = tasks.get_collection_data(cities)
+    data = tasks.get_collection_data(data)
 
     dataframe = tasks.convert_to_df(data)
 

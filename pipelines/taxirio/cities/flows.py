@@ -1,6 +1,7 @@
-from prefect import Flow
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
+from prefeitura_rio.pipelines_utils.custom import Flow
+from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
 from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 
 from pipelines.constants import constants as global_constants
@@ -9,7 +10,10 @@ from pipelines.taxirio.cities.schedules import every_month
 from pipelines.taxirio.constants import constants as local_constants
 
 with Flow(
-    "IPLANRIO: cities - Dump da tabela do MongoDB do TaxiRio",
+    name="IPLANRIO: cities - Dump da tabela do MongoDB do TaxiRio",
+    state_handlers=[handler_inject_bd_credentials],
+    skip_if_running=True,
+    parallelism=10,
 ) as rj_iplanrio_taxirio_cities_flow:
     connection = tasks.get_mongo_connection_string()
 

@@ -1,1 +1,1 @@
-from pipelines.taxirio.cities.flows import *
+from pipelines.taxirio.cities import *

@@ -2,51 +2,83 @@
 name = "pipelines"
 version = "0.1.0"
 description = ""
-authors = ["Gabriel Gazola Milan <gabriel.gazola@poli.ufrj.br>"]
+authors = [
+  "Gabriel Gazola Milan <gabriel.gazola@poli.ufrj.br>",
+  "Pedro Mendes <pedro.hrmendes@prefeitura.rio>",
+]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
 dbt-bigquery = "^1.6.1"
 google-cloud-storage = "^2.10.0"
-prefect = "1.4.1"
-prefeitura-rio = { git = "https://github.com/prefeitura-rio/prefeitura-rio", rev = "e1fb218837d3231e07be90d71a07ec1c9d9593f5", extras = [
-    "pipelines",
-    "pipelines-templates",
-    "actions"
-] }
-pendulum = "^3.0.0"
-zeep = "^4.2.1"
 lxml = "^5.2.2"
+pandas = "^2.2.2"
+pendulum = "^3.0.0"
+prefect = "1.4.1"
+pymongo = "^4.8.0"
+python = ">=3.10,<3.11"
+zeep = "^4.2.1"
+prefeitura-rio = { git = "https://github.com/prefeitura-rio/prefeitura-rio", rev = "e1fb218837d3231e07be90d71a07ec1c9d9593f5", extras = [
+  "pipelines",
+  "pipelines-templates",
+  "actions",
+] }
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.7.0"
-flake8 = "^6.1.0"
-pre-commit = "^3.3.3"
-taskipy = "^1.12.0"
-isort = "^5.12.0"
-
+basedpyright = "^1.17.2"
+debugpy = "^1.8.5"
+ipython = "^8.27.0"
 
 [tool.poetry.group.ci]
 optional = true
 
 [tool.poetry.group.ci.dependencies]
-networkx = "^3.1"
 loguru = "^0.7.0"
+networkx = "^3.1"
+pre-commit = "^3.3.3"
+ruff = "^0.6.2"
+taskipy = "^1.12.0"
 typer = "^0.9.0"
 
-[tool.black]
-line-length = 100
-target-version = ["py310"]
-include = "\\.pyi?$"
+[tool.basedpyright]
+typeCheckingMode = "standard"
+useLibraryCodeForTypes = true
+venvPath = "."
+venv = ".venv"
 
-[tool.isort]
-profile = "black"
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+indent-width = 4
+include = ["\\.pyi?$"]
+exclude = [".git", ".ruff_cache", "__pycache__", ".github"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+fixable = ["ALL"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+ignore = [
+  "ANN101", # missing type annotation for self in method
+  "ARG001", # unused function argument
+  "D100",   # missing docstring in public module
+  "D103",   # missing docstring in public function
+  "D203",   # 1 blank line required before class docstring
+  "D212",   # multiline summary in first line
+  "S603",   # subprocess call - check for execution of untrusted input
+  "T201",   # print statement used in code
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
 
 [tool.taskipy.tasks]
-lint = "black . && isort . && flake8 ."
+lint = "ruff check ."
 
 [build-system]
 requires = ["poetry-core"]

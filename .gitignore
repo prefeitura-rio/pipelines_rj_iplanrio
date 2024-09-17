@@ -147,3 +147,5 @@ dmypy.json
 
 # VSCode project settings
 .vscode/
+.direnv/bin
+.direnv

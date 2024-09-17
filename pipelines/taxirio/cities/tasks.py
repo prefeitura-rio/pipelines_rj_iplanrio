@@ -26,7 +26,7 @@ def get_mongo_connection_string() -> str:
     return connection[constants.MONGO_CONNECTION.value]
 
 
-@task
+@task(checkpoint=False)
 def get_mongo_client(connection: str) -> MongoClient:
     """Get MongoDB client."""
     log("Getting MongoDB client")
@@ -34,7 +34,7 @@ def get_mongo_client(connection: str) -> MongoClient:
     return MongoClient(connection)
 
 
-@task
+@task(checkpoint=False)
 def get_mongo_collection(client: MongoClient, database: str, collection: str) -> Collection:
     """Get MongoDB collection."""
     log("Getting MongoDB collection")

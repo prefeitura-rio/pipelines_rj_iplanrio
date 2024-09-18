@@ -14,7 +14,10 @@ from prefeitura_rio.pipelines_utils.tasks import (
 
 from pipelines.constants import constants
 from pipelines.sici.dump_api.schedules import sici_dump_api_schedule
-from pipelines.sici.dump_api.tasks import get_data_from_api_soap_sici, get_sici_api_credentials
+from pipelines.sici.dump_api.tasks import (
+    get_data_from_api_soap_sici,
+    get_sici_api_credentials,
+)
 
 with Flow(
     name="IPLANRIO: SICI API - Dump to GCS",

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
@@ -7,7 +6,11 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
     handler_initialize_sentry,
     handler_inject_bd_credentials,
 )
-from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table, create_table_and_upload_to_gcs, task_run_dbt_model_task
+from prefeitura_rio.pipelines_utils.tasks import (
+    create_table_and_upload_to_gcs,
+    rename_current_flow_run_dataset_table,
+    task_run_dbt_model_task,
+)
 
 from pipelines.constants import constants
 from pipelines.sici.dump_api.schedules import sici_dump_api_schedule
@@ -29,7 +32,9 @@ with Flow(
     materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
 
     rename_flow_run = rename_current_flow_run_dataset_table(
-        prefix="Dump SICI API: ", dataset_id=dataset_id, table_id=table_id
+        prefix="Dump SICI API: ",
+        dataset_id=dataset_id,
+        table_id=table_id,
     )
 
     get_credentials = get_sici_api_credentials()

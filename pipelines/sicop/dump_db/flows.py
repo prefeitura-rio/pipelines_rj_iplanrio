@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 """
 Database dumping flows for processo.rio sicop.
 """
+
 from copy import deepcopy
 
 from prefect.run_configs import KubernetesRun

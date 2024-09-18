@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Schedules for the database dump pipeline.
 """

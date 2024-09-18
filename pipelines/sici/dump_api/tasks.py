@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from prefect import task
 from prefeitura_rio.pipelines_utils.infisical import get_secret
 from prefeitura_rio.pipelines_utils.logging import log
@@ -68,7 +67,7 @@ def get_sici_api_credentials():
         )
     except Exception as e:
         log.error(
-            f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}"
+            f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}",
         )
         raise
 

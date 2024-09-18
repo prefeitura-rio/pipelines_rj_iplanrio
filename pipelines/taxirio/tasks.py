@@ -7,10 +7,10 @@ from prefeitura_rio.pipelines_utils.infisical import get_secret
 from pymongo import MongoClient
 from pymongo.collection import Collection
 
-from pipelines.taxirio.constants import constants
+from pipelines.taxirio.constants import Constants
 from pipelines.utils import log
 
-CollectionResult = list[dict[str, Any]]
+QueryResult = list[dict[str, Any]]
 
 
 @task
@@ -19,11 +19,11 @@ def get_mongo_connection_string() -> str:
     log("Getting MongoDB connection string")
 
     connection = get_secret(
-        secret_name=constants.MONGO_CONNECTION.value,
+        secret_name=Constants.MONGO_CONNECTION.value,
         path="/taxirio",
     )
 
-    return connection[constants.MONGO_CONNECTION.value]
+    return connection[Constants.MONGO_CONNECTION.value]
 
 
 @task(checkpoint=False)
@@ -43,7 +43,7 @@ def get_mongo_collection(client: MongoClient, database: str, collection: str) ->
 
 
 @task
-def get_collection_data(collection: Collection) -> CollectionResult:
+def get_collection_data(collection: Collection) -> QueryResult:
     """Get data from MongoDB."""
     log("Getting data from MongoDB")
 
@@ -51,7 +51,7 @@ def get_collection_data(collection: Collection) -> CollectionResult:
 
 
 @task
-def convert_to_df(data: CollectionResult) -> pd.DataFrame:
+def convert_to_df(data: QueryResult) -> pd.DataFrame:
     """Convert data to DataFrame."""
     log("Converting data to DataFrame")
 

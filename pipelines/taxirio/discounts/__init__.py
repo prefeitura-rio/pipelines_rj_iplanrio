@@ -1,1 +1,1 @@
-from pipelines.taxirio.paymentmethods.flows import *
+from pipelines.taxirio.discounts.flows import *

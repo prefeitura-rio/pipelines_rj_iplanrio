@@ -4,8 +4,8 @@ from prefect.schedules import Schedule
 from prefect.schedules.clocks import IntervalClock
 from pytz import timezone
 
-from pipelines.constants import constants as global_constants
-from pipelines.taxirio.constants import constants as local_constants
+from pipelines.constants import constants
+from pipelines.taxirio.constants import Constants as TaxiRio
 
 every_month = Schedule(
     clocks=[
@@ -18,9 +18,9 @@ every_month = Schedule(
                 hour=0,
                 minute=0,
                 second=0,
-                tzinfo=timezone(global_constants.TIMEZONE.value),
+                tzinfo=timezone(constants.TIMEZONE.value),
             ),
-            labels=[local_constants.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
+            labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
         ),
     ],
 )

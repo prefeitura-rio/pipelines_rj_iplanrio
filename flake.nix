@@ -18,19 +18,19 @@
           config.allowUnfree = true;
         };
       in {
-        devShells.default = with pkgs; let
-          custom_poetry = poetry.override {
-            python3 = python310;
-          };
-        in
+        devShells.default = with pkgs;
           mkShell {
-            packages = [infisical python310 custom_poetry];
+            packages = [
+              infisical
+              python310
+              poetry
+            ];
 
             shellHook = ''
               VENV="./.venv/bin/activate"
 
               if [[ ! -f $VENV ]]; then
-                ${custom_poetry}/bin/poetry install --with dev --with ci
+                ${poetry}/bin/poetry install --with dev --with ci
               fi
 
               source "$VENV"

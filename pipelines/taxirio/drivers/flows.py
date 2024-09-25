@@ -28,12 +28,12 @@ with Flow(
 
     data = tasks.get_collection_data(drivers_collection, batch=1000)
 
-    for chunk in data:
+    for count, chunk in enumerate(data):
         dataframe = tasks.convert_to_df(chunk)
 
         path = tasks.save_to_csv(
             dataframe,
-            Drivers.TABLE_ID.value,
+            f"{Drivers.TABLE_ID.value}_{count}",
         )
 
         create_table_and_upload_to_gcs(

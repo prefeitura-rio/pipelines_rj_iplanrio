@@ -5,10 +5,17 @@ from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_cred
 from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 
 from pipelines.constants import constants
-from pipelines.taxirio import tasks
 from pipelines.taxirio.constants import Constants as TaxiRio
 from pipelines.taxirio.paymentmethods.constants import Constants as PaymentMethods
 from pipelines.taxirio.schedules import every_month
+from pipelines.taxirio.tasks import (
+    convert_to_df,
+    get_collection_data,
+    get_mongo_client,
+    get_mongo_collection,
+    get_mongo_connection_string,
+    save_to_csv,
+)
 
 with Flow(
     name="IPLANRIO: paymentmethods - Dump da tabela do MongoDB do TaxiRio",
@@ -16,21 +23,21 @@ with Flow(
     skip_if_running=True,
     parallelism=10,
 ) as rj_iplanrio__taxirio__paymentmethods__flow:
-    connection = tasks.get_mongo_connection_string()
+    connection = get_mongo_connection_string()
 
-    client = tasks.get_mongo_client(connection)
+    client = get_mongo_client(connection)
 
-    paymentmethods_collection = tasks.get_mongo_collection(
+    paymentmethods_collection = get_mongo_collection(
         client,
         TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value,
         PaymentMethods.TABLE_ID.value,
     )
 
-    data = tasks.get_collection_data(paymentmethods_collection)
+    data = get_collection_data(paymentmethods_collection)
 
-    dataframe = tasks.convert_to_df(data)
+    dataframe = convert_to_df(data)
 
-    path = tasks.save_to_csv(
+    path = save_to_csv(
         dataframe,
         PaymentMethods.TABLE_ID.value,
     )

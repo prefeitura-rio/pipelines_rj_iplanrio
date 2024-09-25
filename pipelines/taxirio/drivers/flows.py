@@ -19,7 +19,7 @@ with Flow(
     name="IPLANRIO: drivers - Dump da tabela do MongoDB do TaxiRio",
     state_handlers=[handler_inject_bd_credentials],
     skip_if_running=True,
-    parallelism=10,
+    parallelism=1,
 ) as rj_iplanrio__taxirio__drivers__flow:
     connection = get_mongo_connection_string()
 

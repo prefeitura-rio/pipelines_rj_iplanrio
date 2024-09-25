@@ -43,7 +43,7 @@ def get_mongo_collection(client: MongoClient, database: str, collection: str) ->
     return client[database][collection]
 
 
-@task
+@task(checkpoint=False)
 def get_collection_data(collection: Collection, batch: int | None = None) -> QueryResult | Cursor:
     """Get data from MongoDB."""
     log("Getting data from MongoDB")

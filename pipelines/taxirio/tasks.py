@@ -6,6 +6,7 @@ from prefect import task
 from prefeitura_rio.pipelines_utils.infisical import get_secret
 from pymongo import MongoClient
 from pymongo.collection import Collection
+from pymongo.cursor import Cursor
 
 from pipelines.taxirio.constants import Constants
 from pipelines.utils import log
@@ -43,9 +44,12 @@ def get_mongo_collection(client: MongoClient, database: str, collection: str) ->
 
 
 @task
-def get_collection_data(collection: Collection) -> QueryResult:
+def get_collection_data(collection: Collection, batch: int | None = None) -> QueryResult | Cursor:
     """Get data from MongoDB."""
     log("Getting data from MongoDB")
+
+    if batch:
+        return collection.find(batch_size=batch)
 
     return list(collection.find())
 

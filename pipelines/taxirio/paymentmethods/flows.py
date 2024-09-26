@@ -8,14 +8,7 @@ from pipelines.constants import constants
 from pipelines.taxirio.constants import Constants as TaxiRio
 from pipelines.taxirio.paymentmethods.constants import Constants as PaymentMethods
 from pipelines.taxirio.schedules import every_month
-from pipelines.taxirio.tasks import (
-    convert_to_df,
-    get_collection_data,
-    get_mongo_client,
-    get_mongo_collection,
-    get_mongo_connection_string,
-    save_to_csv,
-)
+from pipelines.taxirio.tasks import dump_collection_from_mongodb
 
 with Flow(
     name="IPLANRIO: paymentmethods - Dump da tabela do MongoDB do TaxiRio",
@@ -23,27 +16,8 @@ with Flow(
     skip_if_running=True,
     parallelism=10,
 ) as rj_iplanrio__taxirio__paymentmethods__flow:
-    connection = get_mongo_connection_string()
-
-    client = get_mongo_client(connection)
-
-    paymentmethods_collection = get_mongo_collection(
-        client,
-        TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value,
-        PaymentMethods.TABLE_ID.value,
-    )
-
-    data = get_collection_data(paymentmethods_collection)
-
-    dataframe = convert_to_df(data)
-
-    path = save_to_csv(
-        dataframe,
-        PaymentMethods.TABLE_ID.value,
-    )
-
     create_table_and_upload_to_gcs(
-        data_path=path,
+        data_path=dump_collection_from_mongodb(PaymentMethods.TABLE_ID.value),
         table_id=PaymentMethods.TABLE_ID.value,
         dataset_id=TaxiRio.DATASET_ID.value,
         dump_mode="overwrite",
@@ -51,7 +25,7 @@ with Flow(
 
 rj_iplanrio__taxirio__paymentmethods__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 
-rj_iplanrio__taxirio__paymentmethods__flow.schedule = every_month
+rj_iplanrio__taxirio__paymentmethods__flow.schedule = every_month(2024, 9, 1)
 
 rj_iplanrio__taxirio__paymentmethods__flow.run_config = KubernetesRun(
     image=constants.DOCKER_IMAGE.value,

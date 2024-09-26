@@ -1,3 +1,5 @@
+from collections.abc import Generator
+from contextlib import contextmanager
 from pathlib import Path
 
 import pandas as pd
@@ -69,3 +71,13 @@ def save_to_csv(dataframe: pd.DataFrame, name: str) -> Path:
     dataframe.to_csv(path, index=False)
 
     return path
+
+
+@contextmanager
+def log_dump_collection(name: str, level: str = "info") -> Generator:
+    """Log a message before and after a dump collection operation."""
+    try:
+        log(f"Dumping {name} collection", level)
+        yield
+    finally:
+        log(f"Finished {name} dump", level)

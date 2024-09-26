@@ -55,7 +55,7 @@ def dump_collection_from_mongodb_in_batches(
         for counter, batch in enumerate(data):
             documents = list(batch)
 
-            log(f"Dumping batch {counter} of {collection_name} with {len(documents)} rows")
+            log(f"Dumping batch {counter} of {collection_name} with {len(documents)} documents")
 
             dataframe = utils.convert_to_df(documents)
 

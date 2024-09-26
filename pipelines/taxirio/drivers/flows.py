@@ -21,7 +21,7 @@ with Flow(
         data_path=dump_collection_from_mongodb_in_batches(Drivers.TABLE_ID.value),
         table_id=unmapped(Drivers.TABLE_ID.value),
         dataset_id=unmapped(TaxiRio.DATASET_ID.value),
-        dump_mode=unmapped("overwrite"),
+        dump_mode=unmapped("append"),
     )
 
 rj_iplanrio__taxirio__drivers__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)

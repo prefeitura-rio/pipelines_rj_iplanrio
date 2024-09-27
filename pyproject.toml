@@ -28,7 +28,6 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 basedpyright = "^1.17.2"
-debugpy = "^1.8.5"
 ipython = "^8.27.0"
 
 [tool.poetry.group.ci]
@@ -43,7 +42,7 @@ taskipy = "^1.12.0"
 typer = "^0.9.0"
 
 [tool.basedpyright]
-typeCheckingMode = "standard"
+typeCheckingMode = "basic"
 useLibraryCodeForTypes = true
 venvPath = "."
 venv = ".venv"

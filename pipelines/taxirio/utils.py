@@ -1,6 +1,7 @@
-from collections.abc import Generator
+from collections.abc import Generator, ItemsView
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 from prefeitura_rio.pipelines_utils.infisical import get_secret
@@ -53,11 +54,20 @@ def get_collection_data_in_batches(collection: Collection, batch_size: int) -> C
     return collection.find(batch_size=batch_size)
 
 
-def convert_to_df(data: QueryResult) -> pd.DataFrame:
+def convert_to_df(data: QueryResult | ItemsView[str, Any]) -> pd.DataFrame:
     """Convert data to DataFrame."""
     log("Converting data to DataFrame")
 
     return pd.DataFrame(data)
+
+
+def use_df_first_row_as_header(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """Use the first row as header."""
+    log("Using the first row as header")
+
+    dataframe.columns = dataframe.iloc[0]
+
+    return dataframe.drop([0], axis=0)
 
 
 def save_to_csv(dataframe: pd.DataFrame, name: str) -> Path:

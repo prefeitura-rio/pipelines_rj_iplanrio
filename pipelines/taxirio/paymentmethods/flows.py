@@ -1,3 +1,4 @@
+from prefect import Parameter
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
 from prefeitura_rio.pipelines_utils.custom import Flow
@@ -7,17 +8,42 @@ from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 from pipelines.constants import constants
 from pipelines.taxirio.constants import Constants as TaxiRio
 from pipelines.taxirio.paymentmethods.constants import Constants as PaymentMethods
+from pipelines.taxirio.paymentmethods.mongodb import pipeline, schema
 from pipelines.taxirio.schedules import every_month
-from pipelines.taxirio.tasks import dump_collection_from_mongodb
+from pipelines.taxirio.tasks import (
+    dump_collection_from_mongodb,
+    get_mongodb_client,
+    get_mongodb_collection,
+    get_mongodb_connection_string,
+)
 
 with Flow(
     name="IPLANRIO: paymentmethods - Dump da tabela do MongoDB do TaxiRio",
     state_handlers=[handler_inject_bd_credentials],
     skip_if_running=True,
-    parallelism=10,
+    parallelism=1,
 ) as rj_iplanrio__taxirio__paymentmethods__flow:
+    path = Parameter("path", default="output")
+
+    connection = get_mongodb_connection_string()
+
+    client = get_mongodb_client(connection)
+
+    collection = get_mongodb_collection(
+        client,
+        TaxiRio.MONGODB_DATABASE_NAME.value,
+        PaymentMethods.TABLE_ID.value,
+    )
+
+    file_path = dump_collection_from_mongodb(
+        collection=collection,
+        path=path,
+        schema=schema,
+        pipeline=pipeline,
+    )
+
     create_table_and_upload_to_gcs(
-        data_path=dump_collection_from_mongodb(PaymentMethods.TABLE_ID.value),
+        data_path=file_path,
         table_id=PaymentMethods.TABLE_ID.value,
         dataset_id=TaxiRio.DATASET_ID.value,
         dump_mode="overwrite",

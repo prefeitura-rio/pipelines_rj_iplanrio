@@ -1,71 +1,59 @@
 from pathlib import Path
+from typing import Any
 
+import pyarrow.parquet as pq
 from prefect import task
+from prefeitura_rio.pipelines_utils.infisical import get_secret
+from pymongo import MongoClient
+from pymongo.collection import Collection
+from pymongoarrow.api import Schema, aggregate_arrow_all
 
-from pipelines.taxirio import utils
-from pipelines.taxirio.constants import Constants as TaxiRio
+from pipelines.taxirio.constants import Constants
 from pipelines.utils import log
 
 
-@task
-def dump_collection_from_mongodb(collection_name: str) -> Path:
-    """Dump a collection from MongoDB in batches."""
-    with utils.log_dump_collection(collection_name):
-        connection = utils.get_mongo_connection_string()
+@task(checkpoint=False)
+def get_mongodb_connection_string() -> str:
+    """Get MongoDB connection string."""
+    log("Getting MongoDB connection string")
 
-        client = utils.get_mongo_client(connection)
+    connection = get_secret(
+        secret_name=Constants.MONGODB_CONNECTION_STRING.value,
+        path="/taxirio",
+    )
 
-        collection = utils.get_mongo_collection(
-            client,
-            TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value,
-            collection_name,
-        )
-
-        data = utils.get_collection_data(collection)
-
-        dataframe = utils.convert_to_df(data)
-
-        return utils.save_to_csv(
-            dataframe,
-            collection_name,
-        )
+    return connection[Constants.MONGODB_CONNECTION_STRING.value]
 
 
-@task
-def dump_collection_from_mongodb_in_batches(
-    collection_name: str,
-    batch_size: int = 1000,
-) -> list[Path]:
-    """Dump a collection from MongoDB in batches."""
-    with utils.log_dump_collection(collection_name):
-        paths = []
+@task(checkpoint=False)
+def get_mongodb_client(connection: str) -> MongoClient:
+    """Get MongoDB client."""
+    log("Getting MongoDB client")
 
-        connection = utils.get_mongo_connection_string()
+    return MongoClient(connection)
 
-        client = utils.get_mongo_client(connection)
 
-        collection = utils.get_mongo_collection(
-            client,
-            TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value,
-            collection_name,
-        )
+@task(checkpoint=False)
+def get_mongodb_collection(client: MongoClient, database: str, collection: str) -> Collection:
+    """Get MongoDB collection."""
+    log("Getting MongoDB collection")
 
-        data = utils.get_collection_data_in_batches(collection, batch_size)
+    return client[database][collection]
 
-        for counter, document in enumerate(data):
-            log(f"Dumping document {counter} of {collection_name}")
 
-            dataframe = utils.convert_to_df(dict(document).items())
+@task(checkpoint=False)
+def dump_collection_from_mongodb(
+    collection: Collection,
+    path: str,
+    schema: Schema,
+    pipeline: list[dict[str, Any]],
+) -> Path:
+    """Dump a collection from MongoDB."""
+    log(f"Dumping collection *{collection.name}* from MongoDB")
 
-            dataframe = utils.use_df_first_row_as_header(dataframe.T)
+    file_path = Path(path) / f"{collection.name}.parquet"
+    file_path.parent.mkdir(exist_ok=True)
+    data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
+    pq.write_table(data, file_path)
 
-            path = utils.save_to_csv(
-                dataframe,
-                f"{collection_name}_{counter}",
-            )
-
-            log(f"Document {counter} dumped to {path}")
-
-            paths.append(path)
-
-        return paths
+    return file_path

@@ -2,6 +2,6 @@ from enum import Enum
 
 
 class Constants(Enum):
-    """Constants for the paymentmethods pipeline."""
+    """Constants for the drivers pipeline."""
 
     TABLE_ID = "paymentmethods"

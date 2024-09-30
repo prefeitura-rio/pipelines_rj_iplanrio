@@ -149,3 +149,4 @@ dmypy.json
 .vscode/
 .direnv/bin
 .direnv
+output/

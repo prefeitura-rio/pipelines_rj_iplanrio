@@ -25,6 +25,7 @@
                 gke-gcloud-auth-plugin
               ]);
             in [
+              duckdb
               gcloud
               infisical
               poetry

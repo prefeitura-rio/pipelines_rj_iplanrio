@@ -5,5 +5,6 @@ class Constants(Enum):
     """Constants for the TaxiRio project."""
 
     DATASET_ID = "transporte_rodoviario_taxirio"
-    MONGO_CONNECTION = "DB_CONNECTION_STRING"
-    RJ_IPLANRIO_TAXIRIO_AGENT_LABEL = "taxirio"
+    MONGODB_CONNECTION_STRING = "DB_CONNECTION_STRING"
+    MONGODB_DATABASE_NAME = "taxirio"
+    RJ_IPLANRIO_TAXIRIO_AGENT_LABEL = "taxirio-staging"

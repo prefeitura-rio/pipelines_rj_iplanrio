@@ -1,4 +1,4 @@
-from pyarrow import float64, list_, string, struct
+import pyarrow as pa
 from pymongoarrow.api import Schema
 
 pipeline = [
@@ -15,22 +15,45 @@ pipeline = [
         },
     },
     {
+        "$addFields": {
+            "geometry": {
+                "$cond": {
+                    "if": {"$eq": ["$geometry.type", "Polygon"]},
+                    "then": {
+                        "type": "MultiPolygon",
+                        "coordinates": [
+                            "$geometry.coordinates",
+                        ],
+                    },
+                    "else": "$geometry",
+                },
+            },
+        },
+    },
+    {
         "$unset": "_id",
     },
 ]
 
 schema = Schema(
     {
-        "id": str,
-        "name": str,
-        "stateAbbreviation": str,
-        "isCalulatedInApp": bool,
-        "isAbleToUsePaymentInApp": bool,
-        "loginLabel": str,
-        "serviceStations": list_(struct([("name", string()), ("address", string())])),
+        "id": pa.string(),
+        "name": pa.string(),
+        "stateAbbreviation": pa.string(),
+        "isCalulatedInApp": pa.bool_(),
+        "isAbleToUsePaymentInApp": pa.bool_(),
+        "loginLabel": pa.string(),
+        "serviceStations": pa.list_(
+            pa.struct(
+                [
+                    ("name", pa.string()),
+                    ("address", pa.string()),
+                ],
+            ),
+        ),
         "geometry": {
-            "type": str,
-            "coordinates": list_(list_(list_(float64()))),
+            "type": pa.string(),
+            "coordinates": pa.list_(pa.list_(pa.list_(pa.list_(pa.float64())))),
         },
     },
 )

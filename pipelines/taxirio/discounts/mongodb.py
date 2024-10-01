@@ -1,5 +1,4 @@
-from datetime import datetime
-
+import pyarrow as pa
 from pymongoarrow.api import Schema
 
 pipeline = [
@@ -18,9 +17,9 @@ pipeline = [
 
 schema = Schema(
     {
-        "id": str,
-        "description": str,
-        "value": float,
-        "createdAt": datetime,
+        "id": pa.string(),
+        "description": pa.string(),
+        "value": pa.float64(),
+        "createdAt": pa.timestamp("ms"),
     },
 )

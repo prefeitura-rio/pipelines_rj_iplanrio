@@ -44,9 +44,10 @@ with Flow(
 
     create_table_and_upload_to_gcs(
         data_path=file_path,
-        table_id=Cities.TABLE_ID.value,
         dataset_id=TaxiRio.DATASET_ID.value,
         dump_mode="overwrite",
+        source_format="parquet",
+        table_id=Cities.TABLE_ID.value,
     )
 
 rj_iplanrio__taxirio__cities__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)

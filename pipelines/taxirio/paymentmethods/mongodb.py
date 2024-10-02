@@ -1,11 +1,11 @@
-import pyarrow as pa
+from pyarrow import string
 from pymongoarrow.api import Schema
 
 pipeline = [
     {
         "$project": {
             "id": {"$toString": "$_id"},
-            "pindex": 1,
+            "pindex": {"$toString": "$pindex"},
             "name": 1,
             "type": 1,
         },
@@ -17,9 +17,9 @@ pipeline = [
 
 schema = Schema(
     {
-        "id": pa.string(),
-        "pindex": pa.int64(),
-        "name": pa.string(),
-        "type": pa.string(),
+        "id": string(),
+        "pindex": string(),
+        "name": string(),
+        "type": string(),
     },
 )

@@ -1,4 +1,4 @@
-import pyarrow as pa
+from pyarrow import string
 from pymongoarrow.api import Schema
 
 pipeline = [
@@ -7,53 +7,37 @@ pipeline = [
             "id": {"$toString": "$_id"},
             "name": 1,
             "stateAbbreviation": 1,
-            "isCalulatedInApp": 1,
-            "isAbleToUsePaymentInApp": 1,
+            "isCalulatedInApp": {"$toString": "$isCalulatedInApp"},
+            "isAbleToUsePaymentInApp": {"$toString": "$isAbleToUsePaymentInApp"},
             "loginLabel": 1,
-            "serviceStations": 1,
-            "geometry": 1,
-        },
-    },
-    {
-        "$addFields": {
+            "serviceStations": {
+                "$function": {
+                    "lang": "js",
+                    "args": ["$serviceStations"],
+                    "body": "function(serviceStations) { return JSON.stringify(serviceStations); }",
+                },
+            },
             "geometry": {
-                "$cond": {
-                    "if": {"$eq": ["$geometry.type", "Polygon"]},
-                    "then": {
-                        "type": "MultiPolygon",
-                        "coordinates": [
-                            "$geometry.coordinates",
-                        ],
-                    },
-                    "else": "$geometry",
+                "$function": {
+                    "lang": "js",
+                    "args": ["$geometry"],
+                    "body": "function(geometry) { return JSON.stringify(geometry); }",
                 },
             },
         },
     },
-    {
-        "$unset": "_id",
-    },
+    {"$unset": "_id"},
 ]
 
 schema = Schema(
     {
-        "id": pa.string(),
-        "name": pa.string(),
-        "stateAbbreviation": pa.string(),
-        "isCalulatedInApp": pa.bool_(),
-        "isAbleToUsePaymentInApp": pa.bool_(),
-        "loginLabel": pa.string(),
-        "serviceStations": pa.list_(
-            pa.struct(
-                [
-                    ("name", pa.string()),
-                    ("address", pa.string()),
-                ],
-            ),
-        ),
-        "geometry": {
-            "type": pa.string(),
-            "coordinates": pa.list_(pa.list_(pa.list_(pa.list_(pa.float64())))),
-        },
+        "id": string(),
+        "name": string(),
+        "stateAbbreviation": string(),
+        "isCalulatedInApp": string(),
+        "isAbleToUsePaymentInApp": string(),
+        "loginLabel": string(),
+        "serviceStations": string(),
+        "geometry": string(),
     },
 )

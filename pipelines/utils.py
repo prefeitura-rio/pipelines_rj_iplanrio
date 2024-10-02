@@ -1,6 +1,6 @@
 import logging
 
-import prefect
+from prefect import context
 
 
 def log(message: str, level: str = "info") -> None:
@@ -17,4 +17,4 @@ def log(message: str, level: str = "info") -> None:
         msg = f"Invalid log level: {level}"
         raise ValueError(msg)
 
-    prefect.context.logger.log(levels[level], message)
+    context.logger.log(levels[level], message)

@@ -20,10 +20,16 @@
       in {
         devShells.default = with pkgs;
           mkShell {
-            packages = [
+            packages = let
+              gcloud = google-cloud-sdk.withExtraComponents (with google-cloud-sdk.components; [
+                gke-gcloud-auth-plugin
+              ]);
+            in [
+              duckdb
+              gcloud
               infisical
-              python310
               poetry
+              python310
             ];
 
             shellHook = ''

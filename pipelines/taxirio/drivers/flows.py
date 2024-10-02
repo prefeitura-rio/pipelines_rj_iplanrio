@@ -7,8 +7,8 @@ from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 
 from pipelines.constants import constants
 from pipelines.taxirio.constants import Constants as TaxiRio
-from pipelines.taxirio.paymentmethods.constants import Constants as PaymentMethods
-from pipelines.taxirio.paymentmethods.mongodb import pipeline, schema
+from pipelines.taxirio.drivers.constants import Constants as Drivers
+from pipelines.taxirio.drivers.mongodb import pipeline, schema
 from pipelines.taxirio.schedules import every_month
 from pipelines.taxirio.tasks import (
     dump_collection_from_mongodb,
@@ -18,11 +18,11 @@ from pipelines.taxirio.tasks import (
 )
 
 with Flow(
-    name="IPLANRIO: paymentmethods - Dump da tabela do MongoDB do TaxiRio",
+    name="IPLANRIO: drivers - Dump da tabela do MongoDB do TaxiRio",
     state_handlers=[handler_inject_bd_credentials],
     skip_if_running=True,
     parallelism=1,
-) as rj_iplanrio__taxirio__paymentmethods__flow:
+) as rj_iplanrio__taxirio__drivers__flow:
     path = Parameter("path", default="output")
 
     connection = get_mongodb_connection_string()
@@ -32,7 +32,7 @@ with Flow(
     collection = get_mongodb_collection(
         client,
         TaxiRio.MONGODB_DATABASE_NAME.value,
-        PaymentMethods.TABLE_ID.value,
+        Drivers.TABLE_ID.value,
     )
 
     file_path = dump_collection_from_mongodb(
@@ -47,14 +47,14 @@ with Flow(
         dataset_id=TaxiRio.DATASET_ID.value,
         dump_mode="overwrite",
         source_format="parquet",
-        table_id=PaymentMethods.TABLE_ID.value,
+        table_id=Drivers.TABLE_ID.value,
     )
 
-rj_iplanrio__taxirio__paymentmethods__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
+rj_iplanrio__taxirio__drivers__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 
-rj_iplanrio__taxirio__paymentmethods__flow.schedule = every_month(2024, 9, 1)
+rj_iplanrio__taxirio__drivers__flow.schedule = every_month(2024, 9, 1)
 
-rj_iplanrio__taxirio__paymentmethods__flow.run_config = KubernetesRun(
+rj_iplanrio__taxirio__drivers__flow.run_config = KubernetesRun(
     image=constants.DOCKER_IMAGE.value,
     labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
 )

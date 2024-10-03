@@ -7,8 +7,6 @@ from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 
 from pipelines.constants import constants
 from pipelines.taxirio.constants import Constants as TaxiRio
-from pipelines.taxirio.users.constants import Constants as Users
-from pipelines.taxirio.users.mongodb import pipeline, schema
 from pipelines.taxirio.schedules import every_month
 from pipelines.taxirio.tasks import (
     dump_collection_from_mongodb,
@@ -16,6 +14,8 @@ from pipelines.taxirio.tasks import (
     get_mongodb_collection,
     get_mongodb_connection_string,
 )
+from pipelines.taxirio.users.constants import Constants as Users
+from pipelines.taxirio.users.mongodb import pipeline, schema
 
 with Flow(
     name="IPLANRIO: users - Dump da tabela do MongoDB do TaxiRio",

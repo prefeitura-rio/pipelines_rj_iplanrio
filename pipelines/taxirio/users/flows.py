@@ -7,7 +7,7 @@ from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 
 from pipelines.constants import constants
 from pipelines.taxirio.constants import Constants as TaxiRio
-from pipelines.taxirio.schedules import every_month
+from pipelines.taxirio.schedules import every_week
 from pipelines.taxirio.tasks import (
     dump_collection_from_mongodb,
     get_mongodb_client,
@@ -35,15 +35,16 @@ with Flow(
         Users.TABLE_ID.value,
     )
 
-    file_path = dump_collection_from_mongodb(
+    data_path = dump_collection_from_mongodb(
         collection=collection,
         path=path,
         schema=schema,
         pipeline=pipeline,
+        partition_cols=["ano_particao", "mes_particao"],
     )
 
     create_table_and_upload_to_gcs(
-        data_path=file_path,
+        data_path=data_path,
         dataset_id=TaxiRio.DATASET_ID.value,
         dump_mode="overwrite",
         source_format="parquet",
@@ -52,7 +53,7 @@ with Flow(
 
 rj_iplanrio__taxirio__users__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 
-rj_iplanrio__taxirio__users__flow.schedule = every_month(2024, 9, 1)
+rj_iplanrio__taxirio__users__flow.schedule = every_week(2024, 9, 2)
 
 rj_iplanrio__taxirio__users__flow.run_config = KubernetesRun(
     image=constants.DOCKER_IMAGE.value,

@@ -14,6 +14,8 @@ pipeline = [
             "birthDate": {"$toString": "$birthDate"},
             "federalRevenueData": 1,
             "validadoReceita": {"$toString": "$validadoReceita"},
+            "ano_particao": {"$toString": {"$year": "$createdAt"}},
+            "mes_particao": {"$toString": {"$month": "$createdAt"}},
         },
     },
     {"$unset": "_id"},
@@ -28,6 +30,8 @@ pipeline = [
             "createdAt": 1,
             "birthDate": 1,
             "validadoReceita": 1,
+            "ano_particao": 1,
+            "mes_particao": 1,
             "federalRevenueData": {
                 "$function": {
                     "lang": "js",
@@ -51,5 +55,7 @@ schema = Schema(
         "birthDate": string(),
         "validadoReceita": string(),
         "federalRevenueData": string(),
+        "ano_particao": string(),
+        "mes_particao": string(),
     },
 )

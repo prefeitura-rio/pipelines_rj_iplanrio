@@ -47,13 +47,27 @@ def dump_collection_from_mongodb(
     path: str,
     schema: Schema,
     pipeline: list[dict[str, Any]],
+    partition_cols: list[str] | None = None,
 ) -> Path:
     """Dump a collection from MongoDB."""
     log(f"Dumping collection *{collection.name}* from MongoDB")
 
-    file_path = Path(path) / f"{collection.name}.parquet"
-    file_path.parent.mkdir(exist_ok=True)
-    data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
-    pq.write_table(data, file_path)
+    root_path = Path(path)
+    root_path.mkdir(exist_ok=True)
 
-    return file_path
+    data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
+
+    if partition_cols:
+        pq.write_to_dataset(
+            table=data,
+            root_path=root_path,
+            partition_cols=partition_cols,
+            basename_template=f"{collection.name}_{{i}}.parquet",
+        )
+    else:
+        pq.write_table(
+            table=data,
+            where=root_path / f"{collection.name}.parquet",
+        )
+
+    return root_path

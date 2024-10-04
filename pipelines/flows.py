@@ -6,3 +6,4 @@ from pipelines.sici import *
 from pipelines.sicop import *
 from pipelines.taxirio import *
 from pipelines.templates import *
+from pipelines.alvaras import *

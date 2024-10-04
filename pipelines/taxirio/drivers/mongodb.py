@@ -17,6 +17,8 @@ pipeline = [
             "average": {"$toString": "$average"},
             "associatedCar": {"$toString": "$associatedCar"},
             "createdAt": {"$toString": "$createdAt"},
+            "ano_particao": {"$toString": {"$year": "$createdAt"}},
+            "mes_particao": {"$toString": {"$month": "$createdAt"}},
             "status": 1,
             "associatedDiscount": {"$toString": "$associatedDiscount"},
             "associatedPaymentsMethods": {
@@ -86,6 +88,8 @@ pipeline = [
             "status": 1,
             "taxiDriverId": 1,
             "user": 1,
+            "ano_particao": 1,
+            "mes_particao": 1,
             "cars": {
                 "$function": {
                     "lang": "js",
@@ -154,5 +158,7 @@ schema = Schema(
         "serviceRecordRate": string(),
         "nota": string(),
         "averageTT": string(),
+        "ano_particao": string(),
+        "mes_particao": string(),
     },
 )

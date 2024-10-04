@@ -35,7 +35,7 @@ with Flow(
         PaymentMethods.TABLE_ID.value,
     )
 
-    file_path = dump_collection_from_mongodb(
+    data_path = dump_collection_from_mongodb(
         collection=collection,
         path=path,
         schema=schema,
@@ -43,7 +43,7 @@ with Flow(
     )
 
     create_table_and_upload_to_gcs(
-        data_path=file_path,
+        data_path=data_path,
         dataset_id=TaxiRio.DATASET_ID.value,
         dump_mode="overwrite",
         source_format="parquet",

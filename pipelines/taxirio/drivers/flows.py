@@ -35,20 +35,22 @@ with Flow(
         Drivers.TABLE_ID.value,
     )
 
-    file_path = dump_collection_from_mongodb(
+    data_path = dump_collection_from_mongodb(
         collection=collection,
         path=path,
         schema=schema,
         pipeline=pipeline,
+        partition_cols=["ano_particao", "mes_particao"],
     )
 
     create_table_and_upload_to_gcs(
-        data_path=file_path,
+        data_path=data_path,
         dataset_id=TaxiRio.DATASET_ID.value,
         dump_mode="overwrite",
         source_format="parquet",
         table_id=Drivers.TABLE_ID.value,
     )
+
 
 rj_iplanrio__taxirio__drivers__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 

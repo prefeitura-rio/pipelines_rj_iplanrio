@@ -27,7 +27,7 @@ pipeline = [
         },
     },
     {
-        "$unset": "_id"
+        "$unset": "_id",
     },
 ]
 

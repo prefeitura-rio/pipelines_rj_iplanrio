@@ -26,7 +26,9 @@ pipeline = [
             },
         },
     },
-    {"$unset": "_id"},
+    {
+        "$unset": "_id"
+    },
 ]
 
 schema = Schema(

@@ -1,15 +1,31 @@
+from datetime import datetime
+from functools import partial
+
 from pyarrow import string
 from pymongoarrow.api import Schema
+from pytz import timezone
+
+from pipelines.constants import constants
+
+sp_datetime = partial(datetime, tzinfo=timezone(constants.TIMEZONE.value))
 
 pipeline = [
     {
+        "$match": {
+            "createdAt": {
+                "$gte": sp_datetime(2023, 1, 1),
+                "$lt": sp_datetime(2024, 12, 31),
+            },
+        },
+    },
+    {
         "$project": {
             "id": {"$toString": "$_id"},
-            "updatedAt": {"$toString": "$updatedAt"},
-            "createdAt": {"$toString": "$createdAt"},
+            "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
+            "updatedAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$updatedAt"}},
             "race": {"$toString": "$race"},
-            "ano_particao": {"$toString": {"$year": "$createdAt"}},
-            "mes_particao": {"$toString": {"$month": "$createdAt"}},
+            "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
+            "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
             "competitors": {
                 "$map": {
                     "input": "$competitors",
@@ -18,38 +34,22 @@ pipeline = [
                         "driver": {"$toString": "$$competitor.driver"},
                         "id": {"$toString": "$$competitor._id"},
                         "rankingRaceStatus": "$$competitor.rankingRaceStatus",
+                        "distance": {"$toString": "$$competitor.distance"},
                         "acceptedLocation": {
-                            "$cond": {
-                                "if": {"$ne": ["$$competitor.acceptedLocation", "NA"]},
-                                "then": {
-                                    "formattedAddress": "$$competitor.acceptedLocation.formattedAddress",
-                                    "lat": {"$toString": "$$competitor.acceptedLocation.lat"},
-                                    "lng": {"$toString": "$$competitor.acceptedLocation.lng"},
-                                },
-                                "else": "NA",
-                            },
-                        },
-                        "distance": {
-                            "$cond": {
-                                "if": {"$ne": ["$$competitor.distance", "NA"]},
-                                "then": {"$toString": "$$competitor.distance"},
-                                "else": "NA",
-                            },
+                            "formattedAddress": "$$competitor.acceptedLocation.formattedAddress",
+                            "lat": {"$toString": "$$competitor.acceptedLocation.lat"},
+                            "lng": {"$toString": "$$competitor.acceptedLocation.lng"},
                         },
                     },
                 },
             },
         },
     },
-    {"$unset": "_id"},
     {
-        "$project": {
-            "id": 1,
-            "createdAt": 1,
-            "updatedAt": 1,
-            "race": 1,
-            "ano_particao": 1,
-            "mes_particao": 1,
+        "$unset": "_id",
+    },
+    {
+        "$addFields": {
             "competitors": {
                 "$function": {
                     "lang": "js",

@@ -6,7 +6,7 @@ pipeline = [
         "$project": {
             "id": {"$toString": "$_id"},
             "user": {"$toString": "$user"},
-            "createdAt": {"$toString": "$createdAt"},
+            "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
             "login": 1,
             "password": 1,
             "salt": 1,
@@ -14,20 +14,15 @@ pipeline = [
             "tokenInfo": 1,
             "infoPhone": 1,
             "validadoReceita": {"$toString": "$validadoReceita"},
-            "ano_particao": {"$toString": {"$year": "$createdAt"}},
-            "mes_particao": {"$toString": {"$month": "$createdAt"}},
+            "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
+            "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
         },
     },
-    {"$unset": "_id"},
     {
-        "$project": {
-            "id": 1,
-            "user": 1,
-            "createdAt": 1,
-            "login": 1,
-            "password": 1,
-            "salt": 1,
-            "isAbleToUsePaymentInApp": 1,
+        "$unset": "_id",
+    },
+    {
+        "$addFields": {
             "tokenInfo": {
                 "$function": {
                     "lang": "js",
@@ -49,15 +44,15 @@ pipeline = [
 schema = Schema(
     {
         "id": string(),
-        "displayName": string(),
-        "fullName": string(),
-        "email": string(),
-        "phoneNumber": string(),
-        "cpf": string(),
+        "user": string(),
         "createdAt": string(),
-        "birthDate": string(),
-        "validadoReceita": string(),
+        "login": string(),
+        "password": string(),
+        "salt": string(),
+        "isAbleToUsePaymentInApp": string(),
         "tokenInfo": string(),
+        "infoPhone": string(),
+        "validadoReceita": string(),
         "ano_particao": string(),
         "mes_particao": string(),
     },

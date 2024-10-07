@@ -1,21 +1,22 @@
+from collections.abc import Callable
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
-import pyarrow.parquet as pq
 from prefect import task
 from prefeitura_rio.pipelines_utils.infisical import get_secret
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongoarrow.api import Schema, aggregate_arrow_all
 
+from pipelines import utils
 from pipelines.taxirio.constants import Constants
-from pipelines.utils import log
 
 
 @task(checkpoint=False)
 def get_mongodb_connection_string() -> str:
     """Get MongoDB connection string."""
-    log("Getting MongoDB connection string")
+    utils.log("Getting MongoDB connection string")
 
     connection = get_secret(
         secret_name=Constants.MONGODB_CONNECTION_STRING.value,
@@ -28,7 +29,7 @@ def get_mongodb_connection_string() -> str:
 @task(checkpoint=False)
 def get_mongodb_client(connection: str) -> MongoClient:
     """Get MongoDB client."""
-    log("Getting MongoDB client")
+    utils.log("Getting MongoDB client")
 
     return MongoClient(connection)
 
@@ -36,7 +37,7 @@ def get_mongodb_client(connection: str) -> MongoClient:
 @task(checkpoint=False)
 def get_mongodb_collection(client: MongoClient, database: str, collection: str) -> Collection:
     """Get MongoDB collection."""
-    log("Getting MongoDB collection")
+    utils.log("Getting MongoDB collection")
 
     return client[database][collection]
 
@@ -50,28 +51,47 @@ def dump_collection_from_mongodb(
     partition_cols: list[str] | None = None,
 ) -> Path:
     """Dump a collection from MongoDB."""
-    log(f"Dumping collection *{collection.name}* from MongoDB")
+    utils.log(f"Dumping collection *{collection.name}* from MongoDB")
 
     root_path = Path(path)
     root_path.mkdir(exist_ok=True)
 
-    log("Aggregating data from MongoDB")
+    utils.log("Aggregating data from MongoDB")
     data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
 
-    log("Writing data to disk")
-    if partition_cols:
-        pq.write_to_dataset(
-            table=data,
-            root_path=root_path,
-            partition_cols=partition_cols,
-            basename_template=f"{collection.name}_{{i}}.parquet",
-            min_rows_per_group=1000,
-            max_rows_per_group=50000,
-        )
-    else:
-        pq.write_table(
-            table=data,
-            where=root_path / f"{collection.name}.parquet",
-        )
+    utils.log("Writing data to disk")
+    utils.write_data_to_disk(data, root_path, collection.name, partition_cols)
+
+    return root_path
+
+
+@task(checkpoint=False)
+def dump_collection_from_mongodb_per_month(
+    collection: Collection,
+    path: str,
+    generate_pipeline: Callable,
+    schema: Schema,
+    freq: str = "2M",
+    partition_cols: list[str] | None = None,
+) -> Path:
+    """Dump a collection from MongoDB per month."""
+    utils.log(f"Dumping collection *{collection.name}* from MongoDB")
+
+    root_path = Path(path)
+    root_path.mkdir(exist_ok=True)
+
+    start = utils.get_mongodb_earliest_date_in_collection(collection)
+    end = utils.get_mongodb_latest_date_in_collection(collection)
+
+    utils.log("Generating pipelines for each month")
+    dates = utils.get_date_range(start=start, end=end, freq=freq)
+    pipelines = [generate_pipeline(start, end) for start, end in pairwise(dates)]
+
+    for pipeline in pipelines:
+        utils.log("Aggregating data from MongoDB")
+        data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
+
+        utils.log("Writing data to disk")
+        utils.write_data_to_disk(data, root_path, collection.name, partition_cols)
 
     return root_path

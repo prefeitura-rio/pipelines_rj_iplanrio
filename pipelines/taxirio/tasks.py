@@ -55,14 +55,18 @@ def dump_collection_from_mongodb(
     root_path = Path(path)
     root_path.mkdir(exist_ok=True)
 
+    log("Aggregating data from MongoDB")
     data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
 
+    log("Writing data to disk")
     if partition_cols:
         pq.write_to_dataset(
             table=data,
             root_path=root_path,
             partition_cols=partition_cols,
             basename_template=f"{collection.name}_{{i}}.parquet",
+            min_rows_per_group=1000,
+            max_rows_per_group=50000,
         )
     else:
         pq.write_table(

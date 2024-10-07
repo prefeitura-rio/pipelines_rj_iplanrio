@@ -58,6 +58,8 @@ rj_iplanrio__taxirio__rankingraces__flow.schedule = every_week(2024, 9, 3)
 rj_iplanrio__taxirio__rankingraces__flow.run_config = KubernetesRun(
     image=constants.DOCKER_IMAGE.value,
     labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
-    memory_request="1Gi",
-    memory_limit="2Gi",
+    memory_request="2Gi",
+    memory_limit="3Gi",
+    cpu_request="500m",
+    cpu_limit="1000m",
 )

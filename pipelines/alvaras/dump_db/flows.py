@@ -39,7 +39,7 @@ alvaras_default_parameters = {
     "db_port": "1433",
     "db_type": "oracle",
     "dataset_id": "alvaras",
-    "infisical_secret_path": "db-alvaras",
+    "infisical_secret_path": "/db-alvaras",
 }
 
 rj_iplanrio_alvaras_flow = set_default_parameters(

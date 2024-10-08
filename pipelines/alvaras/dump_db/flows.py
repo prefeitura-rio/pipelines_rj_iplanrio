@@ -35,10 +35,10 @@ rj_iplanrio_alvaras_flow.run_config = KubernetesRun(
 
 alvaras_default_parameters = {
     "db_database": "DW_BI_ALVARAS",
-    "db_host": "srv000761.infra.rio.gov.br",
-    "db_port": "1521",
+    "db_host": "srv000144.infra.rio.gov.br",
+    "db_port": "1433",
     "db_type": "oracle",
-    "dataset_id": "corporativo",
+    "dataset_id": "alvaras",
     "vault_secret_path": "db-alvaras",
 }
 

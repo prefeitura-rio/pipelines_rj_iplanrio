@@ -234,10 +234,10 @@ alvaras_infra_clocks = generate_dump_db_schedules(
         constants.RJ_IPLANRIO_AGENT_LABEL.value,
     ],
     db_database="DW_BI_ALVARAS",
-    db_host="srv000761.infra.rio.gov.br",
-    db_port="1521",
+    db_host="srv000144.infra.rio.gov.br",
+    db_port="1433",
     db_type="oracle",
-    dataset_id="corporativo",
+    dataset_id="alvaras",
     infisical_secret_path="/db-alvaras",
     table_parameters=_alvaras_infra_query,
 )

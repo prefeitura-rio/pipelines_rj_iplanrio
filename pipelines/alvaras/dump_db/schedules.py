@@ -13,7 +13,7 @@ from pipelines.constants import constants
 
 #####################################
 #
-# Processorio Schedules
+# Alvaras Schedules
 #
 #####################################
 

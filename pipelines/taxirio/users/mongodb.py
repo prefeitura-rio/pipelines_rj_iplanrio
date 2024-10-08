@@ -10,28 +10,19 @@ pipeline = [
             "email": 1,
             "phoneNumber": 1,
             "cpf": 1,
-            "createdAt": {"$toString": "$createdAt"},
-            "birthDate": {"$toString": "$birthDate"},
+            "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
+            "birthDate": {"$dateToString": {"format": "%Y-%m-%d", "date": "$birthDate"}},
             "federalRevenueData": 1,
             "validadoReceita": {"$toString": "$validadoReceita"},
-            "ano_particao": {"$toString": {"$year": "$createdAt"}},
-            "mes_particao": {"$toString": {"$month": "$createdAt"}},
+            "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
+            "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
         },
     },
-    {"$unset": "_id"},
     {
-        "$project": {
-            "id": 1,
-            "displayName": 1,
-            "fullName": 1,
-            "email": 1,
-            "phoneNumber": 1,
-            "cpf": 1,
-            "createdAt": 1,
-            "birthDate": 1,
-            "validadoReceita": 1,
-            "ano_particao": 1,
-            "mes_particao": 1,
+        "$unset": "_id",
+    },
+    {
+        "$addFields": {
             "federalRevenueData": {
                 "$function": {
                     "lang": "js",

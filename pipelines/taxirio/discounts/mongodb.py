@@ -7,7 +7,7 @@ pipeline = [
             "id": {"$toString": "$_id"},
             "description": 1,
             "value": {"$toString": "$value"},
-            "createdAt": {"$toString": "$createdAt"},
+            "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
         },
     },
     {

@@ -18,7 +18,7 @@ from pipelines.constants import constants
 #####################################
 
 _alvaras_infra_query = {
-    "classificacao": {
+    "dim_atividade_processo": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -26,205 +26,25 @@ _alvaras_infra_query = {
         "dump_to_gcs": False,
         "dump_mode": "overwrite",
         "execute_query": """
-            SELECT
-                ID_CLASSIFICACAO,
-                DESCR_CLASSIFICACAO,
-                HIS_ATIVO,
-                CODIFICACAO
-            FROM SIGA.VW_CLASSIFICACAO
+            SELECT DISTINCT
+                        modelo.code [ID_AtvProcesso],
+                        modelo.NAME [DSC_AtvProcesso],
+                        CASE WHEN modelo.code IN ('_FACCFF13-C8D0-42AC-A64E-A4A0A484BA1A', '_1D641535-BF01-4463-9ED7-2EA98BE86C20',
+                                                '_1CE33725-EEFE-49B7-ABC4-02F6BAA05E1A', '_23C3C406-1970-4889-A815-792EB989027F',
+                                                '_A0B24915-2A13-4A7D-A0A0-43F55B2B3D8D', '_498B08C5-87E0-49C8-AA31-1F961E40D1C8', 
+                                                '_9703B4AA-6258-4725-B063-030BCDE277DE', '_A693D497-79A7-4E6B-A146-30126783852E') 
+                                                THEN 'Atividades do Requerente'
+                                                    ELSE 'Atividades da PCRJ'
+                                                        END AS [DSC_RespAtividade],
+                        modeloDoProcesso.NAME [DSC_RefAtividade]
+                        FROM ActivityModel modelo WITH (NOLOCK)
+                        INNER JOIN Activity atividade WITH (NOLOCK) ON atividade.model_neoId = modelo.neoId
+                        INNER JOIN WFProcess wfprocess WITH (NOLOCK) ON atividade.process_neoId = wfprocess.neoId
+                        INNER JOIN ProcessModel modeloDoProcesso WITH (NOLOCK) ON wfprocess.model_neoId = modeloDoProcesso.neoId
+                        WHERE modelo.code IS NOT NULL
+                        UNION ALL SELECT 'N/A','N/A','N/A','N/A';
         """,
-    },
-    "documento_tempo": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                SIGLA_DOC,
-                DT_PRIMEIRAASSINATURA,
-                ULTIMO_ID_MOV,
-                DT_FINALIZACAO,
-                ARQUIVADO,
-                ID_MOBIL,
-                TEMPO_TRAMITACAO,
-                ID_LOTA_RESP,
-                LOTACAO_RESP,
-                DATA_COM_RESP_ATUAL
-            FROM SIGA.DOCUMENTOS_TEMPO
-        """,
-    },
-    "forma_documento": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_FORMA_DOC,
-                DESCR_FORMA_DOC,
-                SIGLA_FORMA_DOC,
-                ID_TIPO_FORMA_DOC
-            FROM SIGA.VW_FORMA_DOCUMENTO
-        """,
-    },
-    "lotacao": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_LOTACAO,
-                DATA_INI_LOT,
-                DATA_FIM_LOT,
-                NOME_LOTACAO,
-                ID_LOTACAO_PAI,
-                SIGLA_LOTACAO,
-                ID_ORGAO_USU,
-                IS_EXTERNA_LOTACAO
-            FROM CORPORATIVO.VW_LOTACAO
-        """,
-    },
-    "mobil": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_MOBIL,
-                ID_DOC
-            FROM SIGA.VW_MOBIL
-        """,
-    },
-    "mobil_tipo": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                *
-            FROM SIGA.VW_TIPO_MOBIL
-        """,
-    },
-    "modelo": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_MOD,
-                NM_MOD,
-                DESC_MOD,
-                HIS_ID_INI,
-                HIS_IDC_INI,
-                HIS_IDC_FIM,
-                HIS_ATIVO,
-                IS_PETICIONAMENTO
-            FROM SIGA.VW_MODELO
-        """,
-    },
-    "movimentacao": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "append",
-        "partition_columns": "DT_MOV",
-        "partition_date_format": "%Y-%m-%d",
-        "lower_bound_date": "current_month",
-        "execute_query": """
-            SELECT
-                ID_MOV,
-                ID_TP_MOV,
-                ID_CADASTRANTE,
-                ID_LOTA_CADASTRANTE,
-                CAST(CAST(DT_MOV AS VARCHAR(23)) AS DATE) DT_MOV,
-                CAST(CAST(DT_FIM_MOV AS VARCHAR(23)) AS DATE) DT_FIM_MOV,
-                ID_MOV_REF,
-                ID_MOBIL
-            FROM SIGA.VW_MOVIMENTACAO
-        """,
-    },
-    "movimentacao_tipo": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                *
-            FROM SIGA.VW_TIPO_MOVIMENTACAO
-        """,
-    },
-    "nivel_acesso": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_NIVEL_ACESSO,
-                NM_NIVEL_ACESSO
-            FROM SIGA.VW_NIVEL_ACESSO
-        """,
-    },
-    "orgao_usuario": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "overwrite",
-        "execute_query": """
-            SELECT
-                ID_ORGAO_USU,
-                NM_ORGAO_USU,
-                SIGLA_ORGAO_USU,
-                COD_ORGAO_USU,
-                IS_EXTERNO_ORGAO_USU,
-                HIS_ATIVO,
-                IS_PETICIONAMENTO
-            FROM CORPORATIVO.VW_ORGAO_USUARIO
-        """,
-    },
-    "documento": {
-        "biglake_table": True,
-        "materialize_after_dump": True,
-        "materialization_mode": "prod",
-        "materialize_to_datario": False,
-        "dump_to_gcs": False,
-        "dump_mode": "append",
-        "partition_columns": "DT_DOC",
-        "partition_date_format": "%Y-%m-%d",
-        "lower_bound_date": "current_month",
-        "execute_query": """
-            SELECT
-                *
-            FROM SIGA.VW_DOCUMENTO
-        """,
-        "dbt_alias": True,
-    },
+    }
 }
 
 alvaras_infra_clocks = generate_dump_db_schedules(

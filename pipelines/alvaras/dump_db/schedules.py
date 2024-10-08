@@ -31,8 +31,8 @@ _alvaras_infra_query = {
                         modelo.NAME [DSC_AtvProcesso],
                         CASE WHEN modelo.code IN ('_FACCFF13-C8D0-42AC-A64E-A4A0A484BA1A', '_1D641535-BF01-4463-9ED7-2EA98BE86C20',
                                                 '_1CE33725-EEFE-49B7-ABC4-02F6BAA05E1A', '_23C3C406-1970-4889-A815-792EB989027F',
-                                                '_A0B24915-2A13-4A7D-A0A0-43F55B2B3D8D', '_498B08C5-87E0-49C8-AA31-1F961E40D1C8', 
-                                                '_9703B4AA-6258-4725-B063-030BCDE277DE', '_A693D497-79A7-4E6B-A146-30126783852E') 
+                                                '_A0B24915-2A13-4A7D-A0A0-43F55B2B3D8D', '_498B08C5-87E0-49C8-AA31-1F961E40D1C8',
+                                                '_9703B4AA-6258-4725-B063-030BCDE277DE', '_A693D497-79A7-4E6B-A146-30126783852E')
                                                 THEN 'Atividades do Requerente'
                                                     ELSE 'Atividades da PCRJ'
                                                         END AS [DSC_RespAtividade],
@@ -44,7 +44,7 @@ _alvaras_infra_query = {
                         WHERE modelo.code IS NOT NULL
                         UNION ALL SELECT 'N/A','N/A','N/A','N/A';
         """,
-    }
+    },
 }
 
 alvaras_infra_clocks = generate_dump_db_schedules(

@@ -23,15 +23,8 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "passenger": {"$toString": "$passenger"},
                 "city": {"$toString": "$city"},
                 "broadcastQtd": {"$toString": "$broadcastQtd"},
-                "routeOriginDestination": 1,
                 "rating": 1,
-                "tolls": {
-                    "$map": {
-                        "input": "$tolls",
-                        "as": "toll",
-                        "in": {"$toString": "$$toll"},
-                    },
-                },
+                "tolls": 1,
                 "isSuspect": {"$toString": "$isSuspect"},
                 "isInvalid": {"$toString": "$isInvalid"},
                 "billing": {
@@ -48,10 +41,20 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 },
                 "geolocation": 1,
                 "status": 1,
-                "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
-                "finishedAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$finishedAt"}},
+                "createdAt": {"$dateToString": {"date": "$createdAt"}},
+                "finishedAt": {"$dateToString": {"date": "$finishedAt"}},
                 "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
                 "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
+                "routeOriginDestination": {
+                    "distance": {
+                        "text": "$routeOriginDestination.distance.text",
+                        "value": "$routeOriginDestination.distance.value",
+                    },
+                    "duration": {
+                        "text": "$routeOriginDestination.duration.text",
+                        "value": "$routeOriginDestination.duration.value",
+                    },
+                },
             },
         },
         {

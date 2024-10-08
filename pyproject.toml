@@ -61,14 +61,15 @@ select = ["ALL"]
 fixable = ["ALL"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 ignore = [
-  "ANN101", # missing type annotation for self in method
-  "ARG001", # unused function argument
-  "D100",   # missing docstring in public module
-  "D103",   # missing docstring in public function
-  "D203",   # 1 blank line required before class docstring
-  "D212",   # multiline summary in first line
-  "S603",   # subprocess call - check for execution of untrusted input
-  "T201",   # print statement used in code
+  "ANN101",  # missing type annotation for self in method
+  "ARG001",  # unused function argument
+  "D100",    # missing docstring in public module
+  "D103",    # missing docstring in public function
+  "D203",    # 1 blank line required before class docstring
+  "D212",    # multiline summary in first line
+  "PLR0913", # too many arguments in function definition
+  "S603",    # subprocess call - check for execution of untrusted input
+  "T201",    # print statement used in code
 ]
 
 [tool.ruff.format]

@@ -1,1 +1,1 @@
-from pipelines.alvaras.dump_db import * # noqa
+from pipelines.alvaras.dump_db import *  # noqa

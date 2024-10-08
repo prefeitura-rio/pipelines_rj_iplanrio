@@ -28,18 +28,30 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "isSuspect": {"$toString": "$isSuspect"},
                 "isInvalid": {"$toString": "$isInvalid"},
                 "billing": {
-                    "estimatedPrice": {"$toString": "$billing.estimatedPrice"},
+                    "estimatedPrice": 1,
                     "associatedPaymentMethod": {"$toString": "$billing.associatedPaymentMethod"},
                     "associatedTaximeter": {"$toString": "$billing.associatedTaximeter"},
                     "associatedMinimumFare": {"$toString": "$billing.associatedMinimumFare"},
                     "associatedDiscount": {"$toString": "$billing.associatedDiscount"},
-                    "associatedCorporative": {
-                        "externalPropertyPassenger": {
-                            "$toString": "$billing.associatedCorporative.externalPropertyPassenger",
+                    "associatedCorporative": 1,
+                },
+                "geolocation": {
+                    "passenger": 1,
+                    "driver": 1,
+                    "effective": 1,
+                    "waypoints": {
+                        "$map": {
+                            "input": "$geolocation.waypoints",
+                            "as": "waypoint",
+                            "in": {
+                                "position": "$$waypoint.position",
+                                "accuracy": "$$waypoint.accuracy",
+                                "speed": "$$waypoint.speed",
+                                "ts": {"$dateToString": {"date": "$$waypoint.ts"}},
+                            },
                         },
                     },
                 },
-                "geolocation": 1,
                 "status": 1,
                 "createdAt": {"$dateToString": {"date": "$createdAt"}},
                 "finishedAt": {"$dateToString": {"date": "$finishedAt"}},

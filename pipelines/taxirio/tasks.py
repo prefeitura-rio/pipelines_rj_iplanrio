@@ -71,7 +71,7 @@ def dump_collection_from_mongodb_per_month(
     path: str,
     generate_pipeline: Callable,
     schema: Schema,
-    freq: str = "2M",
+    freq: str,
     partition_cols: list[str] | None = None,
 ) -> Path:
     """Dump a collection from MongoDB per month."""

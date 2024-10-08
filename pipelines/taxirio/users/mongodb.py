@@ -27,7 +27,7 @@ pipeline = [
                 "$function": {
                     "lang": "js",
                     "args": ["$federalRevenueData"],
-                    "body": "function(federalRevenueData) { return JSON.stringify(federalRevenueData); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
         },

@@ -229,7 +229,7 @@ _alvaras_infra_query = {
 
 alvaras_infra_clocks = generate_dump_db_schedules(
     interval=timedelta(days=1),
-    start_date=datetime(2022, 3, 21, 2, 0, tzinfo=pytz.timezone("America/Sao_Paulo")), # noqa
+    start_date=datetime(2022, 3, 21, 2, 0, tzinfo=pytz.timezone("America/Sao_Paulo")),
     labels=[
         constants.RJ_IPLANRIO_AGENT_LABEL.value,
     ],
@@ -242,6 +242,4 @@ alvaras_infra_clocks = generate_dump_db_schedules(
     table_parameters=_alvaras_infra_query,
 )
 
-alvaras_infra_daily_update_schedule = Schedule(clocks=untuple(alvaras_infra_clocks)) # noqa
-
-
+alvaras_infra_daily_update_schedule = Schedule(clocks=untuple(alvaras_infra_clocks))

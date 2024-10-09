@@ -18,8 +18,8 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
         {
             "$project": {
                 "id": {"$toString": "$_id"},
-                "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
-                "updatedAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$updatedAt"}},
+                "createdAt": {"$dateToString": {"date": "$createdAt"}},
+                "updatedAt": {"$dateToString": {"date": "$updatedAt"}},
                 "race": {"$toString": "$race"},
                 "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
                 "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
@@ -32,11 +32,7 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                             "id": {"$toString": "$$competitor._id"},
                             "rankingRaceStatus": "$$competitor.rankingRaceStatus",
                             "distance": {"$toString": "$$competitor.distance"},
-                            "acceptedLocation": {
-                                "formattedAddress": "$$competitor.acceptedLocation.formattedAddress",
-                                "lat": {"$toString": "$$competitor.acceptedLocation.lat"},
-                                "lng": {"$toString": "$$competitor.acceptedLocation.lng"},
-                            },
+                            "acceptedLocation": "$$competitor.acceptedLocation",
                         },
                     },
                 },
@@ -51,7 +47,7 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                     "$function": {
                         "lang": "js",
                         "args": ["$competitors"],
-                        "body": "function(competitors) { return JSON.stringify(competitors); }",
+                        "body": "function(x) { return JSON.stringify(x); }",
                     },
                 },
             },

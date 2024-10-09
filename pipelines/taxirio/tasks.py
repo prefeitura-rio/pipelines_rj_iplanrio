@@ -71,7 +71,7 @@ def dump_collection_from_mongodb_per_month(
     path: str,
     generate_pipeline: Callable,
     schema: Schema,
-    freq: str = "2M",
+    freq: str,
     partition_cols: list[str] | None = None,
 ) -> Path:
     """Dump a collection from MongoDB per month."""
@@ -85,11 +85,14 @@ def dump_collection_from_mongodb_per_month(
 
     utils.log("Generating pipelines for each month")
     dates = utils.get_date_range(start=start, end=end, freq=freq)
-    pipelines = [generate_pipeline(start, end) for start, end in pairwise(dates)]
 
-    for pipeline in pipelines:
-        utils.log("Aggregating data from MongoDB")
-        data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
+    for start, end in pairwise(dates):
+        utils.log(f"Aggregating data from MongoDB for {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}")
+        data = aggregate_arrow_all(
+            collection,
+            pipeline=generate_pipeline(start, end),
+            schema=schema,
+        )
 
         utils.log("Writing data to disk")
         utils.write_data_to_disk(data, root_path, collection.name, partition_cols)

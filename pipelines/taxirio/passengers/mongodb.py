@@ -27,14 +27,14 @@ pipeline = [
                 "$function": {
                     "lang": "js",
                     "args": ["$tokenInfo"],
-                    "body": "function(tokenInfo) { return JSON.stringify(tokenInfo); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
             "infoPhone": {
                 "$function": {
                     "lang": "js",
                     "args": ["$infoPhone"],
-                    "body": "function(infoPhone) { return JSON.stringify(infoPhone); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
         },

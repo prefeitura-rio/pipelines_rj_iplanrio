@@ -85,11 +85,14 @@ def dump_collection_from_mongodb_per_month(
 
     utils.log("Generating pipelines for each month")
     dates = utils.get_date_range(start=start, end=end, freq=freq)
-    pipelines = [generate_pipeline(start, end) for start, end in pairwise(dates)]
 
-    for pipeline in pipelines:
-        utils.log("Aggregating data from MongoDB")
-        data = aggregate_arrow_all(collection, pipeline=pipeline, schema=schema)
+    for start, end in pairwise(dates):
+        utils.log(f"Aggregating data from MongoDB for {start} to {end}")
+        data = aggregate_arrow_all(
+            collection,
+            pipeline=generate_pipeline(start, end),
+            schema=schema,
+        )
 
         utils.log("Writing data to disk")
         utils.write_data_to_disk(data, root_path, collection.name, partition_cols)

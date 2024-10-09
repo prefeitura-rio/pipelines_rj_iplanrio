@@ -87,7 +87,7 @@ def dump_collection_from_mongodb_per_month(
     dates = utils.get_date_range(start=start, end=end, freq=freq)
 
     for start, end in pairwise(dates):
-        utils.log(f"Aggregating data from MongoDB for {start} to {end}")
+        utils.log(f"Aggregating data from MongoDB for {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}")
         data = aggregate_arrow_all(
             collection,
             pipeline=generate_pipeline(start, end),

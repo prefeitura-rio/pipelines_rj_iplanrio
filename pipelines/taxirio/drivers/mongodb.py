@@ -72,35 +72,35 @@ pipeline = [
                 "$function": {
                     "lang": "js",
                     "args": ["$cars"],
-                    "body": "function(cars) { return JSON.stringify(cars); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
             "associatedPaymentsMethods": {
                 "$function": {
                     "lang": "js",
                     "args": ["$associatedPaymentsMethods"],
-                    "body": "function(associatedPaymentsMethods) { return JSON.stringify(associatedPaymentsMethods); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
             "associatedRace": {
                 "$function": {
                     "lang": "js",
                     "args": ["$associatedRace"],
-                    "body": "function(associatedRace) { return JSON.stringify(associatedRace); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
             "infoPhone": {
                 "$function": {
                     "lang": "js",
                     "args": ["$infoPhone"],
-                    "body": "function(infoPhone) { return JSON.stringify(infoPhone); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
             "tokenInfo": {
                 "$function": {
                     "lang": "js",
                     "args": ["$tokenInfo"],
-                    "body": "function(tokenInfo) { return JSON.stringify(tokenInfo); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
         },

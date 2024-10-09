@@ -14,14 +14,14 @@ pipeline = [
                 "$function": {
                     "lang": "js",
                     "args": ["$serviceStations"],
-                    "body": "function(serviceStations) { return JSON.stringify(serviceStations); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
             "geometry": {
                 "$function": {
                     "lang": "js",
                     "args": ["$geometry"],
-                    "body": "function(geometry) { return JSON.stringify(geometry); }",
+                    "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
         },

@@ -19,7 +19,6 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
             "$project": {
                 "id": {"$toString": "$_id"},
                 "event": {"$toString": "$event"},
-                "estimatedDuration": {"$toString": "$estimatedDuration"},
                 "passenger": {"$toString": "$passenger"},
                 "city": {"$toString": "$city"},
                 "broadcastQtd": {"$toString": "$broadcastQtd"},
@@ -34,23 +33,6 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                     "associatedMinimumFare": {"$toString": "$billing.associatedMinimumFare"},
                     "associatedDiscount": {"$toString": "$billing.associatedDiscount"},
                     "associatedCorporative": 1,
-                },
-                "geolocation": {
-                    "passenger": 1,
-                    "driver": 1,
-                    "effective": 1,
-                    "waypoints": {
-                        "$map": {
-                            "input": "$geolocation.waypoints",
-                            "as": "waypoint",
-                            "in": {
-                                "position": "$$waypoint.position",
-                                "accuracy": "$$waypoint.accuracy",
-                                "speed": "$$waypoint.speed",
-                                "ts": {"$dateToString": {"date": "$$waypoint.ts"}},
-                            },
-                        },
-                    },
                 },
                 "status": 1,
                 "createdAt": {"$dateToString": {"date": "$createdAt"}},
@@ -95,13 +77,6 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                         "body": "function(x) { return JSON.stringify(x); }",
                     },
                 },
-                "geolocation": {
-                    "$function": {
-                        "lang": "js",
-                        "args": ["$geolocation"],
-                        "body": "function(x) { return JSON.stringify(x); }",
-                    },
-                },
                 "routeOriginDestination": {
                     "$function": {
                         "lang": "js",
@@ -122,7 +97,6 @@ schema = Schema(
         "ano_particao": string(),
         "mes_particao": string(),
         "event": string(),
-        "estimatedDuration": string(),
         "passenger": string(),
         "city": string(),
         "broadcastQtd": string(),
@@ -132,7 +106,6 @@ schema = Schema(
         "isSuspect": string(),
         "isInvalid": string(),
         "billing": string(),
-        "geolocation": string(),
         "status": string(),
     },
 )

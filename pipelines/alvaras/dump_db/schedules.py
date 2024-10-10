@@ -46,7 +46,7 @@ _alvaras_infra_query = {
                 DSC_IsentoTaxa,
                 DSC_Numero float,
                 DSC_AlvaraLiberado
-            FROM DW_BI_ALVARAS.dbo.TAB_ALVARA
+            FROM DW_BI_ALVARAS.dbo.TAB_ALVARA;
         """,
     },
 }

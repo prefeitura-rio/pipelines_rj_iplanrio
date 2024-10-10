@@ -93,7 +93,6 @@ schema = Schema(
     {
         "id": string(),
         "createdAt": string(),
-        "updatedAt": string(),
         "ano_particao": string(),
         "mes_particao": string(),
         "event": string(),

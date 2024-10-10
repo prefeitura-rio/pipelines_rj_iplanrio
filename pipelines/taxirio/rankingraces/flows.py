@@ -24,7 +24,7 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__rankingraces__flow:
     path = Parameter("path", default="output")
-    frequency = Parameter("frequency", default="M")
+    frequency = Parameter("frequency", default="15D")
 
     connection = get_mongodb_connection_string()
 

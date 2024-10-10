@@ -1,45 +1,59 @@
+from datetime import datetime
+from typing import Any
+
 from pyarrow import string
 from pymongoarrow.api import Schema
 
-pipeline = [
-    {
-        "$project": {
-            "id": {"$toString": "$_id"},
-            "user": {"$toString": "$user"},
-            "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
-            "login": 1,
-            "password": 1,
-            "salt": 1,
-            "isAbleToUsePaymentInApp": {"$toString": "$isAbleToUsePaymentInApp"},
-            "tokenInfo": 1,
-            "infoPhone": 1,
-            "validadoReceita": {"$toString": "$validadoReceita"},
-            "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
-            "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
-        },
-    },
-    {
-        "$unset": "_id",
-    },
-    {
-        "$addFields": {
-            "tokenInfo": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$tokenInfo"],
-                    "body": "function(x) { return JSON.stringify(x); }",
-                },
-            },
-            "infoPhone": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$infoPhone"],
-                    "body": "function(x) { return JSON.stringify(x); }",
+
+def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
+    return [
+        {
+            "$match": {
+                "createdAt": {
+                    "$gte": start,
+                    "$lt": end,
                 },
             },
         },
-    },
-]
+        {
+            "$project": {
+                "id": {"$toString": "$_id"},
+                "user": {"$toString": "$user"},
+                "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
+                "login": 1,
+                "password": 1,
+                "salt": 1,
+                "isAbleToUsePaymentInApp": {"$toString": "$isAbleToUsePaymentInApp"},
+                "tokenInfo": 1,
+                "infoPhone": 1,
+                "validadoReceita": {"$toString": "$validadoReceita"},
+                "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
+                "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
+            },
+        },
+        {
+            "$unset": "_id",
+        },
+        {
+            "$addFields": {
+                "tokenInfo": {
+                    "$function": {
+                        "lang": "js",
+                        "args": ["$tokenInfo"],
+                        "body": "function(x) { return JSON.stringify(x); }",
+                    },
+                },
+                "infoPhone": {
+                    "$function": {
+                        "lang": "js",
+                        "args": ["$infoPhone"],
+                        "body": "function(x) { return JSON.stringify(x); }",
+                    },
+                },
+            },
+        },
+    ]
+
 
 schema = Schema(
     {

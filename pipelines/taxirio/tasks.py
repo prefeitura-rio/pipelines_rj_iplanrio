@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from datetime import datetime, timedelta
 from itertools import pairwise
 from pathlib import Path
 from typing import Any
@@ -8,8 +9,10 @@ from prefeitura_rio.pipelines_utils.infisical import get_secret
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongoarrow.api import Schema, aggregate_arrow_all
+from pytz import timezone
 
 from pipelines import utils
+from pipelines.constants import constants
 from pipelines.taxirio.constants import Constants
 
 
@@ -43,6 +46,20 @@ def get_mongodb_collection(client: MongoClient, database: str, collection: str) 
 
 
 @task(checkpoint=False)
+def get_dates_for_dump_mode(dump_mode: str, collection: Collection) -> tuple[datetime, datetime]:
+    """Get dates based on dump mode."""
+    if dump_mode == "overwrite":
+        start = utils.get_mongodb_date_in_collection(collection, order=1)
+        end = utils.get_mongodb_date_in_collection(collection, order=-1)
+
+        return start, end + timedelta(days=30)
+
+    today = datetime.now().astimezone(timezone(constants.TIMEZONE.value))
+
+    return today - timedelta(days=1), today + timedelta(days=1)
+
+
+@task(checkpoint=False)
 def dump_collection_from_mongodb(
     collection: Collection,
     path: str,
@@ -72,6 +89,8 @@ def dump_collection_from_mongodb_per_month(
     generate_pipeline: Callable,
     schema: Schema,
     freq: str,
+    start_date: datetime,
+    end_date: datetime,
     partition_cols: list[str] | None = None,
 ) -> Path:
     """Dump a collection from MongoDB per month."""
@@ -80,14 +99,21 @@ def dump_collection_from_mongodb_per_month(
     root_path = Path(path)
     root_path.mkdir(exist_ok=True)
 
-    start = utils.get_mongodb_earliest_date_in_collection(collection)
-    end = utils.get_mongodb_latest_date_in_collection(collection)
-
     utils.log("Generating pipelines for each month")
-    dates = utils.get_date_range(start=start, end=end, freq=freq)
+    dates = utils.get_date_range(
+        start=start_date,
+        end=end_date,
+        freq=freq,
+    )
 
     for start, end in pairwise(dates):
-        utils.log(f"Aggregating data from MongoDB for {start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')}")
+        utils.log(
+            "Aggregating data from MongoDB for {} to {}".format(
+                start.strftime("%Y-%m-%d"),
+                end.strftime("%Y-%m-%d"),
+            ),
+        )
+
         data = aggregate_arrow_all(
             collection,
             pipeline=generate_pipeline(start, end),

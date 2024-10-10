@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime
-from functools import partial
 from pathlib import Path
 
 import pandas as pd
@@ -53,12 +52,12 @@ def get_mongodb_date_in_collection(collection: Collection, order: int) -> dateti
 def get_date_range(
     start: datetime,
     end: datetime,
-    freq: str = "2M",
+    freq: str,
 ) -> pd.DatetimeIndex:
     """Get a date range between two dates."""
     return pd.date_range(
         start=start,
-        end=end + pd.Timedelta(days=60),
+        end=end,
         freq=freq,
         normalize=True,
         tz=timezone(constants.TIMEZONE.value),
@@ -83,7 +82,3 @@ def write_data_to_disk(
         )
     else:
         pq.write_table(table=data, where=root_path / f"{collection_name}.parquet")
-
-
-get_mongodb_earliest_date_in_collection = partial(get_mongodb_date_in_collection, order=1)
-get_mongodb_latest_date_in_collection = partial(get_mongodb_date_in_collection, order=-1)

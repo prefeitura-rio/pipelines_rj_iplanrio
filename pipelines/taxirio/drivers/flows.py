@@ -24,6 +24,7 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__drivers__flow:
     path = Parameter("path", default="output")
+    frequency = Parameter("frequency", default="2M")
 
     connection = get_mongodb_connection_string()
 

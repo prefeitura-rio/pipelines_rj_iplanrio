@@ -24,6 +24,7 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__passengers__flow:
     path = Parameter("path", default="output")
+    frequency = Parameter("frequency", default="2M")
 
     connection = get_mongodb_connection_string()
 
@@ -39,6 +40,7 @@ with Flow(
         collection=collection,
         path=path,
         schema=schema,
+        freq=frequency,
         generate_pipeline=generate_pipeline,
         partition_cols=["ano_particao", "mes_particao"],
     )

@@ -17,13 +17,6 @@ pipeline = [
                     "body": "function(x) { return JSON.stringify(x); }",
                 },
             },
-            "geometry": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$geometry"],
-                    "body": "function(x) { return JSON.stringify(x); }",
-                },
-            },
         },
     },
     {
@@ -40,6 +33,5 @@ schema = Schema(
         "isAbleToUsePaymentInApp": string(),
         "loginLabel": string(),
         "serviceStations": string(),
-        "geometry": string(),
     },
 )

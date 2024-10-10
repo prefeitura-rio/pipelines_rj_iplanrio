@@ -5,32 +5,25 @@ pipeline = [
     {
         "$project": {
             "id": {"$toString": "$_id"},
+            "createdAt": {"$dateToString": {"date": "$createdAt"}},
+            "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
+            "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
             "displayName": 1,
             "fullName": 1,
             "email": 1,
             "phoneNumber": 1,
             "cpf": 1,
-            "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
-            "birthDate": {"$dateToString": {"format": "%Y-%m-%d", "date": "$birthDate"}},
-            "federalRevenueData": 1,
             "validadoReceita": {"$toString": "$validadoReceita"},
-            "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
-            "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
+            "federalRevenueData_name": "$federalRevenueData.name",
+            "federalRevenueData_birthDate": "$federalRevenueData.birthDate",
+            "federalRevenueData_mothersName": "$federalRevenueData.mothersName",
+            "federalRevenueData_yearOfDeath": {"$toString": "$federalRevenueData.yearOfDeath"},
+            "federalRevenueData_phone": "$federalRevenueData.phone",
+            "federalRevenueData_sex": "$federalRevenueData.sex",
         },
     },
     {
         "$unset": "_id",
-    },
-    {
-        "$addFields": {
-            "federalRevenueData": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$federalRevenueData"],
-                    "body": "function(x) { return JSON.stringify(x); }",
-                },
-            },
-        },
     },
 ]
 
@@ -45,8 +38,13 @@ schema = Schema(
         "createdAt": string(),
         "birthDate": string(),
         "validadoReceita": string(),
-        "federalRevenueData": string(),
         "ano_particao": string(),
         "mes_particao": string(),
+        "federalRevenueData_name": string(),
+        "federalRevenueData_birthDate": string(),
+        "federalRevenueData_mothersName": string(),
+        "federalRevenueData_yearOfDeath": string(),
+        "federalRevenueData_phone": string(),
+        "federalRevenueData_sex": string(),
     },
 )

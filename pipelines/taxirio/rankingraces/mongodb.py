@@ -20,9 +20,9 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "id": {"$toString": "$_id"},
                 "createdAt": {"$dateToString": {"date": "$createdAt"}},
                 "updatedAt": {"$dateToString": {"date": "$updatedAt"}},
-                "race": {"$toString": "$race"},
                 "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
                 "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
+                "race": {"$toString": "$race"},
                 "competitors": {
                     "$map": {
                         "input": "$competitors",

@@ -12,6 +12,7 @@ from pipelines.taxirio.passengers.mongodb import generate_pipeline, schema
 from pipelines.taxirio.schedules import every_week
 from pipelines.taxirio.tasks import (
     dump_collection_from_mongodb_per_month,
+    get_dates_for_dump_mode,
     get_mongodb_client,
     get_mongodb_collection,
     get_mongodb_connection_string,
@@ -24,10 +25,10 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__passengers__flow:
     path = Parameter("path", default="output")
-    frequency = Parameter("frequency", default="2M")
+    freq = Parameter("frequency", default="D")
+    dump_mode = Parameter("dump_mode", default="append")
 
     connection = get_mongodb_connection_string()
-
     client = get_mongodb_client(connection)
 
     collection = get_mongodb_collection(
@@ -36,26 +37,30 @@ with Flow(
         Passengers.TABLE_ID.value,
     )
 
+    start_date, end_date = get_dates_for_dump_mode(dump_mode, collection)
+
     data_path = dump_collection_from_mongodb_per_month(
         collection=collection,
         path=path,
-        schema=schema,
-        freq=frequency,
         generate_pipeline=generate_pipeline,
+        schema=schema,
+        freq=freq,
+        start_date=start_date,
+        end_date=end_date,
         partition_cols=["ano_particao", "mes_particao"],
     )
 
     create_table_and_upload_to_gcs(
         data_path=data_path,
         dataset_id=TaxiRio.DATASET_ID.value,
-        dump_mode="overwrite",
+        dump_mode=dump_mode,
         source_format="parquet",
         table_id=Passengers.TABLE_ID.value,
     )
 
 rj_iplanrio__taxirio__passengers__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
 
-rj_iplanrio__taxirio__passengers__flow.schedule = every_week(2024, 9, 3)
+rj_iplanrio__taxirio__passengers__flow.schedule = every_week(2024, 9, 10)
 
 rj_iplanrio__taxirio__passengers__flow.run_config = KubernetesRun(
     image=constants.DOCKER_IMAGE.value,

@@ -1,111 +1,125 @@
+from datetime import datetime
+from typing import Any
+
 from pyarrow import string
 from pymongoarrow.api import Schema
 
-pipeline = [
-    {
-        "$project": {
-            "id": {"$toString": "$_id"},
-            "user": {"$toString": "$user"},
-            "taxiDriverId": 1,
-            "cars": {
-                "$map": {
-                    "input": "$cars",
-                    "as": "car",
-                    "in": {"$toString": "$$car"},
+
+def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
+    return [
+        {
+            "$match": {
+                "createdAt": {
+                    "$gte": start,
+                    "$lt": end,
                 },
             },
-            "average": {"$toString": "$average"},
-            "associatedCar": {"$toString": "$associatedCar"},
-            "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
-            "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
-            "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
-            "status": 1,
-            "associatedDiscount": {"$toString": "$associatedDiscount"},
-            "associatedPaymentsMethods": {
-                "$map": {
-                    "input": "$associatedPaymentsMethods",
-                    "as": "paymentMethod",
-                    "in": {"$toString": "$$paymentMethod"},
-                },
-            },
-            "login": 1,
-            "password": 1,
-            "salt": 1,
-            "isAbleToReceivePaymentInApp": {"$toString": "$isAbleToReceivePaymentInApp"},
-            "isAbleToReceivePaymentInCityHall": {"$toString": "$isAbleToReceivePaymentInCityHall"},
-            "ratingsReceived": {"$toString": "$ratingsReceived"},
-            "busy": {"$toString": "$busy"},
-            "associatedRace": {
-                "originAtAccepted": {
-                    "position": {
-                        "lng": "$associatedRace.originAtAccepted.position.lng",
-                        "lat": "$associatedRace.originAtAccepted.position.lat",
+        },
+        {
+            "$project": {
+                "id": {"$toString": "$_id"},
+                "user": {"$toString": "$user"},
+                "taxiDriverId": 1,
+                "cars": {
+                    "$map": {
+                        "input": "$cars",
+                        "as": "car",
+                        "in": {"$toString": "$$car"},
                     },
                 },
-                "race": {"$toString": "$associatedRace.race"},
-            },
-            "lastAverage": {"$toString": "$lastAverage"},
-            "expiredBlockByRankingDate": {"$toString": "$expiredBlockByRankingDate"},
-            "blockedRace": {"$toString": "$blockedRace"},
-            "infoPhone": {
-                "updatedAt": "$infoPhone.updatedAt",
-                "id": {"$toString": "$infoPhone._id"},
-                "appVersion": "$infoPhone.appVersion",
-                "phoneModel": "$infoPhone.phoneModel",
-                "phoneManufacturer": "$infoPhone.phoneManufacturer",
-                "osVersion": "$infoPhone.osVersion",
-                "osName": "$infoPhone.osName",
-            },
-            "tokenInfo": 1,
-            "city": {"$toString": "$city"},
-            "serviceRecordRate": {"$toString": "$serviceRecordRate"},
-            "nota": {"$toString": "$nota"},
-            "averageTT": {"$toString": "$averageTT"},
-        },
-    },
-    {
-        "$unset": "_id",
-    },
-    {
-        "$addFields": {
-            "cars": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$cars"],
-                    "body": "function(x) { return JSON.stringify(x); }",
+                "average": {"$toString": "$average"},
+                "associatedCar": {"$toString": "$associatedCar"},
+                "createdAt": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}},
+                "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
+                "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
+                "status": 1,
+                "associatedDiscount": {"$toString": "$associatedDiscount"},
+                "associatedPaymentsMethods": {
+                    "$map": {
+                        "input": "$associatedPaymentsMethods",
+                        "as": "paymentMethod",
+                        "in": {"$toString": "$$paymentMethod"},
+                    },
                 },
-            },
-            "associatedPaymentsMethods": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$associatedPaymentsMethods"],
-                    "body": "function(x) { return JSON.stringify(x); }",
+                "login": 1,
+                "password": 1,
+                "salt": 1,
+                "isAbleToReceivePaymentInApp": {"$toString": "$isAbleToReceivePaymentInApp"},
+                "isAbleToReceivePaymentInCityHall": {"$toString": "$isAbleToReceivePaymentInCityHall"},
+                "ratingsReceived": {"$toString": "$ratingsReceived"},
+                "busy": {"$toString": "$busy"},
+                "associatedRace": {
+                    "originAtAccepted": {
+                        "position": {
+                            "lng": "$associatedRace.originAtAccepted.position.lng",
+                            "lat": "$associatedRace.originAtAccepted.position.lat",
+                        },
+                    },
+                    "race": {"$toString": "$associatedRace.race"},
                 },
-            },
-            "associatedRace": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$associatedRace"],
-                    "body": "function(x) { return JSON.stringify(x); }",
+                "lastAverage": {"$toString": "$lastAverage"},
+                "expiredBlockByRankingDate": {"$toString": "$expiredBlockByRankingDate"},
+                "blockedRace": {"$toString": "$blockedRace"},
+                "infoPhone": {
+                    "updatedAt": "$infoPhone.updatedAt",
+                    "id": {"$toString": "$infoPhone._id"},
+                    "appVersion": "$infoPhone.appVersion",
+                    "phoneModel": "$infoPhone.phoneModel",
+                    "phoneManufacturer": "$infoPhone.phoneManufacturer",
+                    "osVersion": "$infoPhone.osVersion",
+                    "osName": "$infoPhone.osName",
                 },
-            },
-            "infoPhone": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$infoPhone"],
-                    "body": "function(x) { return JSON.stringify(x); }",
-                },
-            },
-            "tokenInfo": {
-                "$function": {
-                    "lang": "js",
-                    "args": ["$tokenInfo"],
-                    "body": "function(x) { return JSON.stringify(x); }",
-                },
+                "tokenInfo": 1,
+                "city": {"$toString": "$city"},
+                "serviceRecordRate": {"$toString": "$serviceRecordRate"},
+                "nota": {"$toString": "$nota"},
+                "averageTT": {"$toString": "$averageTT"},
             },
         },
-    },
-]
+        {
+            "$unset": "_id",
+        },
+        {
+            "$addFields": {
+                "cars": {
+                    "$function": {
+                        "lang": "js",
+                        "args": ["$cars"],
+                        "body": "function(x) { return JSON.stringify(x); }",
+                    },
+                },
+                "associatedPaymentsMethods": {
+                    "$function": {
+                        "lang": "js",
+                        "args": ["$associatedPaymentsMethods"],
+                        "body": "function(x) { return JSON.stringify(x); }",
+                    },
+                },
+                "associatedRace": {
+                    "$function": {
+                        "lang": "js",
+                        "args": ["$associatedRace"],
+                        "body": "function(x) { return JSON.stringify(x); }",
+                    },
+                },
+                "infoPhone": {
+                    "$function": {
+                        "lang": "js",
+                        "args": ["$infoPhone"],
+                        "body": "function(x) { return JSON.stringify(x); }",
+                    },
+                },
+                "tokenInfo": {
+                    "$function": {
+                        "lang": "js",
+                        "args": ["$tokenInfo"],
+                        "body": "function(x) { return JSON.stringify(x); }",
+                    },
+                },
+            },
+        },
+    ]
+
 
 schema = Schema(
     {

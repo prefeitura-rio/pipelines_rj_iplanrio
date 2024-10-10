@@ -8,10 +8,10 @@ from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 from pipelines.constants import constants
 from pipelines.taxirio.constants import Constants as TaxiRio
 from pipelines.taxirio.passengers.constants import Constants as Passengers
-from pipelines.taxirio.passengers.mongodb import pipeline, schema
+from pipelines.taxirio.passengers.mongodb import generate_pipeline, schema
 from pipelines.taxirio.schedules import every_week
 from pipelines.taxirio.tasks import (
-    dump_collection_from_mongodb,
+    dump_collection_from_mongodb_per_month,
     get_mongodb_client,
     get_mongodb_collection,
     get_mongodb_connection_string,
@@ -35,11 +35,11 @@ with Flow(
         Passengers.TABLE_ID.value,
     )
 
-    data_path = dump_collection_from_mongodb(
+    data_path = dump_collection_from_mongodb_per_month(
         collection=collection,
         path=path,
         schema=schema,
-        pipeline=pipeline,
+        generate_pipeline=generate_pipeline,
         partition_cols=["ano_particao", "mes_particao"],
     )
 

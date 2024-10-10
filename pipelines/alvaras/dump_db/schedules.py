@@ -18,7 +18,7 @@ from pipelines.constants import constants
 #####################################
 
 _alvaras_infra_query = {
-    "dim_atividade_processo": {
+    "tab_alvara": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -26,23 +26,26 @@ _alvaras_infra_query = {
         "dump_to_gcs": False,
         "dump_mode": "overwrite",
         "execute_query": """
-            SELECT DISTINCT
-                        modelo.code [ID_AtvProcesso],
-                        modelo.NAME [DSC_AtvProcesso],
-                        CASE WHEN modelo.code IN ('_FACCFF13-C8D0-42AC-A64E-A4A0A484BA1A', '_1D641535-BF01-4463-9ED7-2EA98BE86C20',
-                                                '_1CE33725-EEFE-49B7-ABC4-02F6BAA05E1A', '_23C3C406-1970-4889-A815-792EB989027F',
-                                                '_A0B24915-2A13-4A7D-A0A0-43F55B2B3D8D', '_498B08C5-87E0-49C8-AA31-1F961E40D1C8',
-                                                '_9703B4AA-6258-4725-B063-030BCDE277DE', '_A693D497-79A7-4E6B-A146-30126783852E')
-                                                THEN 'Atividades do Requerente'
-                                                    ELSE 'Atividades da PCRJ'
-                                                        END AS [DSC_RespAtividade],
-                        modeloDoProcesso.NAME [DSC_RefAtividade]
-                        FROM ActivityModel modelo WITH (NOLOCK)
-                        INNER JOIN Activity atividade WITH (NOLOCK) ON atividade.model_neoId = modelo.neoId
-                        INNER JOIN WFProcess wfprocess WITH (NOLOCK) ON atividade.process_neoId = wfprocess.neoId
-                        INNER JOIN ProcessModel modeloDoProcesso WITH (NOLOCK) ON wfprocess.model_neoId = modeloDoProcesso.neoId
-                        WHERE modelo.code IS NOT NULL
-                        UNION ALL SELECT 'N/A','N/A','N/A','N/A';
+            SELECT  ID_Alvara,
+                    DSC_Alvara,
+                    DSC_Endereco,
+                    DSC_Bairro,
+                    DSC_Zoneamento,
+                    DSC_IRLF,
+                    DSC_TipoAnalise,
+                    DSC_TempoRespDia,
+                    DSC_StatusIntermediario,
+                    DSC_StatusCPL,
+                    DSC_TempoRespMinuto,
+                    DSC_TipoAlvara,
+                    DSC_TaxaOriginal,
+                    DSC_TaxaMulta,
+                    DSC_TaxaMora,
+                    DSC_TaxaTotal,
+                    DSC_IsentoTaxa,
+                    DSC_Numero float,
+                    DSC_AlvaraLiberado
+            FROM    DW_BI_ALVARAS.dbo.TAB_ALVARA
         """,
     },
 }
@@ -54,9 +57,9 @@ alvaras_infra_clocks = generate_dump_db_schedules(
         constants.RJ_IPLANRIO_AGENT_LABEL.value,
     ],
     db_database="DW_BI_ALVARAS",
-    db_host="srv000144.infra.rio.gov.br",
+    db_host="10.70.15.11",
     db_port="1433",
-    db_type="oracle",
+    db_type="sql_server",
     dataset_id="alvaras",
     infisical_secret_path="/db-alvaras",
     table_parameters=_alvaras_infra_query,

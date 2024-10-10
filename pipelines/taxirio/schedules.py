@@ -48,3 +48,24 @@ def every_week(year: int, month: int, day: int) -> Schedule:
             ),
         ],
     )
+
+
+def every_day(year: int, month: int, day: int, hour: int, minute: int) -> Schedule:
+    """Every day schedule."""
+    return Schedule(
+        clocks=[
+            IntervalClock(
+                interval=timedelta(days=1),
+                start_date=datetime(
+                    year=year,
+                    month=month,
+                    day=day,
+                    hour=hour,
+                    minute=minute,
+                    second=0,
+                    tzinfo=timezone(constants.TIMEZONE.value),
+                ),
+                labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
+            ),
+        ],
+    )

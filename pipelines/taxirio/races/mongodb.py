@@ -27,10 +27,9 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "city": {"$toString": "$city"},
                 "broadcastQtd": {"$toString": "$broadcastQtd"},
                 "rating_score": {"$toString": "$rating.score"},
-                "tolls": 1,
                 "isSuspect": {"$toString": "$isSuspect"},
                 "isInvalid": {"$toString": "$isInvalid"},
-                "billing_estimatedPrice": 1,
+                "billing_estimatedPrice": {"$toString": "$billing.estimatedPrice"},
                 "billing_associatedPaymentMethod": {"$toString": "$billing.associatedPaymentMethod"},
                 "billing_associatedTaximeter": {"$toString": "$billing.associatedTaximeter"},
                 "billing_associatedMinimumFare": {"$toString": "$billing.associatedMinimumFare"},
@@ -43,20 +42,6 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "routeOriginDestination_distance_value": {"$toString": "$routeOriginDestination.distance.value"},
                 "routeOriginDestination_duration_text": "$routeOriginDestination.duration.text",
                 "routeOriginDestination_duration_value": {"$toString": "$routeOriginDestination.duration.value"},
-            },
-        },
-        {
-            "$unset": "_id",
-        },
-        {
-            "$addFields": {
-                "tolls": {
-                    "$function": {
-                        "lang": "js",
-                        "args": ["$tolls"],
-                        "body": "function(x) { return JSON.stringify(x); }",
-                    },
-                },
             },
         },
     ]

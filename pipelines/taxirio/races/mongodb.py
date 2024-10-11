@@ -44,6 +44,9 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "routeOriginDestination_duration_value": {"$toString": "$routeOriginDestination.duration.value"},
             },
         },
+        {
+            "$unset": "_id",
+        },
     ]
 
 
@@ -57,8 +60,7 @@ schema = Schema(
         "passenger": string(),
         "city": string(),
         "broadcastQtd": string(),
-        "rating": string(),
-        "tolls": string(),
+        "rating_score": string(),
         "isSuspect": string(),
         "isInvalid": string(),
         "status": string(),
@@ -71,6 +73,6 @@ schema = Schema(
         "billing_associatedTaximeter": string(),
         "billing_associatedMinimumFare": string(),
         "billing_associatedDiscount": string(),
-        "billing_associatedCorporative": string(),
+        "billing_associatedCorporative_externalPropertyPassenger": string(),
     },
 )

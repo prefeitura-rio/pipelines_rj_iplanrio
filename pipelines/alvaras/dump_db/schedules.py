@@ -34,17 +34,17 @@ _alvaras_infra_query = {
                 DSC_Zoneamento,
                 DSC_IRLF,
                 DSC_TipoAnalise,
-                DSC_TempoRespDia,
+                CAST(DSC_TempoRespDia AS FLOAT64),
                 DSC_StatusIntermediario,
                 DSC_StatusCPL,
-                DSC_TempoRespMinuto,
+                CAST(DSC_TempoRespMinuto AS FLOAT64),
                 DSC_TipoAlvara,
-                DSC_TaxaOriginal,
-                DSC_TaxaMulta,
-                DSC_TaxaMora,
-                DSC_TaxaTotal,
+                CAST(DSC_TaxaOriginal AS FLOAT64),
+                CAST(DSC_TaxaMulta AS FLOAT64),
+                CAST(DSC_TaxaMora AS FLOAT64),
+                CAST(DSC_TaxaTotal AS FLOAT64),
                 DSC_IsentoTaxa,
-                DSC_Numero float,
+                CAST(DSC_Numero AS FLOAT64),
                 DSC_AlvaraLiberado
             FROM DW_BI_ALVARAS.dbo.TAB_ALVARA;
         """,
@@ -53,7 +53,7 @@ _alvaras_infra_query = {
 
 alvaras_infra_clocks = generate_dump_db_schedules(
     interval=timedelta(days=1),
-    start_date=datetime(2022, 3, 21, 2, 0, tzinfo=pytz.timezone("America/Sao_Paulo")),
+    start_date=datetime(2022, 3, 21, 2, 0, tzinfo=pytz.timezone("America/Sao_Paulo")), # noqa
     labels=[
         constants.RJ_IPLANRIO_AGENT_LABEL.value,
     ],
@@ -66,4 +66,4 @@ alvaras_infra_clocks = generate_dump_db_schedules(
     table_parameters=_alvaras_infra_query,
 )
 
-alvaras_infra_daily_update_schedule = Schedule(clocks=untuple(alvaras_infra_clocks))
+alvaras_infra_daily_update_schedule = Schedule(clocks=untuple(alvaras_infra_clocks)) # noqa

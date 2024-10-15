@@ -26,16 +26,16 @@ _alvaras_infra_query = {
         "dump_to_gcs": False,
         "dump_mode": "overwrite",
         "execute_query": """
-            SELECT 
-                ID_Alvara, 
-                Quantidade, 
-                ID_AtvProcesso, 
-                ID_CAE, ID_CNAE, 
-                ID_DiaDeferimento, 
-                ID_DiaSolicitacao, 
-                ID_DiaTaxaPagamen, 
-                ID_Direcionamento, 
-                ID_TipoContribuint, 
+            SELECT
+                ID_Alvara,
+                Quantidade,
+                ID_AtvProcesso,
+                ID_CAE, ID_CNAE,
+                ID_DiaDeferimento,
+                ID_DiaSolicitacao,
+                ID_DiaTaxaPagamen,
+                ID_Direcionamento,
+                ID_TipoContribuint,
                 ID_TipoSolicitacao
             FROM DW_BI_ALVARAS.dbo.FACT_FatoAlvaras;
         """,
@@ -48,15 +48,15 @@ _alvaras_infra_query = {
         "dump_to_gcs": False,
         "dump_mode": "overwrite",
         "execute_query": """
-            SELECT 
-                ID_AtvProcesso, 
-                Quantidade_cp, 
-                ID_CAE, 
-                ID_CNAE, 
-                ID_Consulta, 
-                ID_DiaInicial, 
-                ID_Direcionamento, 
-                ID_TipoContribuint, 
+            SELECT
+                ID_AtvProcesso,
+                Quantidade_cp,
+                ID_CAE,
+                ID_CNAE,
+                ID_Consulta,
+                ID_DiaInicial,
+                ID_Direcionamento,
+                ID_TipoContribuint,
                 ID_TipoSolicitacao
             FROM DW_BI_ALVARAS.dbo.FACT_FatoCP;
         """,
@@ -69,12 +69,12 @@ _alvaras_infra_query = {
         "dump_to_gcs": False,
         "dump_mode": "overwrite",
         "execute_query": """
-            SELECT 
+            SELECT
                 DataCarga
             FROM DW_BI_ALVARAS.dbo.FACT_FatoDataCarga;
         """,
     },
-     "tab_alvara": {
+    "tab_alvara": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",

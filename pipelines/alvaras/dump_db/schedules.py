@@ -18,7 +18,63 @@ from pipelines.constants import constants
 #####################################
 
 _alvaras_infra_query = {
-    "tab_alvara": {
+    "fact_fatoalvaras": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_Alvara, 
+                Quantidade, 
+                ID_AtvProcesso, 
+                ID_CAE, ID_CNAE, 
+                ID_DiaDeferimento, 
+                ID_DiaSolicitacao, 
+                ID_DiaTaxaPagamen, 
+                ID_Direcionamento, 
+                ID_TipoContribuint, 
+                ID_TipoSolicitacao
+            FROM DW_BI_ALVARAS.dbo.FACT_FatoAlvaras;
+        """,
+    },
+    "fact_fatocp": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_AtvProcesso, 
+                Quantidade_cp, 
+                ID_CAE, 
+                ID_CNAE, 
+                ID_Consulta, 
+                ID_DiaInicial, 
+                ID_Direcionamento, 
+                ID_TipoContribuint, 
+                ID_TipoSolicitacao
+            FROM DW_BI_ALVARAS.dbo.FACT_FatoCP;
+        """,
+    },
+    "fact_fatodatacarga": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                DataCarga
+            FROM DW_BI_ALVARAS.dbo.FACT_FatoDataCarga;
+        """,
+    },
+     "tab_alvara": {
         "biglake_table": True,
         "materialize_after_dump": True,
         "materialization_mode": "prod",
@@ -34,17 +90,17 @@ _alvaras_infra_query = {
                 DSC_Zoneamento,
                 DSC_IRLF,
                 DSC_TipoAnalise,
-                CAST(DSC_TempoRespDia AS float),
+                DSC_TempoRespDia,
                 DSC_StatusIntermediario,
                 DSC_StatusCPL,
-                CAST(DSC_TempoRespMinuto AS float),
+                DSC_TempoRespMinuto,
                 DSC_TipoAlvara,
-                CAST(DSC_TaxaOriginal AS float),
-                CAST(DSC_TaxaMulta AS float),
-                CAST(DSC_TaxaMora AS float),
-                CAST(DSC_TaxaTotal AS float),
+                DSC_TaxaOriginal,
+                DSC_TaxaMulta,
+                DSC_TaxaMora,
+                DSC_TaxaTotal,
                 DSC_IsentoTaxa,
-                CAST(DSC_Numero AS float),
+                DSC_Numero,
                 DSC_AlvaraLiberado
             FROM DW_BI_ALVARAS.dbo.TAB_ALVARA;
         """,
@@ -123,7 +179,7 @@ _alvaras_infra_query = {
                 DSC_Endereco_cp,
                 DSC_Bairro_cp,
                 DSC_Zoneamento_cp,
-                CAST(DSC_CodeConsulta as float),
+                DSC_CodeConsulta,
                 DSC_IRLF_cp,
                 DSC_StatusCPL_cp,
                 DSC_TipoAnalise_cp,

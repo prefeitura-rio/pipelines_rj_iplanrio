@@ -49,6 +49,130 @@ _alvaras_infra_query = {
             FROM DW_BI_ALVARAS.dbo.TAB_ALVARA;
         """,
     },
+    "tab_atvprocesso": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_AtvProcesso, 
+                DSC_AtvProcesso, 
+                DSC_RespAtividade, 
+                DSC_RefAtividade
+            FROM DW_BI_ALVARAS.dbo.TAB_AtvProcesso;
+        """,
+    },
+    "tab_cae": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_CAE, 
+                DSC_CAE, 
+                ID_TipoAtividade, 
+                DSC_TipoAtividade
+            FROM DW_BI_ALVARAS.dbo.TAB_CAE;
+        """,
+    },
+    "tab_cnae": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_CNAE, 
+                DSC_CNAE
+            FROM DW_BI_ALVARAS.dbo.TAB_CNAE;
+        """,
+    },
+    "tab_cnae_tmp": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_CNAE, 
+                DSC_CNAE
+            FROM DW_BI_ALVARAS.dbo.TAB_CNAE_TMP;
+        """,
+    },
+    "tab_consulta": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_Consulta, 
+                DSC_Consulta, 
+                DSC_Endereco_cp, 
+                DSC_Bairro_cp, 
+                DSC_Zoneamento_cp, 
+                CAST(DSC_CodeConsulta as float), 
+                DSC_IRLF_cp, 
+                DSC_StatusCPL_cp, 
+                DSC_TipoAnalise_cp, 
+                DSC_Status_cp
+            FROM DW_BI_ALVARAS.dbo.TAB_Consulta;
+        """,
+    },
+    "tab_direcionamento": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_Direcionamento, 
+                DSC_Direcionamento
+            FROM DW_BI_ALVARAS.dbo.TAB_Direcionamento;
+        """,
+    },
+    "tab_tipocontribuinte_tipocontribuint": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_TipoContribuint, 
+                DSC_TipoContribuint
+            FROM DW_BI_ALVARAS.dbo.TAB_TipoContribuinte_TipoContribuint;
+        """,
+    },
+    "tab_tiposolicitacao": {
+        "biglake_table": True,
+        "materialize_after_dump": True,
+        "materialization_mode": "prod",
+        "materialize_to_datario": False,
+        "dump_to_gcs": False,
+        "dump_mode": "overwrite",
+        "execute_query": """
+            SELECT 
+                ID_TipoSolicitacao, 
+                DSC_TipoSolicitacao
+            FROM DW_BI_ALVARAS.dbo.TAB_TipoSolicitacao;
+        """,
+    },
 }
 
 alvaras_infra_clocks = generate_dump_db_schedules(

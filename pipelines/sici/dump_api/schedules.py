@@ -50,7 +50,7 @@ sici_dump_api_clocks = [
         ],
         parameter_defaults=params,
     )
-    for count, (_, params) in enumerate(parameter_list.items())
+    for count, params in enumerate(parameter_list)
 ]
 
 sici_dump_api_schedule = Schedule(clocks=untuple(sici_dump_api_clocks))

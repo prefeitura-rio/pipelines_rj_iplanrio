@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import pytz
 from prefect.schedules import Schedule
 from prefect.schedules.clocks import IntervalClock
+from prefeitura_rio.pipelines_utils.io import untuple_clocks as untuple
 
 from pipelines.constants import constants
 
@@ -39,16 +40,17 @@ parameter_list = [
     # Add more parameter dicts as needed
 ]
 
-sici_dump_api_schedule = Schedule(
-    clocks=[
+sici_dump_api_clocks = [
         IntervalClock(
-            interval=timedelta(days=1),
-            start_date=datetime(2024, 7, 17, 18, tzinfo=pytz.timezone("America/Sao_Paulo")),
+            interval=timedelta(hours=12),
+            start_date=datetime(2024, 9, 17, 19, 0, tzinfo=pytz.timezone("America/Sao_Paulo"))
+            + timedelta(minutes= 2 * count),
             labels=[
                 constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
             parameter_defaults=params,
         )
-        for params in parameter_list
-    ]
-)
+        for count, (_, params) in enumerate(parameter_list.items())
+]
+
+sici_dump_api_schedule = Schedule(clocks=untuple(sici_dump_api_clocks))

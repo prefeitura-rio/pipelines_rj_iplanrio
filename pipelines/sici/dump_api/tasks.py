@@ -9,6 +9,7 @@ from pipelines.sici.dump_api.utils import xml_to_dataframe
 @task
 def get_data_from_api_soap_sici(
     wsdl: str = "http://sici.rio.rj.gov.br/Servico/WebServiceSICI.asmx?wsdl",
+    endpoint: str = "Get_Arvore_UA",
     params: dict = {
         "Codigo_UA": "",
         "Nivel": "",
@@ -24,8 +25,16 @@ def get_data_from_api_soap_sici(
         # Create a client
         client = Client(wsdl=wsdl)
 
-        # Call the service
-        response = client.service.Get_Arvore_UA(**params)
+        log(f"Calling the SICI API with the following parameters: {params}")
+        log(type(params))
+
+        if endpoint == "Get_Arvore_UA":
+            # Call the service
+            response = client.service.Get_Arvore_UA(**params)
+        elif endpoint == "Get_UG_Tipo_UG":
+            response = client.service.Get_UG_Tipo_UG(**params)
+        else:
+            raise ValueError(f"Invalid endpoint: {endpoint}")
 
         # Transform to df
         df = xml_to_dataframe(response)
@@ -34,10 +43,14 @@ def get_data_from_api_soap_sici(
         log(f"Data sample: {df.head(5)}")
 
         # Safe the dataframe to a CSV file
-        df.to_csv("sici_data.csv", index=False)
-
-        # Return the true path of the csv file
-        return "sici_data.csv"
+        if endpoint == "Get_Arvore_UA":
+            df.to_csv("sici_data.csv", index=False)
+            # Return the true path of the csv file
+            return "sici_data.csv"
+        if endpoint == "Get_UG_Tipo_UG":
+            df.to_csv("sici_data_ug.csv", index=False)
+            return "sici_data_ug.csv"
+        raise ValueError(f"Invalid endpoint: {endpoint}")
 
     except Exception as e:
         log.error(f"An unexpected error occurred: {e}")
@@ -45,7 +58,13 @@ def get_data_from_api_soap_sici(
 
 
 @task
-def get_sici_api_credentials():
+def get_sici_api_credentials(
+    endpoint_parameters: dict = {
+        "Codigo_UA": "",
+        "Nivel": "",
+        "Tipo_Arvore": "",
+    },
+):
     """
     Get the credentials for the SICI API.
     """
@@ -71,10 +90,15 @@ def get_sici_api_credentials():
         )
         raise
 
-    return {
-        "Codigo_UA": "",
-        "Nivel": "",
-        "Tipo_Arvore": "",
+    # Create an all_parameters dict with the consumidor and chave_acesso and the endpoint_parameters
+    all_parameters = {
         "consumidor": consumidor["CONSUMIDOR"],
         "chaveAcesso": chave_acesso["CHAVE_ACESSO"],
+        **endpoint_parameters,
     }
+
+    log(f"Credentials for the SICI API were successfully retrieved: {all_parameters}")
+    log(f"Endpoint parameters: {endpoint_parameters}")
+    log(type(all_parameters))
+
+    return all_parameters

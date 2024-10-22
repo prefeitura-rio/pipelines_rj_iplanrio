@@ -14,7 +14,7 @@ parameter_list = [
     {
         "dataset_id": "unidades_administrativas",
         "table_id": "detalhes",
-        "endpoint": "Get_Arvore_UA",
+        "endpoint": "Get_UG_Tipo_UG",
         "endpoint_parameters": {
             "Id_Base": "",
             "Codigo_UG": "",
@@ -28,7 +28,7 @@ parameter_list = [
     {
         "dataset_id": "unidades_administrativas",
         "table_id": "orgaos",
-        "endpoint": "Get_UG_Tipo_UG",
+        "endpoint": "Get_Arvore_UA",
         "endpoint_parameters": {
             "Codigo_UA": "",
             "Nivel": "",

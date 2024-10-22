@@ -9,7 +9,6 @@ from prefect.schedules.clocks import IntervalClock
 from pipelines.constants import constants
 
 
-
 parameter_list = [
     {
         "dataset_id": "unidades_administrativas",

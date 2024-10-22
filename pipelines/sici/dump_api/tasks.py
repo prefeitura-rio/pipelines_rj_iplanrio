@@ -44,11 +44,10 @@ def get_data_from_api_soap_sici(
             df.to_csv("sici_data.csv", index=False)
             # Return the true path of the csv file
             return "sici_data.csv"
-        elif endpoint == "Get_UG_Tipo_UG":
+        if endpoint == "Get_UG_Tipo_UG":
             df.to_csv("sici_data_ug.csv", index=False)
             return "sici_data_ug.csv"
-        else:
-            raise ValueError(f"Invalid endpoint: {endpoint}")
+        raise ValueError(f"Invalid endpoint: {endpoint}")
 
     except Exception as e:
         log.error(f"An unexpected error occurred: {e}")
@@ -87,7 +86,7 @@ def get_sici_api_credentials(
             f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}",
         )
         raise
-    
+
     # Create an all_parameters dict with the consumidor and chave_acesso and the endpoint_parameters
     all_parameters = {
         "consumidor": consumidor,

@@ -25,6 +25,9 @@ def get_data_from_api_soap_sici(
         # Create a client
         client = Client(wsdl=wsdl)
 
+        log(f"Calling the SICI API with the following parameters: {params}")
+        log(type(params))
+
         if endpoint == "Get_Arvore_UA":
             # Call the service
             response = client.service.Get_Arvore_UA(**params)
@@ -93,5 +96,9 @@ def get_sici_api_credentials(
         "chaveAcesso": chave_acesso,
         **endpoint_parameters,
     }
+
+    log(f"Credentials for the SICI API were successfully retrieved: {all_parameters}")
+    log(f"Endpoint parameters: {endpoint_parameters}")
+    log(type(all_parameters))
 
     return all_parameters

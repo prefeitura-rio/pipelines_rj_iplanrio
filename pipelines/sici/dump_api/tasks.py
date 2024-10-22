@@ -92,8 +92,8 @@ def get_sici_api_credentials(
 
     # Create an all_parameters dict with the consumidor and chave_acesso and the endpoint_parameters
     all_parameters = {
-        "consumidor": consumidor,
-        "chaveAcesso": chave_acesso,
+        "consumidor": consumidor["CONSUMIDOR"],
+        "chaveAcesso": chave_acesso["CHAVE_ACESSO"],
         **endpoint_parameters,
     }
 

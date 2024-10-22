@@ -8,6 +8,24 @@ from prefect.schedules.clocks import IntervalClock
 
 from pipelines.constants import constants
 
+
+
+parameter_list = [
+    {
+        "dataset_id": "unidades_administrativas",
+        "table_id": "detalhes",
+        "billing_project_id": "rj-iplanrio",
+        "materialize_after_dump": False,
+    },
+    {
+        "dataset_id": "unidades_administrativas",
+        "table_id": "orgaos",
+        "billing_project_id": "iplanrio",
+        "materialize_after_dump": True,
+    },
+    # Add more parameter dicts as needed
+]
+
 sici_dump_api_schedule = Schedule(
     clocks=[
         IntervalClock(
@@ -16,12 +34,8 @@ sici_dump_api_schedule = Schedule(
             labels=[
                 constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
-            parameter_defaults={
-                "dataset_id": "unidades_administrativas",
-                "table_id": "orgaos",
-                "billing_project_id": "rj-iplanrio",
-                "materialize_after_dump": True,
-            },
+            parameter_defaults=params,
         )
+        for params in parameter_list
     ]
 )

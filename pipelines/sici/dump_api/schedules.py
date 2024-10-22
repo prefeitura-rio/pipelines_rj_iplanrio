@@ -41,16 +41,16 @@ parameter_list = [
 ]
 
 sici_dump_api_clocks = [
-        IntervalClock(
-            interval=timedelta(hours=12),
-            start_date=datetime(2024, 9, 17, 19, 0, tzinfo=pytz.timezone("America/Sao_Paulo"))
-            + timedelta(minutes= 2 * count),
-            labels=[
-                constants.RJ_IPLANRIO_AGENT_LABEL.value,
-            ],
-            parameter_defaults=params,
-        )
-        for count, (_, params) in enumerate(parameter_list.items())
+    IntervalClock(
+        interval=timedelta(hours=12),
+        start_date=datetime(2024, 9, 17, 19, 0, tzinfo=pytz.timezone("America/Sao_Paulo"))
+        + timedelta(minutes=2 * count),
+        labels=[
+            constants.RJ_IPLANRIO_AGENT_LABEL.value,
+        ],
+        parameter_defaults=params,
+    )
+    for count, (_, params) in enumerate(parameter_list.items())
 ]
 
 sici_dump_api_schedule = Schedule(clocks=untuple(sici_dump_api_clocks))

@@ -30,6 +30,8 @@ with Flow(
 ) as rj_iplanrio__sici__dump_api__flow:
     dataset_id = Parameter("dataset_id")
     table_id = Parameter("table_id")
+    endpoint = Parameter("endpoint")
+    endpoint_parameters = Parameter("endpoint_parameters")
     billing_project_id = Parameter("billing_project_id", required=False)
     bd_project_mode = Parameter("bd_project_mode", required=False, default="prod")
     materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
@@ -40,11 +42,12 @@ with Flow(
         table_id=table_id,
     )
 
-    get_credentials = get_sici_api_credentials()
+    get_credentials = get_sici_api_credentials(endpoint_parameters)
     get_credentials.set_upstream(rename_flow_run)
 
     path = get_data_from_api_soap_sici(
         wsdl=constants.SICI_SOAP_API_WSDL.value,
+        endpoint=endpoint,
         params=get_credentials,
     )
 

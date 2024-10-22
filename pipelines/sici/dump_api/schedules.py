@@ -14,12 +14,26 @@ parameter_list = [
     {
         "dataset_id": "unidades_administrativas",
         "table_id": "detalhes",
+        "endpoint": "Get_Arvore_UA",
+        "endpoint_parameters": {
+            "Id_Base": "",
+            "Codigo_UG": "",
+            "Data_Inicio": "",
+            "Data_Fim": "",
+            "Tipo_UG": "",
+        },
         "billing_project_id": "rj-iplanrio",
         "materialize_after_dump": False,
     },
     {
         "dataset_id": "unidades_administrativas",
         "table_id": "orgaos",
+        "endpoint": "Get_UG_Tipo_UG",
+        "endpoint_parameters": {
+            "Codigo_UA": "",
+            "Nivel": "",
+            "Tipo_Arvore": "",
+        },
         "billing_project_id": "iplanrio",
         "materialize_after_dump": True,
     },

@@ -56,7 +56,13 @@ def get_data_from_api_soap_sici(
 
 
 @task
-def get_sici_api_credentials():
+def get_sici_api_credentials(
+    endpoint_parameters: dict = {
+        "Codigo_UA": "",
+        "Nivel": "",
+        "Tipo_Arvore": "",
+    },
+):
     """
     Get the credentials for the SICI API.
     """
@@ -81,11 +87,12 @@ def get_sici_api_credentials():
             f"An error occurred while fetching the SICI API credentials for chave_acesso: {e}",
         )
         raise
-
-    return {
-        "Codigo_UA": "",
-        "Nivel": "",
-        "Tipo_Arvore": "",
-        "consumidor": consumidor["CONSUMIDOR"],
-        "chaveAcesso": chave_acesso["CHAVE_ACESSO"],
+    
+    # Create an all_parameters dict with the consumidor and chave_acesso and the endpoint_parameters
+    all_parameters = {
+        "consumidor": consumidor,
+        "chaveAcesso": chave_acesso,
+        **endpoint_parameters,
     }
+
+    return all_parameters

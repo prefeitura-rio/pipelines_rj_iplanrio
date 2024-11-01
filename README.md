@@ -15,3 +15,7 @@ Parâmetros para dump completo de collections do MongoDB:
   - `freq`: 2M
   - `dump_mode`: overwrite
 
+# Melhorias
+
+- Adicionar testes unitários para tarefas
+- Criar pipelines genéricas para dumps de MongoDB

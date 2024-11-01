@@ -24,6 +24,7 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__cities__flow:
     path = Parameter("path", default="output")
+    dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
 
     connection = get_mongodb_connection_string()
 
@@ -44,7 +45,7 @@ with Flow(
 
     create_table_and_upload_to_gcs(
         data_path=data_path,
-        dataset_id=TaxiRio.DATASET_ID.value,
+        dataset_id=dataset_id,
         dump_mode="overwrite",
         source_format="parquet",
         table_id=Cities.TABLE_ID.value,

@@ -25,11 +25,11 @@
                 gke-gcloud-auth-plugin
               ]);
             in [
-              duckdb
               gcloud
               infisical
               poetry
               python310
+              uv
             ];
 
             shellHook = ''

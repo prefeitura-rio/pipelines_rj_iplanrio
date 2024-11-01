@@ -27,6 +27,7 @@ with Flow(
     path = Parameter("path", default="output")
     freq = Parameter("frequency", default="D")
     dump_mode = Parameter("dump_mode", default="append")
+    dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
 
     connection = get_mongodb_connection_string()
     client = get_mongodb_client(connection)
@@ -52,7 +53,7 @@ with Flow(
 
     create_table_and_upload_to_gcs(
         data_path=data_path,
-        dataset_id=TaxiRio.DATASET_ID.value,
+        dataset_id=dataset_id,
         dump_mode=dump_mode,
         source_format="parquet",
         table_id=RankingRaces.TABLE_ID.value,

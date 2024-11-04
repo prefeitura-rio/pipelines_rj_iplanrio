@@ -20,6 +20,7 @@ rj_iplanrio__taxirio__users__staging__flow = set_default_parameters(
     rj_iplanrio__taxirio__users__staging__flow,
     default_parameters={
         "path": "output",
+        "env": "staging",
         "dataset_id": TaxiRio.STAGING_DATASET_ID.value,
     },
 )

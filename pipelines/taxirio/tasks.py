@@ -31,7 +31,7 @@ def get_mongodb_connection_string(env: str) -> str:
         path="/taxirio",
     )
 
-    return connection[Constants.MONGODB_CONNECTION_STRING.value]
+    return connection[secrets[env]]
 
 
 @task(checkpoint=False)

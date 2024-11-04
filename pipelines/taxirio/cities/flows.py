@@ -25,8 +25,9 @@ with Flow(
 ) as rj_iplanrio__taxirio__cities__flow:
     path = Parameter("path", default="output")
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
+    env = Parameter("env", default="prod")
 
-    connection = get_mongodb_connection_string()
+    connection = get_mongodb_connection_string(env)
 
     client = get_mongodb_client(connection)
 

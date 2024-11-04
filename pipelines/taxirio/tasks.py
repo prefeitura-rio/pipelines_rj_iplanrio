@@ -17,12 +17,17 @@ from pipelines.taxirio.constants import Constants
 
 
 @task(checkpoint=False)
-def get_mongodb_connection_string() -> str:
+def get_mongodb_connection_string(env: str) -> str:
     """Get MongoDB connection string."""
     utils.log("Getting MongoDB connection string")
 
+    secrets = {
+        "staging": Constants.MONGODB_CONNECTION_STRING_STAGING.value,
+        "prod": Constants.MONGODB_CONNECTION_STRING.value,
+    }
+
     connection = get_secret(
-        secret_name=Constants.MONGODB_CONNECTION_STRING.value,
+        secret_name=secrets[env],
         path="/taxirio",
     )
 

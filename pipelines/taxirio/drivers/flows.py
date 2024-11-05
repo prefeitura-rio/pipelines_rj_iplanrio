@@ -26,9 +26,9 @@ with Flow(
     path = Parameter("path", default="output")
     frequency = Parameter("frequency", default="2M")
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
-    env = Parameter("env", default="prod")
+    secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
 
-    connection = get_mongodb_connection_string(env)
+    connection = get_mongodb_connection_string(secret_name)
 
     client = get_mongodb_client(connection)
 

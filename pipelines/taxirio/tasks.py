@@ -13,25 +13,19 @@ from pytz import timezone
 
 from pipelines import utils
 from pipelines.constants import constants
-from pipelines.taxirio.constants import Constants
 
 
 @task(checkpoint=False)
-def get_mongodb_connection_string(env: str) -> str:
+def get_mongodb_connection_string(secret_name: str) -> str:
     """Get MongoDB connection string."""
     utils.log("Getting MongoDB connection string")
 
-    secrets = {
-        "staging": Constants.MONGODB_CONNECTION_STRING_STAGING.value,
-        "prod": Constants.MONGODB_CONNECTION_STRING.value,
-    }
-
     connection = get_secret(
-        secret_name=secrets[env],
+        secret_name=secret_name,
         path="/taxirio",
     )
 
-    return connection[secrets[env]]
+    return connection[secret_name]
 
 
 @task(checkpoint=False)

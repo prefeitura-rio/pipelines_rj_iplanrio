@@ -8,7 +8,7 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
 )
 from prefeitura_rio.pipelines_utils.tasks import rename_current_flow_run_dataset_table
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 from pipelines.painel_obras.dump_data.schedules import painel_obras__dump_data_schedule
 from pipelines.painel_obras.dump_data.tasks import download_data_to_gcs
 
@@ -41,9 +41,9 @@ with Flow(
         billing_project_id=billing_project_id,
     )
 
-rj_iplanrio__painel_obras__dump_data__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
+rj_iplanrio__painel_obras__dump_data__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 rj_iplanrio__painel_obras__dump_data__flow.run_config = KubernetesRun(
-    image=constants.DOCKER_IMAGE.value,
-    labels=[constants.RJ_IPLANRIO_AGENT_LABEL.value],
+    image=Constants.DOCKER_IMAGE.value,
+    labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],
 )
 rj_iplanrio__painel_obras__dump_data__flow.schedule = painel_obras__dump_data_schedule

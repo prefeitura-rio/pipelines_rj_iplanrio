@@ -1,7 +1,3 @@
-"""
-MATERIALIZA MODELOS DO DBT.
-"""
-
 from copy import deepcopy
 
 from prefect.run_configs import KubernetesRun
@@ -12,15 +8,15 @@ from prefeitura_rio.pipelines_templates.run_dbt_model.flows import (
 from prefeitura_rio.pipelines_utils.prefect import set_default_parameters
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 
 templates__run_dbt_model_smas__flow = deepcopy(templates__run_dbt_model__flow)
 templates__run_dbt_model_smas__flow.state_handlers = [handler_inject_bd_credentials]
 
-templates__run_dbt_model_smas__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
+templates__run_dbt_model_smas__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 templates__run_dbt_model_smas__flow.run_config = KubernetesRun(
-    image=constants.DOCKER_IMAGE.value,
-    labels=[constants.RJ_IPLANRIO_AGENT_LABEL.value],
+    image=Constants.DOCKER_IMAGE.value,
+    labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],
 )
 
 templates_run_dbt_model_smas_default_parameters = {

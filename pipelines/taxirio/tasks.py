@@ -12,7 +12,7 @@ from pymongoarrow.api import Schema, aggregate_arrow_all
 from pytz import timezone
 
 from pipelines import utils
-from pipelines.constants import constants
+from pipelines.constants import Constants
 
 
 @task(checkpoint=False)
@@ -53,7 +53,7 @@ def get_dates_for_dump_mode(dump_mode: str, collection: Collection) -> tuple[dat
 
         return start, end + timedelta(days=30)
 
-    today = datetime.now().astimezone(timezone(constants.TIMEZONE.value))
+    today = datetime.now().astimezone(timezone(Constants.TIMEZONE.value))
 
     return today - timedelta(days=1), today + timedelta(days=1)
 

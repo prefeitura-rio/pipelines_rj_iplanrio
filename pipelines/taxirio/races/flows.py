@@ -66,7 +66,7 @@ rj_iplanrio__taxirio__races__flow.schedule = every_day(2024, 10, 10, 2, 0)
 
 rj_iplanrio__taxirio__races__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
-    labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
+    labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL.value],
     memory_request="1Gi",
     memory_limit="3Gi",
 )

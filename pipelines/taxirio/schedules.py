@@ -23,7 +23,7 @@ def every_month(year: int, month: int, day: int) -> Schedule:
                     second=0,
                     tzinfo=timezone(Constants.TIMEZONE.value),
                 ),
-                labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
+                labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL.value],
             ),
         ],
     )
@@ -44,7 +44,7 @@ def every_week(year: int, month: int, day: int) -> Schedule:
                     second=0,
                     tzinfo=timezone(Constants.TIMEZONE.value),
                 ),
-                labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
+                labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL.value],
             ),
         ],
     )
@@ -65,7 +65,7 @@ def every_day(year: int, month: int, day: int, hour: int, minute: int) -> Schedu
                     second=0,
                     tzinfo=timezone(Constants.TIMEZONE.value),
                 ),
-                labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
+                labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL.value],
             ),
         ],
     )

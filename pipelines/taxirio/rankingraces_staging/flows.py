@@ -15,7 +15,7 @@ rj_iplanrio__taxirio__rankingraces__staging__flow.name = (
 
 rj_iplanrio__taxirio__rankingraces__staging__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
-    labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL_STAGING.value],
+    labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL_STAGING.value],
 )
 
 rj_iplanrio__taxirio__rankingraces__staging__flow = set_default_parameters(

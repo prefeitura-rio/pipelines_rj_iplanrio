@@ -59,5 +59,5 @@ rj_iplanrio__taxirio__users__flow.schedule = every_week(2024, 9, 2)
 
 rj_iplanrio__taxirio__users__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
-    labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
+    labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL.value],
 )

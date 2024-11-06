@@ -4,8 +4,8 @@ from prefect.run_configs import KubernetesRun
 from prefeitura_rio.pipelines_utils.prefect import set_default_parameters
 
 from pipelines.constants import Constants
-from pipelines.taxirio.staging.constants import Constants as TaxiRio
 from pipelines.taxirio.paymentmethods.flows import rj_iplanrio__taxirio__paymentmethods__flow
+from pipelines.taxirio.staging.constants import Constants as TaxiRio
 
 rj_iplanrio__taxirio__paymentmethods__staging__flow = deepcopy(rj_iplanrio__taxirio__paymentmethods__flow)
 

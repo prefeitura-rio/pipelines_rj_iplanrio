@@ -9,7 +9,7 @@ from prefect.schedules import Schedule
 from prefeitura_rio.pipelines_utils.io import untuple_clocks as untuple
 from prefeitura_rio.pipelines_utils.prefect import generate_dump_db_schedules
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 
 #####################################
 #
@@ -231,7 +231,7 @@ processorio_infra_clocks = generate_dump_db_schedules(
     interval=timedelta(days=1),
     start_date=datetime(2022, 3, 21, 2, 0, tzinfo=pytz.timezone("America/Sao_Paulo")),
     labels=[
-        constants.RJ_IPLANRIO_AGENT_LABEL.value,
+        Constants.RJ_IPLANRIO_AGENT_LABEL.value,
     ],
     db_database="SIGADOC.PCRJ",
     db_host="10.70.6.64",

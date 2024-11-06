@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class constants(Enum):
+class Constants(Enum):
     ######################################
     # Automatically managed, please do not
     # change these values

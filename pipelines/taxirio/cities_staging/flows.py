@@ -3,7 +3,7 @@ from copy import deepcopy
 from prefect.run_configs import KubernetesRun
 from prefeitura_rio.pipelines_utils.prefect import set_default_parameters
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 from pipelines.taxirio.cities.flows import rj_iplanrio__taxirio__cities__flow
 from pipelines.taxirio.constants import Constants as TaxiRio
 
@@ -14,7 +14,7 @@ rj_iplanrio__taxirio__cities__staging__flow.name = (
 )
 
 rj_iplanrio__taxirio__cities__staging__flow.run_config = KubernetesRun(
-    image=constants.DOCKER_IMAGE.value,
+    image=Constants.DOCKER_IMAGE.value,
     labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL_STAGING.value],
 )
 

@@ -6,7 +6,7 @@ import pytz
 from prefect.schedules import Schedule
 from prefect.schedules.clocks import IntervalClock
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 
 sici_dump_api_schedule = Schedule(
     clocks=[
@@ -14,7 +14,7 @@ sici_dump_api_schedule = Schedule(
             interval=timedelta(days=1),
             start_date=datetime(2024, 7, 17, 18, tzinfo=pytz.timezone("America/Sao_Paulo")),
             labels=[
-                constants.RJ_IPLANRIO_AGENT_LABEL.value,
+                Constants.RJ_IPLANRIO_AGENT_LABEL.value,
             ],
             parameter_defaults={
                 "dataset_id": "unidades_administrativas",

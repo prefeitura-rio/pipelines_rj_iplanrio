@@ -9,7 +9,7 @@ from pyarrow import Table
 from pymongo.collection import Collection
 from pytz import timezone
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 
 
 def log(message: str, level: str = "info") -> None:
@@ -60,7 +60,7 @@ def get_date_range(
         end=end,
         freq=freq,
         normalize=True,
-        tz=timezone(constants.TIMEZONE.value),
+        tz=timezone(Constants.TIMEZONE.value),
     )
 
 

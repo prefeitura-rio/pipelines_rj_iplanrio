@@ -13,7 +13,7 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
     handler_inject_bd_credentials,
 )
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 from pipelines.processorio.dump_db.schedules import (
     processorio_infra_daily_update_schedule,
 )
@@ -24,12 +24,12 @@ rj_iplanrio_processorio_flow.state_handlers = [
     handler_initialize_sentry,
 ]
 rj_iplanrio_processorio_flow.name = "IPLANRIO: processo.rio - Ingerir tabelas de banco SQL"
-rj_iplanrio_processorio_flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
+rj_iplanrio_processorio_flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 
 rj_iplanrio_processorio_flow.run_config = KubernetesRun(
-    image=constants.DOCKER_IMAGE.value,
+    image=Constants.DOCKER_IMAGE.value,
     labels=[
-        constants.RJ_IPLANRIO_AGENT_LABEL.value,  # label do agente
+        Constants.RJ_IPLANRIO_AGENT_LABEL.value,  # label do agente
     ],
 )
 

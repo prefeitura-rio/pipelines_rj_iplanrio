@@ -5,7 +5,7 @@ from prefeitura_rio.pipelines_utils.custom import Flow
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
 from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
 
-from pipelines.constants import constants
+from pipelines.constants import Constants
 from pipelines.taxirio.constants import Constants as TaxiRio
 from pipelines.taxirio.races.constants import Constants as Races
 from pipelines.taxirio.races.mongodb import generate_pipeline, schema
@@ -60,12 +60,12 @@ with Flow(
         table_id=Races.TABLE_ID.value,
     )
 
-rj_iplanrio__taxirio__races__flow.storage = GCS(constants.GCS_FLOWS_BUCKET.value)
+rj_iplanrio__taxirio__races__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 
 rj_iplanrio__taxirio__races__flow.schedule = every_day(2024, 10, 10, 2, 0)
 
 rj_iplanrio__taxirio__races__flow.run_config = KubernetesRun(
-    image=constants.DOCKER_IMAGE.value,
+    image=Constants.DOCKER_IMAGE.value,
     labels=[TaxiRio.RJ_IPLANRIO_TAXIRIO_AGENT_LABEL.value],
     memory_request="1Gi",
     memory_limit="3Gi",

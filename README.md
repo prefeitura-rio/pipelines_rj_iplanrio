@@ -1,6 +1,6 @@
 # Pipelines RJ-Iplanrio
 
-## Taxirio
+## Táxi.Rio
 
 Parâmetros para dump completo de collections do MongoDB:
 

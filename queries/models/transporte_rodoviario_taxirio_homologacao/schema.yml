@@ -1,0 +1,72 @@
+version: 2
+models:
+  - name: cities
+    description: ""
+    columns:
+      - name: id_municipio
+        description: ""
+      - name: nome_municipio
+        description: ""
+      - name: abrev_municipio
+        description: ""
+      - name: pode_usar_pagamento_app
+        description: ""
+      - name: calculado_no_app
+        description: ""
+      - name: forma_de_login
+        description: ""
+      - name: estacoes_de_servico
+        description: ""
+  - name: discounts
+    columns:
+      - name: id_desconto_associado
+        description: ""
+      - name: descricao
+        description: ""
+      - name: desconto
+        description: ""
+      - name: data_criacao
+        description: ""
+  - name: paymentmethods
+    columns:
+      - name: id_pagamento_associado
+        description: ""
+      - name: pindex
+        description: ""
+      - name: nome
+        description: ""
+      - name: tipo
+        description: ""
+  - name: users
+    columns:
+      - name: ano_particao
+        description: ""
+      - name: mes_particao
+        description: ""
+      - name: data_criacao
+        description: ""
+      - name: id_usuario
+        description: ""
+      - name: sexo
+        description: ""
+      - name: data_nascimento
+        description: ""
+  - name: rankingraces
+    columns:
+      - name: ano_particao
+        description: ""
+      - name: mes_particao
+        description: ""
+      - name: data_criacao
+        description: ""
+      - name: data_atualizacao
+        description: ""
+      - name: id_ranking_corrida
+        description: ""
+      - name: id_corrida
+        description: ""
+      - name: competidores
+        description: ""
+  - name: paymentmethods
+  - name: races
+  - name: passengers

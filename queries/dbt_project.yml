@@ -1,8 +1,8 @@
-name: 'queries'
-version: '1.0.0'
+name: "queries"
+version: "1.0.0"
 config-version: 2
 
-profile: 'queries'
+profile: "queries"
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -11,10 +11,9 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-clean-targets:         # directories to be removed by `dbt clean`
+clean-targets:
   - "target"
   - "dbt_packages"
-
 
 models:
   +persist_docs:
@@ -22,11 +21,17 @@ models:
     columns: true
   queries:
     adm_processo_interno_processorio:
-          +materialized: table
-          +schema: adm_processo_interno_processorio
+      +materialized: table
+      +schema: adm_processo_interno_processorio
     adm_processo_interno_sicop:
       +materialized: table
       +schema: adm_processo_interno_sicop
     unidades_administrativas:
       +materialized: table
       +schema: unidades_administrativas
+    transporte_rodoviario_taxirio:
+      +materialized: table
+      +schema: transporte_rodoviario_taxirio
+    transporte_rodoviario_taxirio_homologacao:
+      +materialized: table
+      +schema: transporte_rodoviario_taxirio_homologacao

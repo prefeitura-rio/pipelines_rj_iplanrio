@@ -1,9 +1,12 @@
-from prefect import Parameter
+from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
 from prefeitura_rio.pipelines_utils.custom import Flow
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
-from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs
+from prefeitura_rio.pipelines_utils.tasks import (
+    create_table_and_upload_to_gcs,
+    task_run_dbt_model_task,
+)
 
 from pipelines.constants import Constants
 from pipelines.taxirio.constants import Constants as TaxiRio
@@ -28,6 +31,7 @@ with Flow(
     table_id = Parameter("table_id", default=PaymentMethods.TABLE_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
     dump_mode = Parameter("dump_mode", default="overwrite")
+    materialize_after_dump = Parameter("materialize_after_dump", default=True, required=False)
 
     connection = get_mongodb_connection_string(secret_name)
 
@@ -42,13 +46,22 @@ with Flow(
         pipeline=pipeline,
     )
 
-    create_table_and_upload_to_gcs(
+    upload_table = create_table_and_upload_to_gcs(
         data_path=data_path,
         dataset_id=dataset_id,
         dump_mode=dump_mode,
         source_format="parquet",
-        table_id=PaymentMethods.TABLE_ID.value,
+        table_id=table_id,
     )
+
+    with case(materialize_after_dump, True):
+        run_dbt = task_run_dbt_model_task(
+            dataset_id=dataset_id,
+            table_id=table_id,
+            dbt_alias=True,
+        )
+
+        run_dbt.set_upstream(upload_table)
 
 rj_iplanrio__taxirio__paymentmethods__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 

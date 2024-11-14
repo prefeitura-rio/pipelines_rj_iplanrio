@@ -25,6 +25,7 @@ with Flow(
 ) as rj_iplanrio__taxirio__paymentmethods__flow:
     path = Parameter("path", default="output")
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
+    table_id = Parameter("table_id", default=PaymentMethods.TABLE_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
     dump_mode = Parameter("dump_mode", default="overwrite")
 
@@ -32,11 +33,7 @@ with Flow(
 
     client = get_mongodb_client(connection)
 
-    collection = get_mongodb_collection(
-        client,
-        TaxiRio.MONGODB_DATABASE_NAME.value,
-        PaymentMethods.TABLE_ID.value,
-    )
+    collection = get_mongodb_collection(client, TaxiRio.MONGODB_DATABASE_NAME.value, table_id)
 
     data_path = dump_collection_from_mongodb(
         collection=collection,

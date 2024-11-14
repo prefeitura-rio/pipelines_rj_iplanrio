@@ -37,11 +37,7 @@ with Flow(
 
     client = get_mongodb_client(connection)
 
-    collection = get_mongodb_collection(
-        client,
-        TaxiRio.MONGODB_DATABASE_NAME.value,
-        table_id,
-    )
+    collection = get_mongodb_collection(client, TaxiRio.MONGODB_DATABASE_NAME.value, table_id)
 
     data_path = dump_collection_from_mongodb(
         collection=collection,

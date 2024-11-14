@@ -38,11 +38,7 @@ with Flow(
     connection = get_mongodb_connection_string(secret_name)
     client = get_mongodb_client(connection)
 
-    collection = get_mongodb_collection(
-        client,
-        TaxiRio.MONGODB_DATABASE_NAME.value,
-        Races.TABLE_ID.value,
-    )
+    collection = get_mongodb_collection(client, TaxiRio.MONGODB_DATABASE_NAME.value, table_id)
 
     start_date, end_date = get_dates_for_dump_mode(dump_mode, collection)
 

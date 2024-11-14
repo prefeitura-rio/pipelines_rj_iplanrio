@@ -27,6 +27,7 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__users__flow:
     path = Parameter("path", default="output")
+    dump_mode = Parameter("dump_mode", default="overwrite")
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
     table_id = Parameter("table_id", default=Users.TABLE_ID.value)
@@ -36,11 +37,7 @@ with Flow(
 
     client = get_mongodb_client(connection)
 
-    collection = get_mongodb_collection(
-        client,
-        TaxiRio.MONGODB_DATABASE_NAME.value,
-        Users.TABLE_ID.value,
-    )
+    collection = get_mongodb_collection(client, TaxiRio.MONGODB_DATABASE_NAME.value, table_id)
 
     data_path = dump_collection_from_mongodb(
         collection=collection,
@@ -53,7 +50,7 @@ with Flow(
     upload_table = create_table_and_upload_to_gcs(
         data_path=data_path,
         dataset_id=dataset_id,
-        dump_mode="overwrite",
+        dump_mode=dump_mode,
         source_format="parquet",
         table_id=table_id,
     )

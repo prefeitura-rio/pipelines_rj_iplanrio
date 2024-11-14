@@ -31,18 +31,6 @@ models:
         description: ""
       - name: data_criacao
         description: ""
-  - name: transporte_rodoviario_taxirio__paymentmethods
-    config:
-      alias: paymentmethods
-    columns:
-      - name: id_pagamento_associado
-        description: ""
-      - name: pindex
-        description: ""
-      - name: nome
-        description: ""
-      - name: tipo
-        description: ""
   - name: transporte_rodoviario_taxirio__users
     config:
       alias: users

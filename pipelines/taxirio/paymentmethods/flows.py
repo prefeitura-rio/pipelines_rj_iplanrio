@@ -26,6 +26,7 @@ with Flow(
     path = Parameter("path", default="output")
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
+    dump_mode = Parameter("dump_mode", default="overwrite")
 
     connection = get_mongodb_connection_string(secret_name)
 
@@ -47,7 +48,7 @@ with Flow(
     create_table_and_upload_to_gcs(
         data_path=data_path,
         dataset_id=dataset_id,
-        dump_mode="overwrite",
+        dump_mode=dump_mode,
         source_format="parquet",
         table_id=PaymentMethods.TABLE_ID.value,
     )

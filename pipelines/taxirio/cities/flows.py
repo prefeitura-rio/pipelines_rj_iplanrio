@@ -27,6 +27,7 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__cities__flow:
     path = Parameter("path", default="output")
+    dump_mode = Parameter("dump_mode", default="overwrite")
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
     table_id = Parameter("table_id", default=Cities.TABLE_ID.value)
@@ -52,7 +53,7 @@ with Flow(
     upload_table = create_table_and_upload_to_gcs(
         data_path=data_path,
         dataset_id=dataset_id,
-        dump_mode="overwrite",
+        dump_mode=dump_mode,
         source_format="parquet",
         table_id=table_id,
     )

@@ -32,6 +32,7 @@ with Flow(
     table_id = Parameter("table_id", default=Drivers.TABLE_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
     materialize_after_dump = Parameter("materialize_after_dump", default=True, required=False)
+    dump_mode = Parameter("dump_mode", default="overwrite")
 
     connection = get_mongodb_connection_string(secret_name)
 
@@ -54,7 +55,7 @@ with Flow(
     upload_table = create_table_and_upload_to_gcs(
         data_path=data_path,
         dataset_id=dataset_id,
-        dump_mode="overwrite",
+        dump_mode=dump_mode,
         source_format="parquet",
         table_id=table_id,
     )

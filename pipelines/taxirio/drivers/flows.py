@@ -31,7 +31,7 @@ with Flow(
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
     table_id = Parameter("table_id", default=Drivers.TABLE_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
-    materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
+    materialize_after_dump = Parameter("materialize_after_dump", default=True, required=False)
 
     connection = get_mongodb_connection_string(secret_name)
 

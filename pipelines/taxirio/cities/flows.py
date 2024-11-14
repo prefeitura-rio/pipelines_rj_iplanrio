@@ -5,7 +5,6 @@ from prefeitura_rio.pipelines_utils.custom import Flow
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
 from prefeitura_rio.pipelines_utils.tasks import (
     create_table_and_upload_to_gcs,
-    get_current_flow_labels,
     task_run_dbt_model_task,
 )
 

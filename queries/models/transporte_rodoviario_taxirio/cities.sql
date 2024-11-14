@@ -7,4 +7,4 @@ SELECT
   SAFE_CAST (loginLabel as STRING) as forma_de_login,
   PARSE_JSON (serviceStations) as estacoes_de_servico,
 FROM
-  `rj-iplanrio.transporte_rodoviario_taxirio_homologacao_staging.cities`
+  `rj-iplanrio.transporte_rodoviario_taxirio_staging.cities`

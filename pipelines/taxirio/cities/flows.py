@@ -59,8 +59,6 @@ with Flow(
     )
 
     with case(materialize_after_dump, True):
-        current_flow_labels = get_current_flow_labels()
-
         run_dbt = task_run_dbt_model_task(
             dataset_id=dataset_id,
             table_id=table_id,

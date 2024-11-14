@@ -6,7 +6,11 @@ from prefect.storage import GCS
 from prefect.tasks.prefect import create_flow_run, wait_for_flow_run
 from prefeitura_rio.pipelines_utils.custom import Flow
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
-from prefeitura_rio.pipelines_utils.tasks import create_table_and_upload_to_gcs, get_current_flow_labels
+from prefeitura_rio.pipelines_utils.tasks import (
+    create_table_and_upload_to_gcs,
+    get_current_flow_labels,
+    task_run_dbt_model_task,
+)
 
 from pipelines.constants import Constants
 from pipelines.taxirio.cities.constants import Constants as Cities
@@ -30,15 +34,7 @@ with Flow(
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
     table_id = Parameter("table_id", default=Cities.TABLE_ID.value)
-    dump_to_gcs = Parameter("dump_to_gcs", default=False, required=False)
-    materialization_mode = Parameter("mode", default="dev", required=False)
     materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
-    materialize_to_datario = Parameter("materialize_to_datario", default=False, required=False)
-    maximum_bytes_processed = Parameter(
-        "maximum_bytes_processed",
-        required=False,
-        default=Constants.MAX_BYTES_PROCESSED_PER_TABLE.value,
-    )
 
     connection = get_mongodb_connection_string(secret_name)
 
@@ -68,56 +64,13 @@ with Flow(
     with case(materialize_after_dump, True):
         current_flow_labels = get_current_flow_labels()
 
-        materialization_flow = create_flow_run(
-            flow_name=Constants.FLOW_EXECUTE_DBT_MODEL_NAME.value,
-            project_name=Constants.PREFECT_DEFAULT_PROJECT.value,
-            parameters={
-                "dataset_id": dataset_id,
-                "table_id": table_id,
-                "mode": materialization_mode,
-                "materialize_to_datario": materialize_to_datario,
-            },
-            labels=current_flow_labels,
-            run_name=f"Materialize {dataset_id}.{table_id}",
+        run_dbt = task_run_dbt_model_task(
+            dataset_id=dataset_id,
+            table_id=table_id,
+            dbt_alias=True,
         )
 
-        materialization_flow.set_upstream(upload_table)
-
-        wait_for_materialization = wait_for_flow_run(
-            materialization_flow,
-            stream_states=True,
-            stream_logs=True,
-            raise_final_state=True,
-        )
-
-        wait_for_materialization.max_retries = Constants.WAIT_FOR_MATERIALIZATION_RETRY_ATTEMPTS.value
-        wait_for_materialization.retry_delay = timedelta(
-            seconds=Constants.WAIT_FOR_MATERIALIZATION_RETRY_INTERVAL.value,
-        )
-
-    with case(dump_to_gcs, True):
-        dump_to_gcs_flow = create_flow_run(
-            flow_name=Constants.FLOW_DUMP_TO_GCS_NAME.value,
-            project_name=Constants.PREFECT_DEFAULT_PROJECT.value,
-            parameters={
-                "project_id": "datario",
-                "dataset_id": dataset_id,
-                "table_id": table_id,
-                "maximum_bytes_processed": maximum_bytes_processed,
-            },
-            labels=[
-                "datario",
-            ],
-            run_name=f"Dump to GCS {dataset_id}.{table_id}",
-        )
-        dump_to_gcs_flow.set_upstream(wait_for_materialization)
-
-        wait_for_dump_to_gcs = wait_for_flow_run(
-            dump_to_gcs_flow,
-            stream_states=True,
-            stream_logs=True,
-            raise_final_state=True,
-        )
+        run_dbt.set_upstream(upload_table)
 
 rj_iplanrio__taxirio__cities__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 

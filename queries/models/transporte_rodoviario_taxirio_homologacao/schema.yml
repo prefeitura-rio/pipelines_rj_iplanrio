@@ -1,6 +1,6 @@
 version: 2
 models:
-  - name: homologacao_cities
+  - name: transporte_rodoviario_taxirio_homologacao__cities
     config:
       alias: cities
     description: ""
@@ -19,7 +19,7 @@ models:
         description: ""
       - name: estacoes_de_servico
         description: ""
-  - name: homologacao_discounts
+  - name: transporte_rodoviario_taxirio_homologacao__discounts
     config:
       alias: discounts
     columns:
@@ -31,7 +31,7 @@ models:
         description: ""
       - name: data_criacao
         description: ""
-  - name: homologacao_paymentmethods
+  - name: transporte_rodoviario_taxirio_homologacao__paymentmethods
     config:
       alias: paymentmethods
     columns:
@@ -43,7 +43,7 @@ models:
         description: ""
       - name: tipo
         description: ""
-  - name: homologacao_users
+  - name: transporte_rodoviario_taxirio_homologacao__users
     config:
       alias: users
     columns:
@@ -59,7 +59,7 @@ models:
         description: ""
       - name: data_nascimento
         description: ""
-  - name: homologacao_rankingraces
+  - name: transporte_rodoviario_taxirio_homologacao__rankingraces
     config:
       alias: rankingraces
     columns:
@@ -77,7 +77,7 @@ models:
         description: ""
       - name: competidores
         description: ""
-  - name: homologacao_paymentmethods
+  - name: transporte_rodoviario_taxirio_homologacao__paymentmethods
     config:
       alias: paymentmethods
     columns:
@@ -89,7 +89,7 @@ models:
         description: ""
       - name: tipo
         description: ""
-  - name: homologacao_races
+  - name: transporte_rodoviario_taxirio_homologacao__races
     config:
       alias: races
     colunms:
@@ -133,7 +133,7 @@ models:
         description: ""
       - name: propriedade_corporativa
         description: ""
-  - name: homologacao_passengers
+  - name: transporte_rodoviario_taxirio_homologacao__passengers
     config:
       alias: passengers
     columns:
@@ -163,7 +163,7 @@ models:
         description: ""
       - name: phone_nome_sistema
         description: ""
-  - name: homologacao_drivers
+  - name: transporte_rodoviario_taxirio_homologacao__drivers
     config:
       alias: drivers
     columns:

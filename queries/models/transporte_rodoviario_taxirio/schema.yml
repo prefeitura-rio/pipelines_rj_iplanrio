@@ -1,6 +1,8 @@
 version: 2
 models:
-  - name: cities
+  - name: transporte_rodoviario_taxirio__cities
+    config:
+      alias: cities
     description: ""
     columns:
       - name: id_municipio
@@ -17,7 +19,9 @@ models:
         description: ""
       - name: estacoes_de_servico
         description: ""
-  - name: discounts
+  - name: transporte_rodoviario_taxirio__discounts
+    config:
+      alias: discounts
     columns:
       - name: id_desconto_associado
         description: ""
@@ -27,7 +31,9 @@ models:
         description: ""
       - name: data_criacao
         description: ""
-  - name: paymentmethods
+  - name: transporte_rodoviario_taxirio__paymentmethods
+    config:
+      alias: paymentmethods
     columns:
       - name: id_pagamento_associado
         description: ""
@@ -37,7 +43,9 @@ models:
         description: ""
       - name: tipo
         description: ""
-  - name: users
+  - name: transporte_rodoviario_taxirio__users
+    config:
+      alias: users
     columns:
       - name: ano_particao
         description: ""
@@ -51,7 +59,9 @@ models:
         description: ""
       - name: data_nascimento
         description: ""
-  - name: rankingraces
+  - name: transporte_rodoviario_taxirio__rankingraces
+    config:
+      alias: rankingraces
     columns:
       - name: ano_particao
         description: ""
@@ -67,7 +77,9 @@ models:
         description: ""
       - name: competidores
         description: ""
-  - name: paymentmethods
+  - name: transporte_rodoviario_taxirio__paymentmethods
+    config:
+      alias: paymentmethods
     columns:
       - name: id_pagamento_associado
         description: ""
@@ -77,7 +89,9 @@ models:
         description: ""
       - name: tipo
         description: ""
-  - name: races
+  - name: transporte_rodoviario_taxirio__races
+    config:
+      alias: races
     colunms:
       - name: ano_particao
         description: ""
@@ -119,7 +133,9 @@ models:
         description: ""
       - name: propriedade_corporativa
         description: ""
-  - name: passengers
+  - name: transporte_rodoviario_taxirio__passengers
+    config:
+      alias: passengers
     columns:
       - name: ano_particao
         description: ""
@@ -147,7 +163,9 @@ models:
         description: ""
       - name: phone_nome_sistema
         description: ""
-  - name: drivers
+  - name: transporte_rodoviario_taxirio__drivers
+    config:
+      alias: drivers
     columns:
       - name: ano_particao
         description: ""

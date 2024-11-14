@@ -1,6 +1,8 @@
 version: 2
 models:
-  - name: cities
+  - name: homologacao_cities
+    config:
+      alias: cities
     description: ""
     columns:
       - name: id_municipio
@@ -17,7 +19,9 @@ models:
         description: ""
       - name: estacoes_de_servico
         description: ""
-  - name: discounts
+  - name: homologacao_discounts
+    config:
+      alias: discounts
     columns:
       - name: id_desconto_associado
         description: ""
@@ -27,7 +31,9 @@ models:
         description: ""
       - name: data_criacao
         description: ""
-  - name: paymentmethods
+  - name: homologacao_paymentmethods
+    config:
+      alias: paymentmethods
     columns:
       - name: id_pagamento_associado
         description: ""
@@ -37,7 +43,9 @@ models:
         description: ""
       - name: tipo
         description: ""
-  - name: users
+  - name: homologacao_users
+    config:
+      alias: users
     columns:
       - name: ano_particao
         description: ""
@@ -51,7 +59,9 @@ models:
         description: ""
       - name: data_nascimento
         description: ""
-  - name: rankingraces
+  - name: homologacao_rankingraces
+    config:
+      alias: rankingraces
     columns:
       - name: ano_particao
         description: ""
@@ -67,6 +77,154 @@ models:
         description: ""
       - name: competidores
         description: ""
-  - name: paymentmethods
-  - name: races
-  - name: passengers
+  - name: homologacao_paymentmethods
+    config:
+      alias: paymentmethods
+    columns:
+      - name: id_pagamento_associado
+        description: ""
+      - name: pindex
+        description: ""
+      - name: nome
+        description: ""
+      - name: tipo
+        description: ""
+  - name: homologacao_races
+    config:
+      alias: races
+    colunms:
+      - name: ano_particao
+        description: ""
+      - name: mes_particao
+        description: ""
+      - name: data_criacao
+        description: ""
+      - name: id_corrida
+        description: ""
+      - name: id_evento
+        description: ""
+      - name: id_passageiro
+        description: ""
+      - name: id_municipio
+        description: ""
+      - name: id_pagamento_associado
+        description: ""
+      - name: qtd_transmissao
+        description: ""
+      - name: nota_avaliacao
+        description: ""
+      - name: suspeito
+        description: ""
+      - name: invalido
+        description: ""
+      - name: status
+        description: ""
+      - name: distancia_rota
+        description: ""
+      - name: duracao_rota
+        description: ""
+      - name: valor_estimado
+        description: ""
+      - name: id_taximetro_associado
+        description: ""
+      - name: id_tarifa_minima_associada
+        description: ""
+      - name: id_desconto_associado
+        description: ""
+      - name: propriedade_corporativa
+        description: ""
+  - name: homologacao_passengers
+    config:
+      alias: passengers
+    columns:
+      - name: ano_particao
+        description: ""
+      - name: mes_particao
+        description: ""
+      - name: data_criacao
+        description: ""
+      - name: id_passageiro
+        description: ""
+      - name: id_usuario
+        description: ""
+      - name: pode_usar_pagamento_app
+        description: ""
+      - name: id_phone
+        description: ""
+      - name: phone_atualizacao
+        description: ""
+      - name: phone_versao_app
+        description: ""
+      - name: phone_modelo
+        description: ""
+      - name: phone_fabricante
+        description: ""
+      - name: phone_versao_sistema
+        description: ""
+      - name: phone_nome_sistema
+        description: ""
+  - name: homologacao_drivers
+    config:
+      alias: drivers
+    columns:
+      - name: ano_particao
+        description: ""
+      - name: mes_particao
+        description: ""
+      - name: data_criacao
+        description: ""
+      - name: id_motorista
+        description: ""
+      - name: id_usuario
+        description: ""
+      - name: id_motorista_taxi
+        description: ""
+      - name: id_carro_associado
+        description: ""
+      - name: id_desconto_associado
+        description: ""
+      - name: id_pagamento_associado
+        description: ""
+      - name: pode_receber_pagamento_app
+        description: ""
+      - name: pode_receber_pagamento_prefeitura
+        description: ""
+      - name: avaliacoes_recebidas
+        description: ""
+      - name: nota_media
+        description: ""
+      - name: status
+        description: ""
+      - name: ocupado
+        description: ""
+      - name: ultima_nota_media
+        description: ""
+      - name: id_corrida_bloqueada
+        description: ""
+      - name: id_municipio
+        description: ""
+      - name: taxa_servico
+        description: ""
+      - name: nota
+        description: ""
+      - name: id_phone
+        description: ""
+      - name: phone_atualizacao
+        description: ""
+      - name: phone_versao_app
+        description: ""
+      - name: phone_modelo
+        description: ""
+      - name: phone_fabricante
+        description: ""
+      - name: phone_versao_sistema
+        description: ""
+      - name: phone_nome_sistema
+        description: ""
+      - name: corrida_origem_posicao_lng
+        description: ""
+      - name: corrida_origem_posicao_lat
+        description: ""
+      - name: id_corrida
+        description: ""
+      - name: data_bloqueio_espirado

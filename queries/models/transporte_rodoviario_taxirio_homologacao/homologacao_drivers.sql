@@ -7,7 +7,7 @@ SELECT
   SAFE_CAST (taxiDriverId as STRING) as id_motorista_taxi,
   SAFE_CAST (associatedCar as STRING) as id_carro_associado,
   SAFE_CAST (associatedDiscount as STRING) as id_desconto_associado,
-  PARSE_JSON (associatedPaymentsMethods) as id_metodo_pagamento_associado,
+  SAFE_CAST (billing_associatedPaymentMethod as STRING) as id_pagamento_associado,
   SAFE_CAST (isAbleToReceivePaymentInApp as bool) as pode_receber_pagamento_app,
   SAFE_CAST (isAbleToReceivePaymentInCityHall as bool) as pode_receber_pagamento_prefeitura,
   SAFE_CAST (ratingsReceived as INT64) as avaliacoes_recebidas,

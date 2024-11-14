@@ -7,4 +7,4 @@ SELECT
   SAFE_CAST (race as STRING) as id_corrida,
   PARSE_JSON (competitors) AS competidores
 FROM
-  `rj-iplanrio.transporte_rodoviario_taxirio_homologacao_staging.rankingraces`
+  `rj-iplanrio.transporte_rodoviario_taxirio_staging.rankingraces`

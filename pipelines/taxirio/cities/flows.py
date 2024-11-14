@@ -92,7 +92,7 @@ with Flow(
 
         wait_for_materialization.max_retries = Constants.WAIT_FOR_MATERIALIZATION_RETRY_ATTEMPTS.value
         wait_for_materialization.retry_delay = timedelta(
-            seconds=Constants.WAIT_FOR_MATERIALIZATION_RETRY_INTERVAL.value
+            seconds=Constants.WAIT_FOR_MATERIALIZATION_RETRY_INTERVAL.value,
         )
 
     with case(dump_to_gcs, True):

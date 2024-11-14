@@ -13,4 +13,4 @@ SELECT
   SAFE_CAST (infoPhone_osVersion as STRING) as phone_versao_sistema,
   SAFE_CAST (infoPhone_osName as STRING) as phone_nome_sistema,
 FROM
-  `rj-iplanrio.transporte_rodoviario_taxirio_staging.drivers`
+  `rj-iplanrio.transporte_rodoviario_taxirio_homologacao_staging.passengers`

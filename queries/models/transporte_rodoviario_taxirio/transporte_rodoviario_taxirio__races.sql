@@ -18,6 +18,15 @@ SELECT
   SAFE_CAST (billing_associatedTaximeter as STRING) as id_taximetro_associado,
   SAFE_CAST (billing_associatedMinimumFare as STRING) as id_tarifa_minima_associada,
   SAFE_CAST (billing_associatedDiscount as STRING) as id_desconto_associado,
+  SAFE_CAST (billing_finalPrice_totalToPay as STRING) as valor_total_a_pagar,
+  SAFE_CAST (billing_finalPrice_totalPriceToll as STRING) as valor_total_pedagio,
+  SAFE_CAST (billing_finalPrice_totalWithDiscount as STRING) as valor_total_com_desconto,
+  SAFE_CAST (billing_finalPrice_totalDiscount as STRING) as valor_total_desconto,
+  SAFE_CAST (billing_finalPrice_totalWithoutDiscount as STRING) as valor_total_sem_desconto,
+  SAFE_CAST (billing_finalPrice_totalByTaximeter as STRING) as valor_total_por_taximetro,
+  SAFE_CAST (billing_finalPrice_totalByStoppedTime as STRING) as valor_total_por_tempo_parado,
+  SAFE_CAST (billing_finalPrice_totalByKm as STRING) as valor_total_por_km,
+  SAFE_CAST (billing_finalPrice_minPrice as STRING) as valor_minimo,
   SAFE_CAST (
     billing_associatedCorporative_externalPropertyPassenger as BOOL
   ) as propriedade_corporativa,

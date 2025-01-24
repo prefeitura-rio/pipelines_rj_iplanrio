@@ -27,6 +27,8 @@
             in [
               gcloud
               infisical
+              kubectl
+              mongosh
               poetry
               python310
               uv

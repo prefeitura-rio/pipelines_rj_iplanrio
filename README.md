@@ -10,7 +10,6 @@ Parâmetros para dump completo de collections do MongoDB:
 - `rankingraces`:
   - `freq`: 7D
   - `dump_mode`: overwrite
-  - `memory_limit`: 4Gi
 - `passengers`
   - `freq`: 2ME
   - `dump_mode`: overwrite

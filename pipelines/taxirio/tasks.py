@@ -82,7 +82,7 @@ def dump_collection_from_mongodb(
 
 
 @task(checkpoint=False)
-def dump_collection_from_mongodb_per_month(
+def dump_collection_from_mongodb_per_period(
     collection: Collection,
     path: str,
     generate_pipeline: Callable,

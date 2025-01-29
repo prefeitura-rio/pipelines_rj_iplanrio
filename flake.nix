@@ -46,7 +46,6 @@
 
             LD_LIBRARY_PATH = lib.makeLibraryPath [
               stdenv.cc.cc.lib
-              stdenv.cc.cc
               zlib
             ];
           };

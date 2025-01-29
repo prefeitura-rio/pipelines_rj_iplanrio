@@ -14,7 +14,7 @@ from pipelines.taxirio.races.constants import Constants as Races
 from pipelines.taxirio.races.mongodb import generate_pipeline, schema
 from pipelines.taxirio.schedules import every_day
 from pipelines.taxirio.tasks import (
-    dump_collection_from_mongodb_per_month,
+    dump_collection_from_mongodb_per_period,
     get_dates_for_dump_mode,
     get_mongodb_client,
     get_mongodb_collection,
@@ -42,7 +42,7 @@ with Flow(
 
     start_date, end_date = get_dates_for_dump_mode(dump_mode, collection)
 
-    data_path = dump_collection_from_mongodb_per_month(
+    data_path = dump_collection_from_mongodb_per_period(
         collection=collection,
         path=path,
         generate_pipeline=generate_pipeline,

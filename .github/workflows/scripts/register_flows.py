@@ -186,9 +186,7 @@ def get_project_id(client: "prefect.Client", project: str) -> str:
     Returns:
         - str: the project id
     """
-    resp = client.graphql(
-        {"query": {with_args("project", {"where": {"name": {"_eq": project}}}): {"id"}}}
-    )
+    resp = client.graphql({"query": {with_args("project", {"where": {"name": {"_eq": project}}}): {"id"}}})
     if resp.data.project:
         return resp.data.project[0].id
     raise Exception(f"Project {project!r} does not exist")
@@ -329,9 +327,7 @@ def register_serialized_flow(
         set_schedule_active=schedule,
     )
     if not force:
-        inputs["idempotency_key"] = hashlib.sha256(
-            json.dumps(serialized_flow, sort_keys=True).encode()
-        ).hexdigest()
+        inputs["idempotency_key"] = hashlib.sha256(json.dumps(serialized_flow, sort_keys=True).encode()).hexdigest()
 
     res = client.graphql(
         {
@@ -536,9 +532,7 @@ def main(
     registered = stats["registered"]
     skipped = stats["skipped"]
     errored = stats["errored"]
-    logger.info(
-        f"Registered {registered} flows, skipped {skipped} flows, " f"and errored {errored} flows."
-    )
+    logger.info(f"Registered {registered} flows, skipped {skipped} flows, " f"and errored {errored} flows.")
 
     # If not in a watch call, exit with appropriate exit code
     if stats["errored"]:

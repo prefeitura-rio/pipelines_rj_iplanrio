@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pyarrow import string
 from pymongoarrow.api import Schema
 

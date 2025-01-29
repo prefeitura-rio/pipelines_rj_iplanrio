@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from prefect import task
 from prefeitura_rio.pipelines_utils.infisical import get_secret
 from prefeitura_rio.pipelines_utils.logging import log

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from collections.abc import Callable
 from datetime import datetime, timedelta
 from itertools import pairwise

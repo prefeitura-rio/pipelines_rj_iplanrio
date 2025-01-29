@@ -260,17 +260,13 @@ def assert_all_imports_are_declared(root_directory: str) -> None:
     Asserts that all imports are declared somewhere.
     """
     # Get all Python files.
-    files = [
-        file_ for file_ in list_all_python_files(root_directory) if "cookiecutter" not in file_
-    ]
+    files = [file_ for file_ in list_all_python_files(root_directory) if "cookiecutter" not in file_]
 
     # Get all declared stuff.
     declared = set()
     for file_ in files:
         file_declared = [
-            item
-            for item in get_declared(file_)
-            if (item.startswith("pipelines") and not item.endswith("*"))
+            item for item in get_declared(file_) if (item.startswith("pipelines") and not item.endswith("*"))
         ]
         declared.update(file_declared)
 
@@ -278,9 +274,7 @@ def assert_all_imports_are_declared(root_directory: str) -> None:
     dependencies = set()
     for file_ in files:
         file_dependencies = [
-            item
-            for item in get_dependencies(file_)
-            if (item.startswith("pipelines") and not item.endswith("*"))
+            item for item in get_dependencies(file_) if (item.startswith("pipelines") and not item.endswith("*"))
         ]
         dependencies.update(file_dependencies)
 
@@ -300,16 +294,12 @@ def build_dependency_graph(root_directory: str) -> nx.DiGraph:
         nx.DiGraph: The dependency graph.
     """
     # Get all Python files.
-    files = [
-        file_ for file_ in list_all_python_files(root_directory) if "cookiecutter" not in file_
-    ]
+    files = [file_ for file_ in list_all_python_files(root_directory) if "cookiecutter" not in file_]
 
     # Get dependencies by file.
     dependencies_by_file = {}
     for file_ in files:
-        file_dependencies = set(
-            [item for item in get_dependencies(file_) if item.startswith("pipelines")]
-        )
+        file_dependencies = set([item for item in get_dependencies(file_) if item.startswith("pipelines")])
         dependencies_by_file[file_] = file_dependencies
 
     # Get declared stuff by file.
@@ -356,16 +346,12 @@ def build_dependency_graph(root_directory: str) -> nx.DiGraph:
     return graph
 
 
-def check_for_variable_name_conflicts(
-    changed_files: List[str], root_directory: str
-) -> List[Tuple[str, str]]:
+def check_for_variable_name_conflicts(changed_files: List[str], root_directory: str) -> List[Tuple[str, str]]:
     """
     Checks if there will be any conflicts with variable names.
     """
     # Get all Python files.
-    files = [
-        file_ for file_ in list_all_python_files(root_directory) if "cookiecutter" not in file_
-    ]
+    files = [file_ for file_ in list_all_python_files(root_directory) if "cookiecutter" not in file_]
 
     # Remove all changed files from the list of files.
     files = [file_ for file_ in files if file_ not in changed_files]

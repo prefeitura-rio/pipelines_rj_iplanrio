@@ -26,6 +26,7 @@
               ]);
             in [
               gcloud
+              duckdb
               infisical
               kubectl
               mongosh

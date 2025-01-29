@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pipelines.taxirio.staging.cities import *
 from pipelines.taxirio.staging.discounts import *
 from pipelines.taxirio.staging.drivers import *

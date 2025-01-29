@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
@@ -14,7 +15,7 @@ from pipelines.taxirio.passengers.constants import Constants as Passengers
 from pipelines.taxirio.passengers.mongodb import generate_pipeline, schema
 from pipelines.taxirio.schedules import every_week
 from pipelines.taxirio.tasks import (
-    dump_collection_from_mongodb_per_month,
+    dump_collection_from_mongodb_per_period,
     get_dates_for_dump_mode,
     get_mongodb_client,
     get_mongodb_collection,
@@ -43,7 +44,7 @@ with Flow(
 
     start_date, end_date = get_dates_for_dump_mode(dump_mode, collection)
 
-    data_path = dump_collection_from_mongodb_per_month(
+    data_path = dump_collection_from_mongodb_per_period(
         collection=collection,
         path=path,
         generate_pipeline=generate_pipeline,
@@ -51,7 +52,7 @@ with Flow(
         freq=freq,
         start_date=start_date,
         end_date=end_date,
-        partition_cols=["ano_particao", "mes_particao"],
+        partition_cols=["ano_particao", "mes_particao", "dia_particao"],
     )
 
     upload_table = create_table_and_upload_to_gcs(

@@ -30,7 +30,6 @@ optional = true
 
 [tool.poetry.group.dev.dependencies]
 basedpyright = "^1.17.2"
-ipython = "^8.27.0"
 
 [tool.poetry.group.ci]
 optional = true
@@ -53,30 +52,29 @@ venv = ".venv"
 target-version = "py310"
 line-length = 120
 indent-width = 4
-include = ["\\.pyi?$"]
-exclude = [".git", ".ruff_cache", "__pycache__", ".github"]
 
 [tool.ruff.lint]
-select = ["ALL"]
-fixable = ["ALL"]
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-ignore = [
-  "ANN101",  # missing type annotation for self in method
-  "ARG001",  # unused function argument
-  "D100",    # missing docstring in public module
-  "D103",    # missing docstring in public function
-  "D203",    # 1 blank line required before class docstring
-  "D212",    # multiline summary in first line
-  "PLR0913", # too many arguments in function definition
-  "S603",    # subprocess call - check for execution of untrusted input
-  "T201",    # print statement used in code
+select = [
+  "A",
+  "ARG",
+  "ASYNC",
+  "B",
+  "C4",
+  "DTZ",
+  "E",
+  "F",
+  "FAST",
+  "I",
+  "N",
+  "PL",
+  "PT",
+  "PTH",
+  "RUF",
+  "W",
 ]
+fixable = ["ALL"]
 
 [tool.ruff.format]
-docstring-code-format = true
-docstring-code-line-length = "dynamic"
-indent-style = "space"
-line-ending = "auto"
 quote-style = "double"
 
 [tool.taskipy.tasks]

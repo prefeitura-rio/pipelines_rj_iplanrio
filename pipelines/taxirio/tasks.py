@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from collections.abc import Callable
 from datetime import datetime, timedelta
 from itertools import pairwise
@@ -82,7 +83,7 @@ def dump_collection_from_mongodb(
 
 
 @task(checkpoint=False)
-def dump_collection_from_mongodb_per_month(
+def dump_collection_from_mongodb_per_period(
     collection: Collection,
     path: str,
     generate_pipeline: Callable,
@@ -107,7 +108,7 @@ def dump_collection_from_mongodb_per_month(
 
     for start, end in pairwise(dates):
         utils.log(
-            "Aggregating data from MongoDB for {} to {}".format(
+            "Aggregating data from MongoDB from {} to {}".format(
                 start.strftime("%Y-%m-%d"),
                 end.strftime("%Y-%m-%d"),
             ),

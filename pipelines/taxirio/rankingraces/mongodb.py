@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from datetime import datetime
 from typing import Any
 
@@ -22,6 +23,7 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "updatedAt": {"$dateToString": {"date": "$updatedAt"}},
                 "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
                 "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
+                "dia_particao": {"$dateToString": {"format": "%d", "date": "$createdAt"}},
                 "race": {"$toString": "$race"},
                 "competitors": {
                     "$map": {
@@ -60,9 +62,10 @@ schema = Schema(
         "id": string(),
         "createdAt": string(),
         "updatedAt": string(),
-        "race": string(),
         "ano_particao": string(),
         "mes_particao": string(),
+        "dia_particao": string(),
+        "race": string(),
         "competitors": string(),
     },
 )

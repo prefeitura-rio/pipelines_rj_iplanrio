@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from prefect import Parameter, case
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
@@ -14,7 +15,7 @@ from pipelines.taxirio.races.constants import Constants as Races
 from pipelines.taxirio.races.mongodb import generate_pipeline, schema
 from pipelines.taxirio.schedules import every_day
 from pipelines.taxirio.tasks import (
-    dump_collection_from_mongodb_per_month,
+    dump_collection_from_mongodb_per_period,
     get_dates_for_dump_mode,
     get_mongodb_client,
     get_mongodb_collection,
@@ -42,7 +43,7 @@ with Flow(
 
     start_date, end_date = get_dates_for_dump_mode(dump_mode, collection)
 
-    data_path = dump_collection_from_mongodb_per_month(
+    data_path = dump_collection_from_mongodb_per_period(
         collection=collection,
         path=path,
         generate_pipeline=generate_pipeline,
@@ -50,7 +51,7 @@ with Flow(
         freq=freq,
         start_date=start_date,
         end_date=end_date,
-        partition_cols=["ano_particao", "mes_particao"],
+        partition_cols=["ano_particao", "mes_particao", "dia_particao"],
     )
 
     upload_table = create_table_and_upload_to_gcs(
@@ -78,5 +79,5 @@ rj_iplanrio__taxirio__races__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
     labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL.value],
     memory_request="1Gi",
-    memory_limit="3Gi",
+    memory_limit="5Gi",
 )

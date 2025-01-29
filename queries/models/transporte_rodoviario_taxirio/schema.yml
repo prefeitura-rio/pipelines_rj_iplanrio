@@ -39,6 +39,8 @@ models:
         description: ""
       - name: mes_particao
         description: ""
+      - name: dia_particao
+        description: ""
       - name: data_criacao
         description: ""
       - name: id_usuario
@@ -54,6 +56,8 @@ models:
       - name: ano_particao
         description: ""
       - name: mes_particao
+        description: ""
+      - name: dia_particao
         description: ""
       - name: data_criacao
         description: ""
@@ -84,6 +88,8 @@ models:
       - name: ano_particao
         description: ""
       - name: mes_particao
+        description: ""
+      - name: dia_particao
         description: ""
       - name: data_criacao
         description: ""
@@ -129,6 +135,8 @@ models:
         description: ""
       - name: mes_particao
         description: ""
+      - name: dia_particao
+        description: ""
       - name: data_criacao
         description: ""
       - name: id_passageiro
@@ -158,6 +166,8 @@ models:
       - name: ano_particao
         description: ""
       - name: mes_particao
+        description: ""
+      - name: dia_particao
         description: ""
       - name: data_criacao
         description: ""

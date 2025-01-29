@@ -108,7 +108,7 @@ def dump_collection_from_mongodb_per_period(
 
     for start, end in pairwise(dates):
         utils.log(
-            "Aggregating data from MongoDB for {} to {}".format(
+            "Aggregating data from MongoDB from {} to {}".format(
                 start.strftime("%Y-%m-%d"),
                 end.strftime("%Y-%m-%d"),
             ),

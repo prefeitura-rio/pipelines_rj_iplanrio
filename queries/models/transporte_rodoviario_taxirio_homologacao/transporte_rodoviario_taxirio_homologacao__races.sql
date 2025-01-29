@@ -1,6 +1,7 @@
 SELECT
   SAFE_CAST (ano_particao as INT64) as ano_particao,
   SAFE_CAST (mes_particao as INT64) as mes_particao,
+  SAFE_CAST (dia_particao as INT64) as dia_particao,
   DATETIME (TIMESTAMP(createdAt)) as data_criacao,
   SAFE_CAST (id as STRING) as id_corrida,
   SAFE_CAST (event as STRING) as id_evento,

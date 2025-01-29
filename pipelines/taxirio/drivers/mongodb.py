@@ -20,6 +20,7 @@ pipeline = [
             "createdAt": {"$dateToString": {"date": "$createdAt"}},
             "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
             "mes_particao": {"$dateToString": {"format": "%m", "date": "$createdAt"}},
+            "dia_particao": {"$dateToString": {"format": "%d", "date": "$createdAt"}},
             "status": 1,
             "associatedDiscount": {"$toString": "$associatedDiscount"},
             "associatedPaymentsMethods": {
@@ -91,6 +92,7 @@ schema = Schema(
         "id": string(),
         "ano_particao": string(),
         "mes_particao": string(),
+        "dia_particao": string(),
         "createdAt": string(),
         "user": string(),
         "taxiDriverId": string(),

@@ -45,7 +45,7 @@ with Flow(
         path=path,
         schema=schema,
         pipeline=pipeline,
-        partition_cols=["ano_particao", "mes_particao"],
+        partition_cols=["ano_particao", "mes_particao", "dia_particao"],
     )
 
     upload_table = create_table_and_upload_to_gcs(

@@ -31,18 +31,6 @@ models:
         description: ""
       - name: data_criacao
         description: ""
-  - name: transporte_rodoviario_taxirio_homologacao__paymentmethods
-    config:
-      alias: paymentmethods
-    columns:
-      - name: id_pagamento_associado
-        description: ""
-      - name: pindex
-        description: ""
-      - name: nome
-        description: ""
-      - name: tipo
-        description: ""
   - name: transporte_rodoviario_taxirio_homologacao__users
     config:
       alias: users
@@ -50,6 +38,8 @@ models:
       - name: ano_particao
         description: ""
       - name: mes_particao
+        description: ""
+      - name: dia_particao
         description: ""
       - name: data_criacao
         description: ""
@@ -67,6 +57,8 @@ models:
         description: ""
       - name: mes_particao
         description: ""
+      - name: dia_particao
+        description: ""
       - name: data_criacao
         description: ""
       - name: data_atualizacao
@@ -77,6 +69,18 @@ models:
         description: ""
       - name: competidores
         description: ""
+  - name: transporte_rodoviario_taxirio_homologacao__paymentmethods
+    config:
+      alias: paymentmethods
+    columns:
+      - name: id_pagamento_associado
+        description: ""
+      - name: pindex
+        description: ""
+      - name: nome
+        description: ""
+      - name: tipo
+        description: ""
   - name: transporte_rodoviario_taxirio_homologacao__races
     config:
       alias: races
@@ -84,6 +88,8 @@ models:
       - name: ano_particao
         description: ""
       - name: mes_particao
+        description: ""
+      - name: dia_particao
         description: ""
       - name: data_criacao
         description: ""
@@ -129,6 +135,8 @@ models:
         description: ""
       - name: mes_particao
         description: ""
+      - name: dia_particao
+        description: ""
       - name: data_criacao
         description: ""
       - name: id_passageiro
@@ -158,6 +166,8 @@ models:
       - name: ano_particao
         description: ""
       - name: mes_particao
+        description: ""
+      - name: dia_particao
         description: ""
       - name: data_criacao
         description: ""

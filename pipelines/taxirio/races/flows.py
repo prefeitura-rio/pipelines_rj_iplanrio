@@ -51,7 +51,7 @@ with Flow(
         freq=freq,
         start_date=start_date,
         end_date=end_date,
-        partition_cols=["ano_particao", "mes_particao"],
+        partition_cols=["ano_particao", "mes_particao", "dia_particao"],
     )
 
     upload_table = create_table_and_upload_to_gcs(

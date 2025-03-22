@@ -17,7 +17,6 @@ from prefeitura_rio.pipelines_utils.logging import log
 
 from pipelines.constants import Constants
 
-
 # from pipelines.utils_dbt.credential_injector import authenticated_task as task
 from pipelines.utils_dbt.dbt import Summarizer, log_to_file, process_dbt_logs
 from pipelines.utils_dbt.googleutils import (

@@ -19,13 +19,13 @@ from pipelines.dbt.constants import (
     constants as execute_dbt_constants,
 )
 
-# from pipelines.utils.credential_injector import authenticated_task as task
-from pipelines.utils.dbt import Summarizer, log_to_file, process_dbt_logs
-from pipelines.utils.googleutils import (
+# from pipelines.utils_dbt.credential_injector import authenticated_task as task
+from pipelines.utils_dbt.dbt import Summarizer, log_to_file, process_dbt_logs
+from pipelines.utils_dbt.googleutils import (
     download_from_cloud_storage,
     upload_to_cloud_storage,
 )
-from pipelines.utils.monitor import send_message
+from pipelines.utils_dbt.monitor import send_message
 
 
 @task

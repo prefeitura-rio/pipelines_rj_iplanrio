@@ -10,7 +10,7 @@ import pytz
 from prefect.schedules import Schedule
 
 from pipelines.constants import Constants
-from pipelines.utils.schedules import generate_dump_api_schedules, untuple_clocks
+from pipelines.utils_dbt.schedules import generate_dump_api_schedules, untuple_clocks
 
 daily_parameters = [
     {"command": "build", "environment": "dev", "rename_flow": True, "select": "tag:daily"},

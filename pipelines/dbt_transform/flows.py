@@ -11,8 +11,8 @@ from prefect.storage import GCS
 from prefeitura_rio.pipelines_utils.custom import Flow
 
 from pipelines.constants import Constants
-from pipelines.dbt.schedules import dbt_schedules
-from pipelines.dbt.tasks import (
+from pipelines.dbt_transform.schedules import dbt_schedules
+from pipelines.dbt_transform.tasks import (
     check_if_dbt_artifacts_upload_is_needed,
     download_dbt_artifacts_from_gcs,
     download_repository,

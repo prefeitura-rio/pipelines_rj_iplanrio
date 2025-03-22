@@ -3,6 +3,7 @@
 """
 DBT flows
 """
+
 from prefect import Parameter, case
 from prefect.executors import LocalDaskExecutor
 from prefect.run_configs import KubernetesRun
@@ -13,7 +14,6 @@ from pipelines.constants import Constants
 from pipelines.dbt.schedules import dbt_schedules
 from pipelines.dbt.tasks import (
     check_if_dbt_artifacts_upload_is_needed,
-    create_dbt_report,
     download_dbt_artifacts_from_gcs,
     download_repository,
     execute_dbt,
@@ -46,9 +46,7 @@ with Flow(name="DataLake - Transformação - DBT") as iplanrio_execute_dbt:
     target = get_target_from_environment(environment=ENVIRONMENT)
 
     with case(RENAME_FLOW, True):
-        rename_flow_task = rename_current_flow_run_dbt(
-            command=COMMAND, select=SELECT, exclude=EXCLUDE, target=target
-        )
+        rename_flow_task = rename_current_flow_run_dbt(command=COMMAND, select=SELECT, exclude=EXCLUDE, target=target)
 
     download_repository_task = download_repository()
 
@@ -78,7 +76,7 @@ with Flow(name="DataLake - Transformação - DBT") as iplanrio_execute_dbt:
     )
     running_results.set_upstream([install_dbt_packages, download_dbt_artifacts_task])
 
-    #with case(SEND_DISCORD_REPORT, True):
+    # with case(SEND_DISCORD_REPORT, True):
     #    create_dbt_report_task = create_dbt_report(
     #        running_results=running_results, repository_path=download_repository_task
     #    )

@@ -5,10 +5,10 @@
 """
 Functions to interact with Google Cloud Storage and BigQuery.
 """
+
 import os
 
-import pandas as pd
-from google.cloud import bigquery, storage
+from google.cloud import storage
 
 
 def download_from_cloud_storage(path: str, bucket_name: str, blob_prefix: str = None):
@@ -32,7 +32,6 @@ def download_from_cloud_storage(path: str, bucket_name: str, blob_prefix: str = 
     blobs = bucket.list_blobs(prefix=blob_prefix)
 
     for blob in blobs:
-
         destination_file_name = os.path.join(path, blob.name)
 
         os.makedirs(os.path.dirname(destination_file_name), exist_ok=True)

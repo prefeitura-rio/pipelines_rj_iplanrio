@@ -18,6 +18,7 @@ from prefeitura_rio.pipelines_utils.logging import log
 from pipelines.dbt.constants import (
     constants as execute_dbt_constants,
 )
+
 # from pipelines.utils.credential_injector import authenticated_task as task
 from pipelines.utils.dbt import Summarizer, log_to_file, process_dbt_logs
 from pipelines.utils.googleutils import (
@@ -91,7 +92,6 @@ def execute_dbt(
     cli_args = commands + ["--profiles-dir", repository_path, "--project-dir", repository_path]
 
     if command in ("build", "data_test", "run", "test"):
-
         cli_args.extend(
             [
                 "--target",

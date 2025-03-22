@@ -15,9 +15,8 @@ from prefect.client import Client
 from prefect.engine.signals import FAIL
 from prefeitura_rio.pipelines_utils.logging import log
 
-from pipelines.dbt.constants import (
-    constants as execute_dbt_constants,
-)
+from pipelines.constants import Constants
+
 
 # from pipelines.utils_dbt.credential_injector import authenticated_task as task
 from pipelines.utils_dbt.dbt import Summarizer, log_to_file, process_dbt_logs
@@ -39,7 +38,7 @@ def download_repository():
     Raises:
         FAIL: If there is an error when creating the repository folder or downloading the repository.
     """
-    repo_url = execute_dbt_constants.REPOSITORY_URL.value
+    repo_url = Constants.REPOSITORY_URL.value
 
     # create repository folder
     try:
@@ -242,7 +241,7 @@ def download_dbt_artifacts_from_gcs(dbt_path: str, environment: str):
     Retrieves the dbt artifacts from Google Cloud Storage.
     """
 
-    gcs_bucket = execute_dbt_constants.GCS_BUCKET.value[environment]
+    gcs_bucket = Constants.GCS_BUCKET.value[environment]
 
     target_base_path = os.path.join(dbt_path, "target_base")
 
@@ -268,7 +267,7 @@ def upload_dbt_artifacts_to_gcs(dbt_path: str, environment: str):
 
     dbt_artifacts_path = os.path.join(dbt_path, "target")
 
-    gcs_bucket = execute_dbt_constants.GCS_BUCKET.value[environment]
+    gcs_bucket = Constants.GCS_BUCKET.value[environment]
 
     upload_to_cloud_storage(dbt_artifacts_path, gcs_bucket)
     log(f"DBT artifacts sent to GCS bucket: {gcs_bucket}", level="info")

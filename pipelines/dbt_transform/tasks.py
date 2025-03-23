@@ -26,7 +26,8 @@ from pipelines.utils_dbt.googleutils import (
 from pipelines.utils_dbt.monitor import send_message
 
 
-@task
+
+@prefect.task
 def download_repository():
     """
     Downloads the repository specified by the REPOSITORY_URL constant.
@@ -62,7 +63,7 @@ def download_repository():
     return repository_path
 
 
-@task
+@prefect.task
 def execute_dbt(
     repository_path: str,
     command: str = "run",
@@ -124,7 +125,7 @@ def execute_dbt(
     return running_result
 
 
-@task
+@prefect.task
 def create_dbt_report(running_results: dbtRunnerResult, repository_path: str) -> None:
     """
     Creates a report based on the results of running dbt commands.
@@ -193,7 +194,7 @@ def create_dbt_report(running_results: dbtRunnerResult, repository_path: str) ->
         raise FAIL(general_report)
 
 
-@task
+@prefect.task
 def rename_current_flow_run_dbt(
     command: str,
     target: str,
@@ -219,7 +220,7 @@ def rename_current_flow_run_dbt(
     log(f"Flow run renamed to: {flow_run_name}", level="info")
 
 
-@task()
+@prefect.task
 def get_target_from_environment(environment: str):
     """
     Retrieves the target environment based on the given environment parameter.
@@ -234,7 +235,7 @@ def get_target_from_environment(environment: str):
     return converter.get(environment, "dev")
 
 
-@task
+@prefect.task
 def download_dbt_artifacts_from_gcs(dbt_path: str, environment: str):
     """
     Retrieves the dbt artifacts from Google Cloud Storage.
@@ -258,7 +259,7 @@ def download_dbt_artifacts_from_gcs(dbt_path: str, environment: str):
         return None
 
 
-@task
+@prefect.task
 def upload_dbt_artifacts_to_gcs(dbt_path: str, environment: str):
     """
     Sends the dbt artifacts to Google Cloud Storage.
@@ -272,7 +273,7 @@ def upload_dbt_artifacts_to_gcs(dbt_path: str, environment: str):
     log(f"DBT artifacts sent to GCS bucket: {gcs_bucket}", level="info")
 
 
-@task
+@prefect.task
 def check_if_dbt_artifacts_upload_is_needed(command: str):
     """
     Checks if the upload of dbt artifacts is needed.

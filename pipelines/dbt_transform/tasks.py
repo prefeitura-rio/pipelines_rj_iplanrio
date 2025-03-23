@@ -26,7 +26,6 @@ from pipelines.utils_dbt.googleutils import (
 from pipelines.utils_dbt.monitor import send_message
 
 
-
 @prefect.task
 def download_repository():
     """

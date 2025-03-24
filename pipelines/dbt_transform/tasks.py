@@ -62,7 +62,7 @@ def download_repository():
 
 
 @task
-def   execute_dbt(
+def execute_dbt(
     repository_path: str,
     command: str = "run",
     target: str = "dev",
@@ -114,7 +114,7 @@ def   execute_dbt(
 
     print("RESULTADOS:")
     print(running_result)
-    
+
     if command not in ("deps") and not os.path.exists(log_path):
         send_message(
             title="❌ Erro ao executar DBT",

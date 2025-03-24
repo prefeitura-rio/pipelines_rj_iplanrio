@@ -17,7 +17,7 @@ from prefeitura_rio.pipelines_utils.logging import log
 
 from pipelines.constants import Constants
 
-# from pipelines.utils_dbt.credential_injector import authenticated_task as task
+from pipelines.utils_dbt.credential_injector import authenticated_task as task
 from pipelines.utils_dbt.dbt import Summarizer, log_to_file, process_dbt_logs
 from pipelines.utils_dbt.googleutils import (
     download_from_cloud_storage,
@@ -26,7 +26,7 @@ from pipelines.utils_dbt.googleutils import (
 from pipelines.utils_dbt.monitor import send_message
 
 
-@prefect.task
+@task
 def download_repository():
     """
     Downloads the repository specified by the REPOSITORY_URL constant.
@@ -62,7 +62,7 @@ def download_repository():
     return repository_path
 
 
-@prefect.task
+@task
 def execute_dbt(
     repository_path: str,
     command: str = "run",
@@ -124,7 +124,7 @@ def execute_dbt(
     return running_result
 
 
-@prefect.task
+@task
 def create_dbt_report(running_results: dbtRunnerResult, repository_path: str) -> None:
     """
     Creates a report based on the results of running dbt commands.
@@ -193,7 +193,7 @@ def create_dbt_report(running_results: dbtRunnerResult, repository_path: str) ->
         raise FAIL(general_report)
 
 
-@prefect.task
+@task
 def rename_current_flow_run_dbt(
     command: str,
     target: str,
@@ -219,7 +219,7 @@ def rename_current_flow_run_dbt(
     log(f"Flow run renamed to: {flow_run_name}", level="info")
 
 
-@prefect.task
+@task
 def get_target_from_environment(environment: str):
     """
     Retrieves the target environment based on the given environment parameter.
@@ -234,7 +234,7 @@ def get_target_from_environment(environment: str):
     return converter.get(environment, "dev")
 
 
-@prefect.task
+@task
 def download_dbt_artifacts_from_gcs(dbt_path: str, environment: str):
     """
     Retrieves the dbt artifacts from Google Cloud Storage.
@@ -258,7 +258,7 @@ def download_dbt_artifacts_from_gcs(dbt_path: str, environment: str):
         return None
 
 
-@prefect.task
+@task
 def upload_dbt_artifacts_to_gcs(dbt_path: str, environment: str):
     """
     Sends the dbt artifacts to Google Cloud Storage.
@@ -272,7 +272,7 @@ def upload_dbt_artifacts_to_gcs(dbt_path: str, environment: str):
     log(f"DBT artifacts sent to GCS bucket: {gcs_bucket}", level="info")
 
 
-@prefect.task
+@task
 def check_if_dbt_artifacts_upload_is_needed(command: str):
     """
     Checks if the upload of dbt artifacts is needed.

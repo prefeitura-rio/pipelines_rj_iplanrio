@@ -7,7 +7,9 @@ from prefect.tasks.prefect import create_flow_run, wait_for_flow_run
 from pipelines.utils_dbt.infisical import inject_bd_credentials
 
 
-def authenticated_task(fn: Callable = None, **task_init_kwargs: Any) -> Union[
+def authenticated_task(
+    fn: Callable = None, **task_init_kwargs: Any
+) -> Union[
     prefect.tasks.core.function.FunctionTask,
     Callable[[Callable], prefect.tasks.core.function.FunctionTask],
 ]:
@@ -30,9 +32,7 @@ def authenticated_task(fn: Callable = None, **task_init_kwargs: Any) -> Union[
         """
 
         def new_function(**kwargs):
-            assert "environment" in prefect.context.get(
-                "parameters"
-            ), "Environment not found in flow parameters"
+            assert "environment" in prefect.context.get("parameters"), "Environment not found in flow parameters"
 
             logger = prefect.context.get("logger")
             env = prefect.context.get("parameters")["environment"]

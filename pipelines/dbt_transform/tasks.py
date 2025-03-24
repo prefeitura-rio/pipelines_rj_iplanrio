@@ -112,8 +112,8 @@ def execute_dbt(
 
     log_path = os.path.join(repository_path, "logs", "dbt.log")
 
-    print("RESULTADOS:")
-    print(running_result)
+    log("RESULTADOS:")
+    log(running_result)
 
     if command not in ("deps") and not os.path.exists(log_path):
         send_message(

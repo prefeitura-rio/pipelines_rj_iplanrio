@@ -272,7 +272,7 @@ with
             residente_exterior_indicador,
 
             -- Contact
-            telefone as telefone_original,
+            TRIM(telefone) as telefone_original,
             case
                 when regexp_contains(telefone, r'\+')
                 then regexp_extract(telefone, r'\+([^\s]+)')

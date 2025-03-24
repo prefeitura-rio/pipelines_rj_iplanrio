@@ -14,6 +14,7 @@ from pipelines.constants import Constants
 from pipelines.dbt_transform.schedules import dbt_schedules
 from pipelines.dbt_transform.tasks import (
     check_if_dbt_artifacts_upload_is_needed,
+    create_dbt_report,
     download_dbt_artifacts_from_gcs,
     download_repository,
     execute_dbt,

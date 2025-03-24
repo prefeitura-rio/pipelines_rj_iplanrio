@@ -22,7 +22,6 @@ from pipelines.utils_dbt.googleutils import (
     download_from_cloud_storage,
     upload_to_cloud_storage,
 )
-from pipelines.utils_dbt.monitor import send_message
 
 
 @task
@@ -112,7 +111,7 @@ def execute_dbt(
 
     log_path = os.path.join(repository_path, "logs", "dbt.log")
 
-    #if command not in ("deps") and not os.path.exists(log_path):
+    # if command not in ("deps") and not os.path.exists(log_path):
     #    send_message(
     #        title="❌ Erro ao executar DBT",
     #        message="Não foi possível encontrar o arquivo de logs.",
@@ -181,12 +180,12 @@ def create_dbt_report(running_results: dbtRunnerResult, repository_path: str) ->
     complement = "com Erros" if not fully_successful else "sem Erros"
     message = f"{param_report}\n{general_report}" if include_report else param_report
 
-    #send_message(
+    # send_message(
     #    title=f"{emoji} Execução `dbt {command}` finalizada {complement}",
     #    message=message,
     #    file_path=log_path,
     #    monitor_slug="dbt-runs",
-    #)
+    # )
 
     if not fully_successful:
         raise FAIL(general_report)

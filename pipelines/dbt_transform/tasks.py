@@ -22,8 +22,8 @@ from pipelines.utils_dbt.googleutils import (
     download_from_cloud_storage,
     upload_to_cloud_storage,
 )
-
 from pipelines.utils_dbt.monitor import send_message
+
 
 @task
 def download_repository():

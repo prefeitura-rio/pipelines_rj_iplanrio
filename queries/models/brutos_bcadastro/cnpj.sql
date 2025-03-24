@@ -427,20 +427,22 @@ with
             -- Metadata
             t.timestamp,
             t.language,
-            t.version,
 
             -- Outros
-            t.id,
-            t.key,
-            t.rev,
-            t._id,
-            t._rev,
-            t.seq,
-            t.last_seq,
-            t.airbyte_raw_id,
-            t.airbyte_extracted_at,
-            t.airbyte_meta,
-            t.airbyte_generation_id,
+            STRUCT(
+                t.id,
+                t.key,
+                t.rev,
+                t._id,
+                t._rev,
+                t.version,
+                t.seq,
+                t.last_seq,
+                t.airbyte_raw_id,
+                t.airbyte_extracted_at,
+                t.airbyte_meta,
+                t.airbyte_generation_id
+            ) as airbyte,
             -- descricoes
             {{ proper_br("tipo_orgao_registro") }} as tipo_orgao_registro,
             {{ proper_br("motivo_situacao") }} as motivo_situacao,
@@ -536,19 +538,10 @@ with
             -- Metadata
             timestamp,
             language,
-            version,
+
             -- Outros
-            id,
-            key,
-            rev,
-            _id,
-            _rev,
-            seq,
-            last_seq,
-            airbyte_raw_id,
-            airbyte_extracted_at,
-            airbyte_meta,
-            airbyte_generation_id,
+            airbyte,
+
             -- descricoes
             tipo_orgao_registro,
             motivo_situacao,

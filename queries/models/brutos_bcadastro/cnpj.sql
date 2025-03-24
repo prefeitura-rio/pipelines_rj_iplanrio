@@ -545,18 +545,12 @@ with
             socios,
             sucessoes,
 
-            -- descricoes
-
-
-
             -- Metadata
             timestamp,
             language,
 
             -- Outros
             airbyte,
-
-
 
             -- Partition
             cnpj_particao

@@ -486,6 +486,11 @@ with
             cnae_secundarias,
             nire,
             cnpj_sucedida,
+            tipo_orgao_registro,
+            porte_empresa,
+            indicador_matriz,
+
+
             -- Dates
             data_inicio_atividade,
             data_situacao_cadastral,
@@ -493,7 +498,10 @@ with
             data_inclusao_responsavel,
 
             -- Status and demographics
+            situacao_cadastral,
+            natureza_juridica,
             situacao_especial,
+            motivo_situacao,
             id_ente_federativo,
             ente_federativo,
 
@@ -529,11 +537,17 @@ with
 
             -- Responsible Person
             cpf_responsavel,
+            qualificacao_responsavel,
+
             -- Business arrays
             tipos_unidade,
             formas_atuacao,
             socios,
             sucessoes,
+
+            -- descricoes
+
+
 
             -- Metadata
             timestamp,
@@ -542,14 +556,7 @@ with
             -- Outros
             airbyte,
 
-            -- descricoes
-            tipo_orgao_registro,
-            motivo_situacao,
-            situacao_cadastral,
-            natureza_juridica,
-            porte_empresa,
-            indicador_matriz,
-            qualificacao_responsavel,
+
 
             -- Partition
             cnpj_particao

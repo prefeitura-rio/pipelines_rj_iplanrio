@@ -12,7 +12,7 @@
 }}
 
 with
-    tb as (
+    fonte as (
         select
             _airbyte_raw_id,
             _airbyte_extracted_at,
@@ -28,7 +28,6 @@ with
         where timestamp_trunc(_airbyte_extracted_at, day) = timestamp("2025-03-23")
     ),
 
-
     sigla_uf_bd as (select sigla from {{ source("br_bd_diretorios_brasil", "uf") }}),
 
     municipio_bd as (
@@ -40,90 +39,69 @@ with
         select id, descricao, column from {{ ref("dominio") }} where source = 'cnpj'
     ),
 
-    tb_parsed as (
+    fonte_parseada as (
         select
-            id,
-            key,
-            nullif(json_value(value, '$.rev'), "") as rev,
+            -- Primary key
+            nullif(json_value(doc, '$.cnpj'), '') as cnpj,
 
-            nullif(json_value(doc, '$._id'), "") as _id,
-            nullif(json_value(doc, '$._rev'), "") as _rev,
-
-            nullif(json_value(doc, '$.cnpj'), "") as cnpj,
-            nullif(json_value(doc, '$.tipoLogradouro'), "") as tipo_logradouro,
-            nullif(json_value(doc, '$.cep'), "") as cep,
-            nullif(
-                json_value(doc, '$.tipoOrgaoRegistro'), ""
-            ) as id_tipo_orgao_registro,
-            cast(
-                cast(nullif(json_value(doc, '$.motivoSituacao'), "") as int64) as string
-            ) as id_motivo_situacao,
-            nullif(json_value(doc, '$.bairro'), "") as bairro,
-            nullif(json_value(doc, '$.situacaoEspecial'), "") as situacao_especial,
+            -- Foreign keys
+            nullif(json_value(doc, '$.codigoMunicipio'), '') as id_municipio,
+            nullif(json_value(doc, '$.codigoPais'), '') as id_pais,
             cast(
                 cast(
-                    nullif(json_value(doc, '$.situacaoCadastral'), "") as int64
+                    nullif(json_value(doc, '$.naturezaJuridica'), '') as int64
                 ) as string
-            ) as id_situacao_cadastral,
-            safe.parse_date(
-                '%Y%m%d', nullif(json_value(doc, '$.dataSituacaoCadastral'), "")
-            ) as data_situacao_cadastral,
-            nullif(json_value(doc, '$.codigoPais'), "") as id_pais,
-            nullif(json_value(doc, '$.tipoCrcContadorPF'), "") as tipo_crc_contador_pf,
-            nullif(json_value(doc, '$.numero'), "") as numero,
-            nullif(json_value(doc, '$.contadorPJ'), "") as contador_pj,
-            nullif(
-                json_value(doc, '$.classificacaoCrcContadorPF'), ""
-            ) as classificacao_crc_contador_pf,
-            nullif(json_value(doc, '$.complemento'), "") as complemento,
-            nullif(json_value(doc, '$.logradouro'), "") as logradouro,
-            nullif(
-                json_value(doc, '$.sequencialCrcContadorPF'), ""
-            ) as sequencial_crc_contador_pf,
-            nullif(json_value(doc, '$.contadorPF'), "") as contador_pf,
-            nullif(json_value(doc, '$.cnaeSecundarias'), "") as cnae_secundarias,
-            nullif(json_value(doc, '$.email'), "") as email,
+            ) as id_natureza_juridica,
             cast(
                 cast(
-                    nullif(json_value(doc, '$.indicadorMatriz'), "") as int64
-                ) as string
-            ) as id_indicador_matriz,
-            json_extract_array(doc, '$.tiposUnidade') as tipos_unidade,
-            nullif(json_value(doc, '$.nomeCidadeExterior'), "") as nome_cidade_exterior,
-            nullif(json_value(doc, '$.uf'), "") as uf,
-            safe.parse_date(
-                '%Y%m%d', nullif(json_value(doc, '$.dataSituacaoEspecial'), "")
-            ) as data_situacao_especial,
-            json_extract_array(doc, '$.formasAtuacao') as formas_atuacao,
-            nullif(json_value(doc, '$.nomeFantasia'), "") as nome_fantasia,
-            nullif(json_value(doc, '$.tipoCrcContadorPJ'), "") as tipo_crc_contador_pj,
-            safe.parse_date(
-                '%Y%m%d', nullif(json_value(doc, '$.dataInicioAtividade'), "")
-            ) as data_inicio_atividade,
-            nullif(json_value(doc, '$.dddTelefone1'), "") as ddd_telefone_1,
-            nullif(
-                json_value(doc, '$.classificacaoCrcContadorPJ'), ""
-            ) as classificacao_crc_contador_pj,
-            nullif(json_value(doc, '$.ufCrcContadorPJ'), "") as uf_crc_contador_pj,
-            nullif(json_value(doc, '$.codigoMunicipio'), "") as id_municipio,
-            nullif(json_value(doc, '$.ufCrcContadorPF'), "") as uf_crc_contador_pf,
-            nullif(json_value(doc, '$.telefone1'), "") as telefone_1,
-            nullif(json_value(doc, '$.telefone2'), "") as telefone_2,
-            nullif(
-                json_value(doc, '$.sequencialCrcContadorPJ'), ""
-            ) as sequencial_crc_contador_pj,
-            nullif(json_value(doc, '$.cpfResponsavel'), "") as cpf_responsavel,
-
-            cast(
-                cast(
-                    nullif(json_value(doc, '$.qualificacaoResponsavel'), "") as int64
+                    nullif(json_value(doc, '$.qualificacaoResponsavel'), '') as int64
                 ) as string
             ) as id_qualificacao_responsavel,
+            cast(
+                cast(nullif(json_value(doc, '$.porteEmpresa'), '') as int64) as string
+            ) as id_porte_empresa,
+            cast(
+                cast(
+                    nullif(json_value(doc, '$.indicadorMatriz'), '') as int64
+                ) as string
+            ) as id_indicador_matriz,
+            nullif(
+                json_value(doc, '$.tipoOrgaoRegistro'), ''
+            ) as id_tipo_orgao_registro,
+            cast(
+                cast(nullif(json_value(doc, '$.motivoSituacao'), '') as int64) as string
+            ) as id_motivo_situacao,
+            cast(
+                cast(
+                    nullif(json_value(doc, '$.situacaoCadastral'), '') as int64
+                ) as string
+            ) as id_situacao_cadastral,
 
+            -- Business data
+            nullif(json_value(doc, '$.nomeEmpresarial'), '') as nome_empresarial,
+            nullif(json_value(doc, '$.nomeFantasia'), '') as nome_fantasia,
+            nullif(json_value(doc, '$.capitalSocial'), '') as capital_social,
+            nullif(json_value(doc, '$.cnaeFiscal'), '') as cnae_fiscal,
+            nullif(json_value(doc, '$.cnaeSecundarias'), '') as cnae_secundarias,
+            nullif(json_value(doc, '$.nire'), '') as nire,
+            nullif(json_value(doc, '$.cnpjSucedida'), '') as cnpj_sucedida,
+
+            -- Dates
             safe.parse_date(
-                '%Y%m%d', nullif(json_value(doc, '$.dataInclusaoResponsavel'), "")
+                '%Y%m%d', nullif(json_value(doc, '$.dataInicioAtividade'), '')
+            ) as data_inicio_atividade,
+            safe.parse_date(
+                '%Y%m%d', nullif(json_value(doc, '$.dataSituacaoCadastral'), '')
+            ) as data_situacao_cadastral,
+            safe.parse_date(
+                '%Y%m%d', nullif(json_value(doc, '$.dataSituacaoEspecial'), '')
+            ) as data_situacao_especial,
+            safe.parse_date(
+                '%Y%m%d', nullif(json_value(doc, '$.dataInclusaoResponsavel'), '')
             ) as data_inclusao_responsavel,
-            nullif(json_value(doc, '$.capitalSocial'), "") as capital_social,
+
+            -- Status and demographics
+            nullif(json_value(doc, '$.situacaoEspecial'), '') as situacao_especial,
             case
                 when regexp_contains(json_value(doc, '$.enteFederativo'), r'^[0-9]+$')
                 then
@@ -134,92 +112,114 @@ with
                     )
                 else upper(nullif(json_value(doc, '$.enteFederativo'), ''))
             end as id_ente_federativo,
-            json_extract_array(doc, '$.socios') as socios,
-            nullif(json_value(doc, '$.dddTelefone2'), "") as ddd_telefone_2,
-            nullif(json_value(doc, '$.cnaeFiscal'), "") as cnae_fiscal,
-            cast(
-                cast(
-                    nullif(json_value(doc, '$.naturezaJuridica'), "") as int64
-                ) as string
-            ) as id_natureza_juridica,
-            cast(
-                cast(nullif(json_value(doc, '$.porteEmpresa'), "") as int64) as string
-            ) as id_porte_empresa,
-            nullif(json_value(doc, '$.nomeEmpresarial'), "") as nome_empresarial,
-            nullif(json_value(doc, '$.nire'), "") as nire,
-            nullif(json_value(doc, '$.id'), "") as id_doc,
-            json_extract_array(doc, '$.sucessoes') as sucessoes,
-            nullif(json_value(doc, '$.cnpjSucedida'), "") as cnpj_sucedida,
-            nullif(json_value(doc, '$.tipo'), "") as tipo,
-            nullif(json_value(doc, '$.timestamp'), "") as timestamp,
-            nullif(json_value(doc, '$.language'), "") as language,
+
+            -- Contact
+            nullif(json_value(doc, '$.dddTelefone1'), '') as ddd_telefone_1,
+            nullif(json_value(doc, '$.telefone1'), '') as telefone_1,
+            nullif(json_value(doc, '$.dddTelefone2'), '') as ddd_telefone_2,
+            nullif(json_value(doc, '$.telefone2'), '') as telefone_2,
+            nullif(json_value(doc, '$.email'), '') as email,
+
+            -- Address
+            nullif(json_value(doc, '$.cep'), '') as endereco_cep,
+            nullif(json_value(doc, '$.uf'), '') as endereco_uf,
+            nullif(json_value(doc, '$.bairro'), '') as endereco_bairro,
+            nullif(json_value(doc, '$.tipoLogradouro'), '') as endereco_tipo_logradouro,
+            nullif(json_value(doc, '$.logradouro'), '') as endereco_logradouro,
+            nullif(json_value(doc, '$.numero'), '') as endereco_numero,
+            nullif(json_value(doc, '$.complemento'), '') as endereco_complemento,
             nullif(
-                json_value(replace(to_json_string(doc), '~', ''), '$.version'), ""
+                json_value(doc, '$.nomeCidadeExterior'), ''
+            ) as endereco_nome_cidade_exterior,
+
+            -- Accountant Information
+            nullif(json_value(doc, '$.tipoCrcContadorPF'), '') as tipo_crc_contador_pf,
+            nullif(json_value(doc, '$.contadorPJ'), '') as contador_pj,
+            nullif(
+                json_value(doc, '$.classificacaoCrcContadorPF'), ''
+            ) as classificacao_crc_contador_pf,
+            nullif(
+                json_value(doc, '$.sequencialCrcContadorPF'), ''
+            ) as sequencial_crc_contador_pf,
+            nullif(json_value(doc, '$.contadorPF'), '') as contador_pf,
+            nullif(json_value(doc, '$.tipoCrcContadorPJ'), '') as tipo_crc_contador_pj,
+            nullif(
+                json_value(doc, '$.classificacaoCrcContadorPJ'), ''
+            ) as classificacao_crc_contador_pj,
+            nullif(json_value(doc, '$.ufCrcContadorPJ'), '') as uf_crc_contador_pj,
+            nullif(json_value(doc, '$.ufCrcContadorPF'), '') as uf_crc_contador_pf,
+            nullif(
+                json_value(doc, '$.sequencialCrcContadorPJ'), ''
+            ) as sequencial_crc_contador_pj,
+
+            -- Responsible Person
+            nullif(json_value(doc, '$.cpfResponsavel'), '') as cpf_responsavel,
+
+            -- arrays
+            json_extract_array(doc, '$.tiposUnidade') as tipos_unidade,
+            json_extract_array(doc, '$.formasAtuacao') as formas_atuacao,
+            json_extract_array(doc, '$.socios') as socios,
+            json_extract_array(doc, '$.sucessoes') as sucessoes,
+
+            -- Metadata
+            nullif(json_value(doc, '$.timestamp'), '') as timestamp,
+            nullif(json_value(doc, '$.language'), '') as language,
+            nullif(
+                json_value(replace(to_json_string(doc), '~', ''), '$.version'), ''
             ) as version,
+
+            -- Outros
+            id,
+            key,
+            nullif(json_value(value, '$.rev'), '') as rev,
+            nullif(json_value(doc, '$._id'), '') as _id,
+            nullif(json_value(doc, '$._rev'), '') as _rev,
+
             seq,
             last_seq,
             _airbyte_raw_id as airbyte_raw_id,
             _airbyte_extracted_at as airbyte_extracted_at,
             struct(
-                nullif(json_value(_airbyte_meta, '$.changes'), "") as changes,
-                nullif(json_value(_airbyte_meta, '$.sync_id'), "") as sync_id
+                nullif(json_value(_airbyte_meta, '$.changes'), '') as changes,
+                nullif(json_value(_airbyte_meta, '$.sync_id'), '') as sync_id
             ) as airbyte_meta,
             _airbyte_generation_id as airbyte_generation_id,
-        from tb
+
+        from fonte
     ),
 
-    tb_intermediate as (
+    fonte_intermediaria as (
         select
-            t.id,
-            t.key,
-            t.rev,
-            t._id,
-            t._rev,
+            -- Primary key
             t.cnpj,
-            t.tipo_logradouro,
-            t.cep,
-            t.id_tipo_orgao_registro,
-            org.descricao as tipo_orgao_registro,
-            t.bairro,
-            t.id_motivo_situacao,
-            ms.descricao as motivo_situacao,
-            t.id_situacao_cadastral,
-            sc.descricao as situacao_cadastral,
-            t.situacao_especial,
-            t.data_situacao_cadastral,
-            t.id_pais,
-            t.tipo_crc_contador_pf,
-            t.numero,
-            t.contador_pj,
-            t.classificacao_crc_contador_pf,
-            t.complemento,
-            t.logradouro,
-            t.sequencial_crc_contador_pf,
-            t.contador_pf,
-            t.cnae_secundarias,
-            t.email,
-            t.id_indicador_matriz,
-            im.descricao as indicador_matriz,
-            t.nome_cidade_exterior,
-            t.uf,
-            t.data_situacao_especial,
-            t.nome_fantasia,
-            t.tipo_crc_contador_pj,
-            t.data_inicio_atividade,
-            t.ddd_telefone_1,
-            t.classificacao_crc_contador_pj,
-            t.uf_crc_contador_pj,
+
+            -- Foreign keys
             t.id_municipio,
-            md.municipio_nome as municipio,
-            t.uf_crc_contador_pf,
-            t.telefone_1,
-            t.telefone_2,
-            t.sequencial_crc_contador_pj,
-            t.cpf_responsavel,
+            t.id_pais,
+            t.id_natureza_juridica,
             t.id_qualificacao_responsavel,
-            qr.descricao as qualificacao_responsavel,
-            t.data_inclusao_responsavel,
+            t.id_porte_empresa,
+            t.id_indicador_matriz,
+            t.id_tipo_orgao_registro,
+            t.id_motivo_situacao,
+            t.id_situacao_cadastral,
+
+            -- Business data
+            t.nome_empresarial,
+            t.nome_fantasia,
             t.capital_social,
+            t.cnae_fiscal,
+            t.cnae_secundarias,
+            t.nire,
+            t.cnpj_sucedida,
+            -- Dates
+            t.data_inicio_atividade,
+            t.data_situacao_cadastral,
+            t.data_situacao_especial,
+            t.data_inclusao_responsavel,
+
+            -- Status and demographics
+            t.situacao_especial,
             t.id_ente_federativo,
             case
                 when id_ente_federativo = 'BR'
@@ -232,41 +232,71 @@ with
                 then 'Estado'
                 else null
             end as ente_federativo,
+
+            -- Contact
+            t.ddd_telefone_1,
+            t.telefone_1,
             t.ddd_telefone_2,
-            t.cnae_fiscal,
-            t.id_natureza_juridica,
-            nj.descricao as natureza_juridica,
-            t.id_porte_empresa,
-            pe.descricao as porte_empresa,
-            t.nome_empresarial,
-            t.nire,
-            t.id_doc,
-            -- array columns
-            case
-                when array_length(t.formas_atuacao) = 0 then null else t.formas_atuacao
-            end as formas_atuacao,
-            case
-                when array_length(t.tipos_unidade) = 0 then null else t.tipos_unidade
-            end as tipos_unidade,
+            t.telefone_2,
+            t.email,
 
-            case when array_length(t.socios) = 0 then null else t.socios end as socios,
-            case
-                when array_length(t.sucessoes) = 0 then null else t.sucessoes
-            end as sucessoes,
+            -- Address
+            t.endereco_cep,
+            t.endereco_uf,
+            t.endereco_bairro,
+            t.endereco_tipo_logradouro,
+            t.endereco_logradouro,
+            t.endereco_numero,
+            t.endereco_complemento,
+            t.endereco_nome_cidade_exterior,
 
-            t.cnpj_sucedida,
-            t.tipo,
+            -- Accountant Information
+            t.tipo_crc_contador_pf,
+            t.contador_pj,
+            t.classificacao_crc_contador_pf,
+            t.sequencial_crc_contador_pf,
+            t.contador_pf,
+            t.tipo_crc_contador_pj,
+            t.classificacao_crc_contador_pj,
+            t.uf_crc_contador_pj,
+            t.uf_crc_contador_pf,
+            t.sequencial_crc_contador_pj,
+
+            -- Responsible Person
+            t.cpf_responsavel,
+            -- Business arrays
+            t.tipos_unidade,
+            t.formas_atuacao,
+            t.socios,
+            t.sucessoes,
+            -- Metadata
             t.timestamp,
             t.language,
             t.version,
+            -- Outros
+            t.id,
+            t.key,
+            t.rev,
+            t._id,
+            t._rev,
             t.seq,
             t.last_seq,
             t.airbyte_raw_id,
             t.airbyte_extracted_at,
             t.airbyte_meta,
             t.airbyte_generation_id,
+            -- Joins
+            md.municipio_nome as endereco_municipio,
+            sc.descricao as situacao_cadastral,
+            ms.descricao as motivo_situacao,
+            org.descricao as tipo_orgao_registro,
+            nj.descricao as natureza_juridica,
+            pe.descricao as porte_empresa,
+            im.descricao as indicador_matriz,
+            qr.descricao as qualificacao_responsavel,
+
             cast(t.cnpj as int64) as cnpj_particao
-        from tb_parsed t
+        from fonte_parseada t
         left join
             municipio_bd as md
             on cast(t.id_municipio as int64) = cast(md.id_municipio_rf as int64)
@@ -321,48 +351,60 @@ with
             qr on t.id_qualificacao_responsavel = qr.id_qualificacao_responsavel
     ),
 
-    tb_padronize as (
+    fonte_padronizada as (
         select
-            t.id,
-            t.key,
-            t.rev,
-            t._id,
-            t._rev,
+            -- Primary key
             t.cnpj,
 
-            -- Localidade
-            t.id_pais,
+            -- Foreign keys
             t.id_municipio,
-            {{ proper_br("municipio") }} as municipio,
-            t.cep,
-            {{ proper_br("tipo_logradouro") }} as tipo_logradouro,
-            {{ proper_br("bairro") }} as bairro,
-            {{ proper_br("logradouro") }} as logradouro,
-            t.numero,
-            {{ proper_br("complemento") }} as complemento,
-            t.uf,
-            t.nome_cidade_exterior,
-
-            -- Informações Cadastrais
+            t.id_pais,
+            t.id_natureza_juridica,
+            t.id_qualificacao_responsavel,
+            t.id_porte_empresa,
+            t.id_indicador_matriz,
             t.id_tipo_orgao_registro,
-            {{ proper_br("tipo_orgao_registro") }} as tipo_orgao_registro,
             t.id_motivo_situacao,
-            {{ proper_br("motivo_situacao") }} as motivo_situacao,
             t.id_situacao_cadastral,
-            {{ proper_br("situacao_cadastral") }} as situacao_cadastral,
-            t.data_situacao_cadastral,
-            {{ proper_br("situacao_especial") }} as situacao_especial,
-            t.data_situacao_especial,
-            t.data_inicio_atividade,
 
-            -- Contato
+            -- Business data
+            t.nome_empresarial,
+            {{ proper_br("nome_fantasia") }} as nome_fantasia,  -- Padronizado
+            t.capital_social,
+            t.cnae_fiscal,
+            t.cnae_secundarias,
+            t.nire,
+            t.cnpj_sucedida,
+            -- Dates
+            t.data_inicio_atividade,
+            t.data_situacao_cadastral,
+            t.data_situacao_especial,
+            t.data_inclusao_responsavel,
+
+            -- Status and demographics
+            {{ proper_br("situacao_especial") }} as situacao_especial,  -- Padronizado
+            t.id_ente_federativo,
+            {{ proper_br("ente_federativo") }} as ente_federativo,
+
+            -- Contact
             t.ddd_telefone_1,
             t.telefone_1,
             t.ddd_telefone_2,
             t.telefone_2,
             t.email,
 
-            -- Informações do Contador
+            -- Address
+            t.endereco_cep,
+            t.endereco_uf,
+            {{ proper_br("endereco_bairro") }} as endereco_bairro,  -- Padronizado
+            {{ proper_br("endereco_tipo_logradouro") }} as endereco_tipo_logradouro,  -- Padronizado
+            {{ proper_br("endereco_logradouro") }} as endereco_logradouro,  -- Padronizado
+            t.endereco_numero,
+            {{ proper_br("endereco_complemento") }} as endereco_complemento,  -- Padronizado
+            t.endereco_nome_cidade_exterior,
+            t.endereco_municipio,
+
+            -- Accountant Information
             t.tipo_crc_contador_pf,
             t.contador_pj,
             t.classificacao_crc_contador_pf,
@@ -374,150 +416,152 @@ with
             t.uf_crc_contador_pf,
             t.sequencial_crc_contador_pj,
 
-            -- Informações do Responsável
+            -- Responsible Person
             t.cpf_responsavel,
-            t.id_qualificacao_responsavel,
-            {{ proper_br("qualificacao_responsavel") }} as qualificacao_responsavel,
-            t.data_inclusao_responsavel,
 
-            -- Informações da Empresa
-            t.id_indicador_matriz,
-            {{ proper_br("indicador_matriz") }} as indicador_matriz,
+            -- Business arrays
             t.tipos_unidade,
             t.formas_atuacao,
-            {{ proper_br("nome_fantasia") }} as nome_fantasia,
-            t.capital_social,
-            t.id_ente_federativo,
-            {{ proper_br("ente_federativo") }} as ente_federativo,
             t.socios,
-            t.cnae_fiscal,
-            t.cnae_secundarias,
-            t.id_natureza_juridica,
-            {{ proper_br("natureza_juridica") }} as natureza_juridica,
-            t.id_porte_empresa,
-            {{ proper_br("porte_empresa") }} as porte_empresa,
-            {{ proper_br("nome_empresarial") }} as nome_empresarial,
-            t.nire,
-            t.cnpj_sucedida,
             t.sucessoes,
-
-            t.id_doc,
-            t.tipo,
+            -- Metadata
             t.timestamp,
             t.language,
             t.version,
 
-            -- Metadados
+            -- Outros
+            t.id,
+            t.key,
+            t.rev,
+            t._id,
+            t._rev,
             t.seq,
             t.last_seq,
             t.airbyte_raw_id,
             t.airbyte_extracted_at,
             t.airbyte_meta,
             t.airbyte_generation_id,
-            row_number() over (
-                partition by t.cnpj order by t.data_situacao_cadastral desc
-            ) as rank,
-
+            -- descricoes
+            {{ proper_br("tipo_orgao_registro") }} as tipo_orgao_registro,
+            {{ proper_br("motivo_situacao") }} as motivo_situacao,
+            {{ proper_br("situacao_cadastral") }} as situacao_cadastral,
+            {{ proper_br("natureza_juridica") }} as natureza_juridica,
+            {{ proper_br("porte_empresa") }} as porte_empresa,
+            {{ proper_br("indicador_matriz") }} as indicador_matriz,
+            {{ proper_br("qualificacao_responsavel") }} as qualificacao_responsavel,
+            -- Partition and Rank
             t.cnpj_particao
-        from tb_intermediate t
+        from fonte_intermediaria t
+    ),
+
+    fonte_deduplicada as (
+        select *
+        from fonte_padronizada
+        qualify row_number() over (partition by cnpj order by data_situacao_cadastral desc) = 1
+    ),
+
+    final as (
+        select
+            -- Primary key
+            cnpj,
+
+            -- Foreign keys
+            id_municipio,
+            id_pais,
+            id_natureza_juridica,
+            id_qualificacao_responsavel,
+            id_porte_empresa,
+            id_indicador_matriz,
+            id_tipo_orgao_registro,
+            id_motivo_situacao,
+            id_situacao_cadastral,
+
+            -- Business data
+            nome_empresarial,
+            nome_fantasia,
+            capital_social,
+            cnae_fiscal,
+            cnae_secundarias,
+            nire,
+            cnpj_sucedida,
+            -- Dates
+            data_inicio_atividade,
+            data_situacao_cadastral,
+            data_situacao_especial,
+            data_inclusao_responsavel,
+
+            -- Status and demographics
+            situacao_especial,
+            id_ente_federativo,
+            ente_federativo,
+
+            -- Contact
+            ddd_telefone_1,
+            telefone_1,
+            ddd_telefone_2,
+            telefone_2,
+            email,
+
+            -- Address
+            endereco_uf,
+            endereco_cep,
+            endereco_municipio,
+            endereco_bairro,
+            endereco_tipo_logradouro,
+            endereco_logradouro,
+            endereco_numero,
+            endereco_complemento,
+            endereco_nome_cidade_exterior,
+
+            -- Accountant Information
+            tipo_crc_contador_pf,
+            contador_pj,
+            classificacao_crc_contador_pf,
+            sequencial_crc_contador_pf,
+            contador_pf,
+            tipo_crc_contador_pj,
+            classificacao_crc_contador_pj,
+            uf_crc_contador_pj,
+            uf_crc_contador_pf,
+            sequencial_crc_contador_pj,
+
+            -- Responsible Person
+            cpf_responsavel,
+            -- Business arrays
+            tipos_unidade,
+            formas_atuacao,
+            socios,
+            sucessoes,
+
+            -- Metadata
+            timestamp,
+            language,
+            version,
+            -- Outros
+            id,
+            key,
+            rev,
+            _id,
+            _rev,
+            seq,
+            last_seq,
+            airbyte_raw_id,
+            airbyte_extracted_at,
+            airbyte_meta,
+            airbyte_generation_id,
+            -- descricoes
+            tipo_orgao_registro,
+            motivo_situacao,
+            situacao_cadastral,
+            natureza_juridica,
+            porte_empresa,
+            indicador_matriz,
+            qualificacao_responsavel,
+
+            -- Partition
+            cnpj_particao
+        from fonte_deduplicada
     )
 
-select
-    -- Identificadores Únicos
-    id,
-    key,
-    rev,
-    _id,
-    _rev,
-    cnpj,
-    id_doc,
-
-    -- Localidade
-    id_pais,
-    id_municipio,
-    municipio,
-    cep,
-    tipo_logradouro,
-    bairro,
-    logradouro,
-    numero,
-    complemento,
-    uf,
-    nome_cidade_exterior,
-
-    -- Informações Cadastrais
-    id_tipo_orgao_registro,
-    tipo_orgao_registro,
-    id_motivo_situacao,
-    motivo_situacao,
-    id_situacao_cadastral,
-    situacao_cadastral,
-    data_situacao_cadastral,
-    situacao_especial,
-    data_situacao_especial,
-    data_inicio_atividade,
-
-    -- Contato | TODO: padronizar separando em ddi, ddd e telefone
-    ddd_telefone_1,
-    telefone_1,
-    ddd_telefone_2,
-    telefone_2,
-    email,
-
-    -- Informações do Contador
-    tipo_crc_contador_pf,
-    contador_pj,
-    classificacao_crc_contador_pf,
-    sequencial_crc_contador_pf,
-    contador_pf,
-    tipo_crc_contador_pj,
-    classificacao_crc_contador_pj,
-    uf_crc_contador_pj,
-    uf_crc_contador_pf,
-    sequencial_crc_contador_pj,
-
-    -- Informações do Responsável
-    cpf_responsavel,
-    id_qualificacao_responsavel,
-    qualificacao_responsavel,
-    data_inclusao_responsavel,
-
-    -- Informações da Empresa
-    id_indicador_matriz,
-    indicador_matriz,
-
-    nome_fantasia,
-    capital_social,
-    id_ente_federativo,
-    ente_federativo,
-
-    cnae_fiscal,
-    cnae_secundarias,
-    id_natureza_juridica,
-    natureza_juridica,
-    id_porte_empresa,
-    porte_empresa,
-    nome_empresarial,
-    nire,
-    cnpj_sucedida,
-
-    -- TODO: padronizar arrays
-    tipos_unidade,
-    formas_atuacao,
-    socios,
-    sucessoes,
-
-    -- Metadados
-    tipo,
-    timestamp,
-    language,
-    version,
-    seq,
-    last_seq,
-    airbyte_raw_id,
-    airbyte_extracted_at,
-    airbyte_meta,
-    airbyte_generation_id,
-    rank,
-    cnpj_particao
-from tb_padronize
+select *
+from final

@@ -76,10 +76,10 @@ with Flow(name="DataLake - Transformação - DBT") as iplanrio_execute_dbt:
     )
     running_results.set_upstream([install_dbt_packages, download_dbt_artifacts_task])
 
-    # with case(SEND_DISCORD_REPORT, True):
-    #    create_dbt_report_task = create_dbt_report(
-    #        running_results=running_results, repository_path=download_repository_task
-    #    )
+    with case(SEND_DISCORD_REPORT, True):
+        create_dbt_report_task = create_dbt_report(
+            running_results=running_results, repository_path=download_repository_task
+        )
 
     ####################################
     # Task section #2 - Tag BigQuery Tables

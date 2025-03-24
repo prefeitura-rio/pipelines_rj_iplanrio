@@ -19,3 +19,4 @@ sources:
     schema: br_bd_diretorios_brasil
     tables:
     - name: municipio
+    - name: uf

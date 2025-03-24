@@ -385,9 +385,9 @@ with
             residente_exterior_indicador,
 
             -- Contact
-            telefone_ddi,
-            telefone_ddd,
-            telefone_numero,
+            TRIM(telefone_ddi) as telefone_ddi,
+            TRIM(telefone_ddd) as telefone_ddd,
+            TRIM(telefone_numero) as telefone_numero,
             email,
 
             -- Address

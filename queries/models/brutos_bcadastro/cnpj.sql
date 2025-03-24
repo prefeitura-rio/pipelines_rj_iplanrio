@@ -1,3 +1,16 @@
+{{
+    config(
+        alias="cnpj",
+        schema="brutos_bcadastro",
+        materialized="table",
+        partition_by={
+            "field": "cnpj_particao",
+            "data_type": "int64",
+            "range": {"start": 0, "end": 100000000000, "interval": 34722222},
+        },
+    )
+}}
+
 with
     tb as (
         select
@@ -11,21 +24,20 @@ with
             seq,
             value,
             last_seq
-        from `rj-crm-registry.brutos_bcadastro_staging.chcnpj_bcadastros`
-        where timestamp_trunc(_airbyte_extracted_at, day) = timestamp("2025-02-24")
+        from {{ source("brutos_bcadastro_staging", "chcnpj_bcadastros") }}
+        where timestamp_trunc(_airbyte_extracted_at, day) = timestamp("2025-03-23")
     ),
+
+
+    sigla_uf_bd as (select sigla from {{ source("br_bd_diretorios_brasil", "uf") }}),
 
     municipio_bd as (
-        select id_municipio_rf, nome as nome_municipio
-        from `basedosdados.br_bd_diretorios_brasil.municipio`
+        select id_municipio_rf, nome as municipio_nome
+        from {{ source("br_bd_diretorios_brasil", "municipio") }}
     ),
 
-    sigla_uf_bd as (select sigla from `basedosdados.br_bd_diretorios_brasil.uf`),
-
     dominio as (
-        select id, descricao, column
-        from `rj-crm-registry.dados_mestres.dominio_bcadastro`
-        where source = 'cnpj'
+        select id, descricao, column from {{ ref("dominio") }} where source = 'cnpj'
     ),
 
     tb_parsed as (
@@ -198,7 +210,7 @@ with
             t.classificacao_crc_contador_pj,
             t.uf_crc_contador_pj,
             t.id_municipio,
-            md.nome_municipio as municipio,
+            md.municipio_nome as municipio,
             t.uf_crc_contador_pf,
             t.telefone_1,
             t.telefone_2,

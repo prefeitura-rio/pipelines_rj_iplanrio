@@ -39,6 +39,8 @@ with
         select id, descricao, column from {{ ref("dominio") }} where source = 'cnpj'
     ),
 
+
+
     fonte_parseada as (
         select
             -- Primary key
@@ -188,6 +190,39 @@ with
         from fonte
     ),
 
+    array_convert_tb as (
+        SELECT
+            cnpj,
+            seq,
+            version,
+            ARRAY_AGG(
+            DISTINCT
+                tut.descricao
+            ) as tipos_unidade,
+            ARRAY_AGG(
+            DISTINCT
+                fat.descricao
+            ) as formas_atuacao
+        FROM fonte_parseada t,
+            UNNEST(t.formas_atuacao) as fa,
+            UNNEST(t.tipos_unidade) as tu
+        LEFT JOIN
+            (
+                select id as tipos_unidade_id, descricao
+                from dominio
+                where column = 'tipo_unidade'
+            ) tut
+            on CAST(CAST(JSON_VALUE(tu) AS INT64) AS STRING) = tut.tipos_unidade_id
+        LEFT JOIN
+            (
+                select id as formas_atuacao_id, descricao
+                from dominio
+                where column = 'forma_atuacao'
+            ) fat
+            on CAST(CAST(JSON_VALUE(fa) AS INT64) AS STRING) = fat.formas_atuacao_id
+        GROUP BY 1,2,3
+    ),
+
     fonte_intermediaria as (
         select
             -- Primary key
@@ -265,8 +300,9 @@ with
             -- Responsible Person
             t.cpf_responsavel,
             -- Business arrays
-            t.tipos_unidade,
-            t.formas_atuacao,
+            actb.tipos_unidade,
+            actb.formas_atuacao,
+
             t.socios,
             t.sucessoes,
             -- Metadata
@@ -297,6 +333,9 @@ with
 
             cast(t.cnpj as int64) as cnpj_particao
         from fonte_parseada t
+        left join array_convert_tb as actb
+            on t.cnpj = actb.cnpj and t.seq = actb.seq and t.version = actb.version
+
         left join
             municipio_bd as md
             on cast(t.id_municipio as int64) = cast(md.id_municipio_rf as int64)

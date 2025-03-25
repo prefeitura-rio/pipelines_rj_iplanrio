@@ -21,4 +21,4 @@ class Constants(Enum):
 
     # NEW DBT FLOW
     GCS_BUCKET = {"prod": "rj-iplanrio_dbt", "dev": "rj-iplanrio-dev_dbt"}
-    REPOSITORY_URL = "https://github.com/prefeitura-rio/queries-rj-iplanrio.git"
+    REPOSITORY_URL = "https://github.com/prefeitura-rio/pipelines_rj_iplanrio.git"

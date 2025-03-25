@@ -25,7 +25,7 @@ with
             value,
             last_seq
         from {{ source("brutos_bcadastro_staging", "chcnpj_bcadastros") }}
-        where timestamp_trunc(_airbyte_extracted_at, day) = timestamp("2025-03-23")
+        {# where timestamp_trunc(_airbyte_extracted_at, day) = timestamp("2025-03-23") #}
     ),
 
     sigla_uf_bd as (select sigla from {{ source("br_bd_diretorios_brasil", "uf") }}),
@@ -38,8 +38,6 @@ with
     dominio as (
         select id, descricao, column from {{ ref("dominio") }} where source = 'cnpj'
     ),
-
-
 
     fonte_parseada as (
         select
@@ -191,36 +189,287 @@ with
     ),
 
     array_convert_tb as (
-        SELECT
+        select
             cnpj,
             seq,
             version,
-            ARRAY_AGG(
-            DISTINCT
-                tut.descricao
-            ) as tipos_unidade,
-            ARRAY_AGG(
-            DISTINCT
-                fat.descricao
-            ) as formas_atuacao
-        FROM fonte_parseada t,
-            UNNEST(t.formas_atuacao) as fa,
-            UNNEST(t.tipos_unidade) as tu
-        LEFT JOIN
+            array_agg(distinct tut.descricao) as tipos_unidade,
+            array_agg(distinct fat.descricao) as formas_atuacao
+        from
+            fonte_parseada t,
+            unnest(t.formas_atuacao) as fa,
+            unnest(t.tipos_unidade) as tu
+        left join
             (
                 select id as tipos_unidade_id, descricao
                 from dominio
                 where column = 'tipo_unidade'
             ) tut
-            on CAST(CAST(JSON_VALUE(tu) AS INT64) AS STRING) = tut.tipos_unidade_id
-        LEFT JOIN
+            on cast(cast(json_value(tu) as int64) as string) = tut.tipos_unidade_id
+        left join
             (
                 select id as formas_atuacao_id, descricao
                 from dominio
                 where column = 'forma_atuacao'
             ) fat
-            on CAST(CAST(JSON_VALUE(fa) AS INT64) AS STRING) = fat.formas_atuacao_id
-        GROUP BY 1,2,3
+            on cast(cast(json_value(fa) as int64) as string) = fat.formas_atuacao_id
+        group by cnpj, seq, version
+    ),
+
+    socios_tb as (
+        select
+            cnpj,
+            seq,
+            version,
+            array_agg(
+                struct(
+                    nullif(json_value(so.codigopais), "") as codigo_pais,
+                    nullif(json_value(so.cpfcnpj), "") as cpf_cnpj,
+                    nullif(
+                        json_value(so.cpfrepresentantelegal), ""
+                    ) as cpf_representante_legal,
+                    safe.parse_date(
+                        '%Y%m%d', nullif(json_value(so.dataentrada), '')
+                    ) as data_situacao_especial,
+                    nullif(
+                        json_value(so.nomesocioestrangeiro), ""
+                    ) as nome_socio_estrangeiro,
+                    qrl.descricao as qualificacao_representante_legal,  -- qualificacao_representante_legal
+                    qs.descricao as qualificacao_socio,  -- qualificacao_socio
+                    ts.descricao as tipo  -- tipo_socio
+                )
+            ) as socios
+        from fonte_parseada t, unnest(t.socios) as so
+        left join
+            (
+                select id as qualificacao_representante_legal_id, descricao
+                from dominio
+                where column = 'qualificacao_representante_legal'
+            ) qrl
+            on cast(
+                cast(
+                    nullif(json_value(so.qualificacaorepresentantelegal), "") as int64
+                ) as string
+            )
+            = qrl.qualificacao_representante_legal_id
+        left join
+            (
+                select id as qualificacao_socio_id, descricao
+                from dominio
+                where column = 'qualificacao_socio'
+            ) qs
+            on cast(
+                cast(nullif(json_value(so.qualificacaosocio), "") as int64) as string
+            )
+            = qs.qualificacao_socio_id
+        left join
+            (
+                select id as tipo_socio_id, descricao
+                from dominio
+                where column = 'tipo_socio'
+            ) ts
+            on cast(cast(nullif(json_value(so.tipo), "") as int64) as string)
+            = ts.tipo_socio_id
+        group by cnpj, seq, version
+    ),
+
+    sucessoes_tb as (
+        select
+            cnpj_sucedida,
+            seq,
+            version,
+            array_agg(
+                struct(
+                    ev.descricao as evento_sucedida,  -- evento
+                    safe.parse_date(
+                        '%Y%m%d', nullif(json_value(su.dataeventosucedida), '')
+                    ) as data_evento_sucedida,
+                    safe.parse_date(
+                        '%Y%m%d', nullif(json_value(su.dataprocessamento), '')
+                    ) as data_processamento,
+                    nullif(json_value(su.sucessoras), "") as sucessoras
+
+                )
+            ) as sucessoes
+        from fonte_parseada t, unnest(t.sucessoes) as su
+        left join
+            (select id as evento_id, descricao from dominio where column = 'eventos') ev
+            on cast(
+                cast(nullif(json_value(su.codigoeventosucedida), "") as int64) as string
+            )
+            = ev.evento_id
+        group by cnpj_sucedida, seq, version
+    ),
+
+    contato as (
+        select cnpj, seq, version, array_agg(struct(ddd, telefone)) as telefone
+        from
+            (
+                select
+                    cnpj,
+                    seq,
+                    version,
+                    case
+                        when
+                            ddd_telefone_1 not in (
+                                '11',
+                                '12',
+                                '13',
+                                '14',
+                                '15',
+                                '16',
+                                '17',
+                                '18',
+                                '19',
+                                '21',
+                                '22',
+                                '24',
+                                '27',
+                                '28',
+                                '31',
+                                '32',
+                                '33',
+                                '34',
+                                '35',
+                                '37',
+                                '38',
+                                '41',
+                                '42',
+                                '43',
+                                '44',
+                                '45',
+                                '46',
+                                '47',
+                                '48',
+                                '49',
+                                '51',
+                                '53',
+                                '54',
+                                '55',
+                                '61',
+                                '62',
+                                '63',
+                                '64',
+                                '65',
+                                '66',
+                                '67',
+                                '68',
+                                '69',
+                                '71',
+                                '73',
+                                '74',
+                                '75',
+                                '77',
+                                '79',
+                                '81',
+                                '82',
+                                '83',
+                                '84',
+                                '85',
+                                '86',
+                                '87',
+                                '88',
+                                '89',
+                                '91',
+                                '92',
+                                '93',
+                                '94',
+                                '95',
+                                '96',
+                                '97',
+                                '98',
+                                '99'
+                            )
+                        then null
+                        else ddd_telefone_1
+                    end as ddd,
+                    {{ padronize_telefone("telefone_1") }} as telefone
+                from fonte_parseada
+                where telefone_1 is not null
+                union all
+                select
+                    cnpj,
+                    seq,
+                    version,
+                    case
+                        when
+                            ddd_telefone_2 not in (
+                                '11',
+                                '12',
+                                '13',
+                                '14',
+                                '15',
+                                '16',
+                                '17',
+                                '18',
+                                '19',
+                                '21',
+                                '22',
+                                '24',
+                                '27',
+                                '28',
+                                '31',
+                                '32',
+                                '33',
+                                '34',
+                                '35',
+                                '37',
+                                '38',
+                                '41',
+                                '42',
+                                '43',
+                                '44',
+                                '45',
+                                '46',
+                                '47',
+                                '48',
+                                '49',
+                                '51',
+                                '53',
+                                '54',
+                                '55',
+                                '61',
+                                '62',
+                                '63',
+                                '64',
+                                '65',
+                                '66',
+                                '67',
+                                '68',
+                                '69',
+                                '71',
+                                '73',
+                                '74',
+                                '75',
+                                '77',
+                                '79',
+                                '81',
+                                '82',
+                                '83',
+                                '84',
+                                '85',
+                                '86',
+                                '87',
+                                '88',
+                                '89',
+                                '91',
+                                '92',
+                                '93',
+                                '94',
+                                '95',
+                                '96',
+                                '97',
+                                '98',
+                                '99'
+                            )
+                        then null
+                        else ddd_telefone_2
+                    end as ddd,
+                    {{ padronize_telefone("telefone_2") }} as telefone
+                from fonte_parseada
+                where telefone_2 is not null
+            )
+        group by cnpj, seq, version
     ),
 
     fonte_intermediaria as (
@@ -269,10 +518,7 @@ with
             end as ente_federativo,
 
             -- Contact
-            t.ddd_telefone_1,
-            t.telefone_1,
-            t.ddd_telefone_2,
-            t.telefone_2,
+            tel.telefone,
             t.email,
 
             -- Address
@@ -302,9 +548,9 @@ with
             -- Business arrays
             actb.tipos_unidade,
             actb.formas_atuacao,
+            soc.socios,
+            suc.sucessoes,
 
-            t.socios,
-            t.sucessoes,
             -- Metadata
             t.timestamp,
             t.language,
@@ -333,9 +579,27 @@ with
 
             cast(t.cnpj as int64) as cnpj_particao
         from fonte_parseada t
-        left join array_convert_tb as actb
-            on t.cnpj = actb.cnpj and t.seq = actb.seq and t.version = actb.version
+        left join
+            contato as tel
+            on t.cnpj = tel.cnpj
+            and t.seq = tel.seq
+            and t.version = tel.version
 
+        left join
+            socios_tb as soc
+            on t.cnpj = soc.cnpj
+            and t.seq = soc.seq
+            and t.version = soc.version
+        left join
+            sucessoes_tb as suc
+            on t.cnpj_sucedida = suc.cnpj_sucedida
+            and t.seq = suc.seq
+            and t.version = suc.version
+        left join
+            array_convert_tb as actb
+            on t.cnpj = actb.cnpj
+            and t.seq = actb.seq
+            and t.version = actb.version
         left join
             municipio_bd as md
             on cast(t.id_municipio as int64) = cast(md.id_municipio_rf as int64)
@@ -426,10 +690,7 @@ with
             {{ proper_br("ente_federativo") }} as ente_federativo,
 
             -- Contact
-            t.ddd_telefone_1,
-            t.telefone_1,
-            t.ddd_telefone_2,
-            t.telefone_2,
+            t.telefone,
             t.email,
 
             -- Address
@@ -468,7 +729,7 @@ with
             t.language,
 
             -- Outros
-            STRUCT(
+            struct(
                 t.id,
                 t.key,
                 t.rev,
@@ -498,7 +759,9 @@ with
     fonte_deduplicada as (
         select *
         from fonte_padronizada
-        qualify row_number() over (partition by cnpj order by data_situacao_cadastral desc) = 1
+        qualify
+            row_number() over (partition by cnpj order by data_situacao_cadastral desc)
+            = 1
     ),
 
     final as (
@@ -529,7 +792,6 @@ with
             porte_empresa,
             indicador_matriz,
 
-
             -- Dates
             data_inicio_atividade,
             data_situacao_cadastral,
@@ -545,10 +807,7 @@ with
             ente_federativo,
 
             -- Contact
-            ddd_telefone_1,
-            telefone_1,
-            ddd_telefone_2,
-            telefone_2,
+            telefone,
             email,
 
             -- Address

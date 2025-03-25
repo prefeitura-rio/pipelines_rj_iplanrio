@@ -28,4 +28,5 @@ SELECT
   ) destino,
   SAFE_CAST(
     REGEXP_REPLACE(t.cod_desp, r'\.0$', '') AS STRING
-  ) cod_desp, FROM `rj-iplanrio.adm_processo_interno_sicop_staging.tramitacao_documento` t
+  ) cod_desp, 
+ FROM {{ source('adm_processo_interno_sicop_staging', 'tramitacao_documento') }}

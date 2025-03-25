@@ -58,12 +58,7 @@ def download_repository():
     except git.GitCommandError as e:
         raise FAIL(str(f"Error when downloading repository: {e}")) from e
 
-    # Return path to queries folder
-    queries_path = os.path.join(repository_path, "queries")
-    if not os.path.exists(queries_path):
-        raise FAIL("The 'queries' folder does not exist in the repository.")
-
-    return queries_path
+    return repository_path
 
 
 @task

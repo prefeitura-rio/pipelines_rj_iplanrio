@@ -40,4 +40,4 @@ models:
 
 vars:
   # dbt bigquery monitoring vars
-  input_gcp_projects: [ 'rj-iplanrio']
+  input_gcp_projects: [ 'rj-iplanrio','rj-iplanrio-dev']

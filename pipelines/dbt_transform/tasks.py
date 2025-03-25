@@ -63,7 +63,7 @@ def download_repository():
     if not os.path.exists(queries_path):
         raise FAIL("The 'queries' folder does not exist in the repository.")
 
-    return queries_path   
+    return queries_path
 
 
 @task

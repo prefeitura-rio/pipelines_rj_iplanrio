@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0103
 """
-DBT flows.
+DBT flows..
 """
 
 from prefect import Parameter, case

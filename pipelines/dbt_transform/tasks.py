@@ -260,38 +260,15 @@ def download_dbt_artifacts_from_gcs(dbt_path: str, environment: str):
         return None
 
 
-def log_directory_contents(path: str, label: str):
-    """
-    Logs the contents of a directory, listing all files and subdirectories.
-    """
-    log(f"Contents of {label} ({path}):", level="info")
-
-    if not os.path.exists(path):
-        log(f"Path does not exist: {path}", level="warning")
-        return
-
-    for root, dirs, files in os.walk(path):
-        relative_root = os.path.relpath(root, path)
-        log(f"📂 {relative_root if relative_root != '.' else path}/", level="info")
-        for d in dirs:
-            log(f"  📁 {d}/", level="info")
-        for f in files:
-            log(f"  📄 {f}", level="info")
-
-
 @task
 def upload_dbt_artifacts_to_gcs(dbt_path: str, environment: str):
     """
     Sends the dbt artifacts to Google Cloud Storage.
     """
 
-    dbt_artifacts_path = os.path.join(dbt_path, "target")
+    dbt_artifacts_path = os.path.join(dbt_path, "target_base")
 
     gcs_bucket = Constants.GCS_BUCKET.value[environment]
-
-    # Log directory contents
-    log_directory_contents(dbt_path, "dbt_path")
-    log_directory_contents(dbt_artifacts_path, "dbt_artifacts_path")
 
     upload_to_cloud_storage(dbt_artifacts_path, gcs_bucket)
     log(f"DBT artifacts sent to GCS bucket: {gcs_bucket}", level="info")

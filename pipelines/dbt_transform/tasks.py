@@ -259,16 +259,17 @@ def download_dbt_artifacts_from_gcs(dbt_path: str, environment: str):
         log(f"Error when downloading DBT artifacts from GCS: {e}", level="error")
         return None
 
+
 def log_directory_contents(path: str, label: str):
     """
     Logs the contents of a directory, listing all files and subdirectories.
     """
     log(f"Contents of {label} ({path}):", level="info")
-    
+
     if not os.path.exists(path):
         log(f"Path does not exist: {path}", level="warning")
         return
-    
+
     for root, dirs, files in os.walk(path):
         relative_root = os.path.relpath(root, path)
         log(f"📂 {relative_root if relative_root != '.' else path}/", level="info")

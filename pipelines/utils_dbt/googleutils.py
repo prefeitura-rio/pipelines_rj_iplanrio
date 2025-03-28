@@ -65,9 +65,6 @@ def upload_to_cloud_storage(
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)
 
-    print("PATH:")
-    print(path)
-
     if if_exist not in ["replace", "skip"]:
         raise ValueError("Invalid if_exist value. Please use 'replace' or 'skip'.")
 

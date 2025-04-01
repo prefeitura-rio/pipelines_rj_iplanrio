@@ -13,12 +13,12 @@ from pipelines.constants import Constants
 from pipelines.utils_dbt.schedules import generate_dump_api_schedules, untuple_clocks
 
 daily_parameters = [
-    {"command": "build", "environment": "prod", "rename_flow": True, "select": "tag:daily"},
+    {"command": "build", "environment": "prod", "rename_flow": True, "select": "+tag:daily +tag:dbt-bigquery-monitoring"},
     {"command": "source freshness", "environment": "prod", "rename_flow": True},
 ]
 
 weekly_parameters = [
-    {"command": "build", "environment": "prod", "rename_flow": True, "select": "tag:weekly"},
+    {"command": "build", "environment": "prod", "rename_flow": True, "select": "+tag:weekly"},
 ]
 
 

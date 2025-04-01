@@ -2,7 +2,7 @@ name: "queries"
 version: "1.0.0"
 config-version: 2
 
-profile: "queries"
+profile: "iplan"
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -35,3 +35,9 @@ models:
     transporte_rodoviario_taxirio_homologacao:
       +materialized: table
       +schema: transporte_rodoviario_taxirio_homologacao
+    dbt_bigquery_monitoring:
+        +schema: "dbt_bigquery_monitoring"
+
+vars:
+  # dbt bigquery monitoring vars
+  input_gcp_projects: [ 'rj-iplanrio','rj-iplanrio-dev']

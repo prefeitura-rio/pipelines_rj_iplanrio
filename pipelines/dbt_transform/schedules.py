@@ -22,7 +22,6 @@ weekly_parameters = [
 ]
 
 
-
 dbt_daily_clocks = generate_dump_api_schedules(
     interval=timedelta(days=1),
     start_date=datetime(2023, 1, 1, 6, 30, tzinfo=pytz.timezone("America/Sao_Paulo")),
@@ -43,6 +42,6 @@ dbt_weekly_clocks = generate_dump_api_schedules(
     runs_interval_minutes=30,
 )
 
-dbt_clocks = dbt_daily_clocks + dbt_weekly_clocks 
+dbt_clocks = dbt_daily_clocks + dbt_weekly_clocks
 
 dbt_schedules = Schedule(clocks=untuple_clocks(dbt_clocks))

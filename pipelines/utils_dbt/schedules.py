@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0103
 """
-General utilities for sms pipelines.
+General utilities for iplanrio pipelines.
 """
 
 from datetime import datetime, timedelta

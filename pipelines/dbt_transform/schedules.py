@@ -17,13 +17,13 @@ daily_parameters = [
         "command": "build",
         "environment": "prod",
         "rename_flow": True,
-        "select": "+tag:daily +tag:dbt-bigquery-monitoring",
+        "select": "tag:daily tag:dbt-bigquery-monitoring",
     },
     {"command": "source freshness", "environment": "prod", "rename_flow": True},
 ]
 
 weekly_parameters = [
-    {"command": "build", "environment": "prod", "rename_flow": True, "select": "+tag:weekly"},
+    {"command": "build", "environment": "prod", "rename_flow": True, "select": "tag:weekly"},
 ]
 
 

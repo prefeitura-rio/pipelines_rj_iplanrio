@@ -47,4 +47,4 @@ SELECT
   SAFE_CAST(
     REGEXP_REPLACE(p.status, r'\.0$', '') AS STRING
   ) status
- FROM `rj-iplanrio.adm_processo_interno_sicop_staging.processo` p
+ FROM {{ source('adm_processo_interno_sicop_staging', 'processo') }}

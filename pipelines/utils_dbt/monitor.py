@@ -103,10 +103,10 @@ def send_message(title, message, monitor_slug, file_path=None, username=None):
 
     # Send message to Discord
     async def main(contents):
-        for content in contents:
+        for i, content in enumerate(contents):
             await send_discord_webhook(
                 text_content=content,
-                file_path=file_path,
+                file_path=file_path if i == len(contents) - 1 else None,
                 username=username,
                 monitor_slug=monitor_slug,
             )

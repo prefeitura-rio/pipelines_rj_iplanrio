@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=C0103
 """
-Schedules for the dbt execute pipeline
+Schedules for the dbt execute pipeline.
 """
 
 from datetime import datetime, timedelta

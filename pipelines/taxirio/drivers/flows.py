@@ -28,7 +28,6 @@ with Flow(
     parallelism=1,
 ) as rj_iplanrio__taxirio__drivers__flow:
     path = Parameter("path", default="output")
-    frequency = Parameter("frequency", default="2M")
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
     table_id = Parameter("table_id", default=Drivers.TABLE_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)

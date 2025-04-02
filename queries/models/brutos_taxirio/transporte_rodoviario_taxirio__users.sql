@@ -7,4 +7,4 @@ SELECT
   SAFE_CAST (federalRevenueData_sex as STRING) as sexo,
   DATE(TIMESTAMP(birthDate)) as data_nascimento,
 FROM
-  `rj-iplanrio.transporte_rodoviario_taxirio_staging.users`
+  `rj-iplanrio.brutos_taxirio_staging.users`

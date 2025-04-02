@@ -5,13 +5,13 @@
 Parâmetros para dump completo de collections do MongoDB:
 
 - `races`:
-  - `freq`: ME
+  - `freq`: 3D
   - `dump_mode`: overwrite
 - `rankingraces`:
-  - `freq`: 7D
+  - `freq`: 3D
   - `dump_mode`: overwrite
 - `passengers`
-  - `freq`: 2ME
+  - `freq`: 7D
   - `dump_mode`: overwrite
 
 # Melhorias

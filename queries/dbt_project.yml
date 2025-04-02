@@ -29,15 +29,15 @@ models:
     unidades_administrativas:
       +materialized: table
       +schema: unidades_administrativas
-    transporte_rodoviario_taxirio:
+    brutos_taxirio:
       +materialized: table
-      +schema: transporte_rodoviario_taxirio
-    transporte_rodoviario_taxirio_homologacao:
+      +schema: brutos_taxirio
+    brutos_taxirio_homologacao:
       +materialized: table
-      +schema: transporte_rodoviario_taxirio_homologacao
+      +schema: brutos_taxirio_homologacao
     dbt_bigquery_monitoring:
-        +schema: "dbt_bigquery_monitoring"
+      +schema: "dbt_bigquery_monitoring"
 
 vars:
   # dbt bigquery monitoring vars
-  input_gcp_projects: [ 'rj-iplanrio','rj-iplanrio-dev']
+  input_gcp_projects: ["rj-iplanrio", "rj-iplanrio-dev"]

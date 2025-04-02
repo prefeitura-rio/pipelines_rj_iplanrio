@@ -79,5 +79,5 @@ rj_iplanrio__taxirio__races__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
     labels=[TaxiRio.RJ_TAXIRIO_AGENT_LABEL.value],
     memory_request="1Gi",
-    memory_limit="5Gi",
+    memory_limit="10Gi",
 )

@@ -4,4 +4,4 @@ SELECT
   SAFE_CAST (name as STRING) as nome,
   SAFE_CAST (type as STRING) as tipo,
 FROM
-  `rj-iplanrio.transporte_rodoviario_taxirio_staging.paymentmethods`
+  `rj-iplanrio.brutos_taxirio_homologacao_staging.paymentmethods`

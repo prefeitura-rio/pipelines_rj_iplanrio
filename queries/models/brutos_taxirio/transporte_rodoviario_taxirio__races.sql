@@ -50,4 +50,4 @@ SELECT
     billing_associatedCorporative_externalPropertyPassenger as BOOL
   ) as propriedade_corporativa,
 FROM
-  `rj-iplanrio.transporte_rodoviario_taxirio_staging.races`
+  `rj-iplanrio.brutos_taxirio_staging.races`

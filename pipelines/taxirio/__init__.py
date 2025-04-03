@@ -6,5 +6,4 @@ from pipelines.taxirio.passengers import *
 from pipelines.taxirio.paymentmethods import *
 from pipelines.taxirio.races import *
 from pipelines.taxirio.rankingraces import *
-from pipelines.taxirio.staging import *
 from pipelines.taxirio.users import *

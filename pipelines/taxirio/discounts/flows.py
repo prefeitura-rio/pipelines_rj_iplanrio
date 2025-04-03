@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from prefect import Parameter, case
+from prefect import Parameter
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
 from prefeitura_rio.pipelines_utils.custom import Flow
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
 from prefeitura_rio.pipelines_utils.tasks import (
     create_table_and_upload_to_gcs,
-    task_run_dbt_model_task,
 )
 
 from pipelines.constants import Constants
@@ -31,7 +30,6 @@ with Flow(
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
     table_id = Parameter("table_id", default=Discounts.TABLE_ID.value)
-    materialize_after_dump = Parameter("materialize_after_dump", default=True, required=False)
     dump_mode = Parameter("dump_mode", default="overwrite")
 
     connection = get_mongodb_connection_string(secret_name)
@@ -54,15 +52,6 @@ with Flow(
         source_format="parquet",
         table_id=table_id,
     )
-
-    with case(materialize_after_dump, True):
-        run_dbt = task_run_dbt_model_task(
-            dataset_id=dataset_id,
-            table_id=table_id,
-            dbt_alias=True,
-        )
-
-        run_dbt.set_upstream(upload_table)
 
 rj_iplanrio__taxirio__discounts__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 

@@ -35,9 +35,6 @@ models:
     brutos_taxirio:
       +materialized: table
       +schema: brutos_taxirio
-    brutos_taxirio_homologacao:
-      +materialized: table
-      +schema: brutos_taxirio_homologacao
     dbt_bigquery_monitoring:
       +schema: "dbt_bigquery_monitoring"
 

@@ -35,4 +35,4 @@ SELECT
   SAFE_CAST (associatedRace_race as STRING) as id_corrida,
   DATETIME (TIMESTAMP(expiredBlockByRankingDate)) as data_bloqueio_expirado,
 FROM
-  `rj-iplanrio.brutos_taxirio_staging.drivers`
+  `rj-iplanrio.brutos_taxirio_homologacao_staging.drivers`

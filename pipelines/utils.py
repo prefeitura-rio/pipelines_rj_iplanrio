@@ -8,9 +8,7 @@ import pyarrow.parquet as pq
 from prefect import context
 from pyarrow import Table
 from pymongo.collection import Collection
-from pytz import timezone
-
-from pipelines.constants import Constants
+from pytz import UTC
 
 
 def log(message: str, level: str = "info") -> None:
@@ -61,7 +59,7 @@ def get_date_range(
         end=end,
         freq=freq,
         normalize=True,
-        tz=timezone(Constants.TIMEZONE.value),
+        tz=UTC,
     )
 
 
@@ -83,3 +81,11 @@ def write_data_to_disk(
         )
     else:
         pq.write_table(table=data, where=root_path / f"{collection_name}.parquet")
+
+
+def normalize_date(date: datetime, timezone=UTC) -> datetime:
+    """Normalize a date to midnight in the specified timezone."""
+    if not date.tzinfo:
+        date = date.replace(tzinfo=timezone)
+
+    return date.replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone)

@@ -10,10 +10,9 @@ from prefeitura_rio.pipelines_utils.infisical import get_secret
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongoarrow.api import Schema, aggregate_arrow_all
-from pytz import timezone
+from pytz import UTC
 
 from pipelines import utils
-from pipelines.constants import Constants
 
 
 @task(checkpoint=False)
@@ -49,14 +48,17 @@ def get_mongodb_collection(client: MongoClient, database: str, collection: str) 
 def get_dates_for_dump_mode(dump_mode: str, collection: Collection) -> tuple[datetime, datetime]:
     """Get dates based on dump mode."""
     if dump_mode == "overwrite":
-        start = utils.get_mongodb_date_in_collection(collection, order=1)
-        end = utils.get_mongodb_date_in_collection(collection, order=-1)
+        base_start = utils.get_mongodb_date_in_collection(collection, order=1)
+        base_end = utils.get_mongodb_date_in_collection(collection, order=-1)
+        delta = 30
+    else:
+        base_start = base_end = datetime.now(UTC)
+        delta = 1
 
-        return start, end + timedelta(days=30)
+    start = utils.normalize_date(base_start) - timedelta(days=delta)
+    end = utils.normalize_date(base_end) + timedelta(days=delta)
 
-    today = datetime.now().astimezone(timezone(Constants.TIMEZONE.value))
-
-    return today - timedelta(days=1), today + timedelta(days=1)
+    return start, end
 
 
 @task(checkpoint=False)

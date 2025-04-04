@@ -68,6 +68,9 @@ def write_data_to_disk(
     root_path: Path,
     collection_name: str,
     partition_cols: list[str] | None,
+    max_partitions: int = 1024 * 3,
+    min_rows_per_group: int = 1000,
+    max_rows_per_group: int = 10000,
 ) -> None:
     """Use this helper function to write data to disk."""
     if partition_cols:
@@ -76,8 +79,9 @@ def write_data_to_disk(
             root_path=root_path,
             partition_cols=partition_cols,
             basename_template=f"{collection_name}_{{i}}.parquet",
-            min_rows_per_group=1000,
-            max_rows_per_group=10000,
+            max_partitions=max_partitions,
+            min_rows_per_group=min_rows_per_group,
+            max_rows_per_group=max_rows_per_group,
         )
     else:
         pq.write_table(table=data, where=root_path / f"{collection_name}.parquet")

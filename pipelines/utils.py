@@ -68,7 +68,7 @@ def write_data_to_disk(
     root_path: Path,
     collection_name: str,
     partition_cols: list[str] | None,
-    max_partitions: int = 1024 * 2,
+    max_partitions: int = 1024 * 3,
     min_rows_per_group: int = 1000,
     max_rows_per_group: int = 10000,
 ) -> None:

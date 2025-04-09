@@ -25,6 +25,7 @@ rj_iplanrio__dbt_transform__flow = set_default_parameters(
     default_parameters={
         "github_repo": Constants.REPOSITORY_URL.value,
         "gcs_buckets": Constants.GCS_BUCKET.value,
+        "bigquery_project": Constants.RJ_IPLANRIO_AGENT_LABEL.value
     },
 )
 

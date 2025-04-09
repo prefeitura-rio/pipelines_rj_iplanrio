@@ -19,6 +19,8 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
         {
             "$project": {
                 "id": {"$toString": "$_id"},
+                "car": {"$toString": "$car"},
+                "driver": {"$toString": "$driver"},
                 "createdAt": {"$dateToString": {"date": "$createdAt"}},
                 "finishedAt": {"$dateToString": {"date": "$finishedAt"}},
                 "ano_particao": {"$dateToString": {"format": "%Y", "date": "$createdAt"}},
@@ -76,6 +78,8 @@ schema = Schema(
         "isSuspect": string(),
         "isInvalid": string(),
         "status": string(),
+        "car": string(),
+        "driver": string(),
         "routeOriginDestination_distance_text": string(),
         "routeOriginDestination_distance_value": string(),
         "routeOriginDestination_duration_text": string(),

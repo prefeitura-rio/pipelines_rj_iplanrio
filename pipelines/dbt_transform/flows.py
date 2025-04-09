@@ -20,6 +20,8 @@ rj_iplanrio__dbt_transform__flow.run_config = KubernetesRun(
     labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],
 )
 
+print("GithubRepo URL:", Constants.REPOSITORY_URL.value)
+
 rj_iplanrio__dbt_transform__flow = set_default_parameters(
     rj_iplanrio__dbt_transform__flow,
     default_parameters={
@@ -28,4 +30,4 @@ rj_iplanrio__dbt_transform__flow = set_default_parameters(
     },
 )
 
-# COMMENT TO TRIGGER
+# COMMENT TO TRIGGER.

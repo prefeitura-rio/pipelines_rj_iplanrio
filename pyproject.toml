@@ -19,7 +19,7 @@ pyarrow = "^17.0.0"
 pymongo = "^4.8.0"
 pymongoarrow = "^1.5.2"
 zeep = "^4.2.1"
-prefeitura-rio = { git = "https://github.com/prefeitura-rio/prefeitura-rio", rev = "20ad0e18125b211041bc1e586498d6f565671c94", extras = [
+prefeitura-rio = { git = "https://github.com/prefeitura-rio/prefeitura-rio", rev = "12b8c983c82e4bca370385c5f491a36136c037ba", extras = [
   "pipelines",
   "pipelines-templates",
   "actions",

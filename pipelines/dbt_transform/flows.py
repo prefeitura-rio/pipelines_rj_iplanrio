@@ -10,7 +10,6 @@ from prefeitura_rio.pipelines_utils.prefect import set_default_parameters
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
 
 from pipelines.constants import Constants
-
 from pipelines.dbt_transform.schedules import (
     dbt_schedules,
 )

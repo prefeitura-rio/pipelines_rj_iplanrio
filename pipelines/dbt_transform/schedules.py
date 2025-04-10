@@ -13,18 +13,32 @@ from prefeitura_rio.pipelines_utils.prefect import generate_dbt_transform_schedu
 
 from pipelines.constants import Constants
 
+common_parameters = {
+    "github_repo": Constants.REPOSITORY_URL.value,
+    "gcs_buckets": Constants.GCS_BUCKET.value,
+    "bigquery_project": Constants.RJ_IPLANRIO_AGENT_LABEL.value,
+    "environment": "prod",
+    "rename_flow": True,
+}
+
 daily_parameters = [
     {
+        **common_parameters,
         "command": "build",
-        "environment": "prod",
-        "rename_flow": True,
         "select": "tag:daily tag:dbt-bigquery-monitoring",
     },
-    {"command": "source freshness", "environment": "prod", "rename_flow": True},
+    {
+        **common_parameters,
+        "command": "source freshness",
+    },
 ]
 
 weekly_parameters = [
-    {"command": "build", "environment": "prod", "rename_flow": True, "select": "tag:weekly"},
+    {
+        **common_parameters,
+        "command": "build",
+        "select": "tag:weekly",
+    }
 ]
 
 

@@ -3252,8 +3252,8 @@ sgrc = ["aiohttp (>=3.8.5,<4.0.0)", "pendulum (>=2.1.2,<3.0.0)", "pytz (>=2023.3
 [package.source]
 type = "git"
 url = "https://github.com/prefeitura-rio/prefeitura-rio"
-reference = "f4345e377df5e7b9a60fdd19c3f5b8896d1b07ee"
-resolved_reference = "f4345e377df5e7b9a60fdd19c3f5b8896d1b07ee"
+reference = "c68032bab1a19b87d19ce7bcc98c3a4adb35d606"
+resolved_reference = "c68032bab1a19b87d19ce7bcc98c3a4adb35d606"
 
 [[package]]
 name = "propcache"
@@ -5366,4 +5366,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.11"
-content-hash = "13b5140b73804f895fdde4509307a2a8333303a4dcff2e7d932cda914c40cfe1"
+content-hash = "58d53a15ecaebd364634e9f0d86b05623afa92c6e62cdd9adb815f6892a235f7"

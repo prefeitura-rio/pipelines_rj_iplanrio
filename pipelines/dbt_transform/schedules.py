@@ -8,11 +8,10 @@ from datetime import datetime, timedelta
 
 import pytz
 from prefect.schedules import Schedule
-
-from pipelines.constants import Constants
 from prefeitura_rio.pipelines_utils.io import untuple_clocks
 from prefeitura_rio.pipelines_utils.prefect import generate_dbt_transform_schedules
 
+from pipelines.constants import Constants
 
 daily_parameters = [
     {

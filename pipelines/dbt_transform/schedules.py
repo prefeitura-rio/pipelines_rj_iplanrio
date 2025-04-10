@@ -8,9 +8,10 @@ from datetime import datetime, timedelta
 
 import pytz
 from prefect.schedules import Schedule
+from prefeitura_rio.pipelines_utils.io import untuple_clocks
+from prefeitura_rio.pipelines_utils.prefect import generate_dbt_transform_schedules
 
 from pipelines.constants import Constants
-from pipelines.utils_dbt.schedules import generate_dump_api_schedules, untuple_clocks
 
 daily_parameters = [
     {
@@ -27,7 +28,7 @@ weekly_parameters = [
 ]
 
 
-dbt_daily_clocks = generate_dump_api_schedules(
+dbt_daily_clocks = generate_dbt_transform_schedules(
     interval=timedelta(days=1),
     start_date=datetime(2023, 1, 1, 6, 30, tzinfo=pytz.timezone("America/Sao_Paulo")),
     labels=[
@@ -37,7 +38,7 @@ dbt_daily_clocks = generate_dump_api_schedules(
     runs_interval_minutes=15,
 )
 
-dbt_weekly_clocks = generate_dump_api_schedules(
+dbt_weekly_clocks = generate_dbt_transform_schedules(
     interval=timedelta(days=7),
     start_date=datetime(2024, 3, 17, 6, 20, tzinfo=pytz.timezone("America/Sao_Paulo")),
     labels=[

@@ -19,6 +19,6 @@ class Constants(Enum):
     SICI_SOAP_API_WSDL = "http://sici.rio.rj.gov.br/Servico/WebServiceSICI.asmx?wsdl"
     TIMEZONE = "America/Sao_Paulo"
 
-    # NEW DBT FLOW
+    # DBT TRANSFORM
     GCS_BUCKET = {"prod": "rj-iplanrio_dbt", "dev": "rj-iplanrio-dev_dbt"}
     REPOSITORY_URL = "https://github.com/prefeitura-rio/queries-rj-iplanrio.git"

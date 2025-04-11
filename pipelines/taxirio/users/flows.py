@@ -21,7 +21,7 @@ from pipelines.taxirio.users.constants import Constants as Users
 from pipelines.taxirio.users.mongodb import pipeline, schema
 
 with Flow(
-    name="IPLANRIO: users - Dump da tabela do MongoDB do TaxiRio",
+    name="IPLANRIO: users - Dump da collection do MongoDB do TaxiRio",
     state_handlers=[handler_inject_bd_credentials],
     skip_if_running=True,
     parallelism=1,

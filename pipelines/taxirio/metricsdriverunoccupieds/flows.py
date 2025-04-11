@@ -10,7 +10,7 @@ from prefeitura_rio.pipelines_utils.tasks import (
 
 from pipelines.constants import Constants
 from pipelines.taxirio.constants import Constants as TaxiRio
-from pipelines.taxirio.metricsdriverunoccupieds.constants import Constants as metricsdriverunoccupieds
+from pipelines.taxirio.metricsdriverunoccupieds.constants import Constants as MetricsDriverUnoccupieds
 from pipelines.taxirio.metricsdriverunoccupieds.mongodb import generate_pipeline, schema
 from pipelines.taxirio.schedules import every_day
 from pipelines.taxirio.tasks import (
@@ -22,7 +22,7 @@ from pipelines.taxirio.tasks import (
 )
 
 with Flow(
-    name="IPLANRIO: metricsdriverunoccupieds - Dump da tabela do MongoDB do TaxiRio",
+    name="IPLANRIO: metricsdriverunoccupieds - Dump da collection do MongoDB do TaxiRio",
     state_handlers=[handler_inject_bd_credentials],
     skip_if_running=True,
     parallelism=1,
@@ -31,7 +31,7 @@ with Flow(
     freq = Parameter("frequency", default="D")
     dump_mode = Parameter("dump_mode", default="append")
     dataset_id = Parameter("dataset_id", default=TaxiRio.DATASET_ID.value)
-    table_id = Parameter("table_id", default=metricsdriverunoccupieds.TABLE_ID.value)
+    table_id = Parameter("table_id", default=MetricsDriverUnoccupieds.TABLE_ID.value)
     secret_name = Parameter("secret_name", default=TaxiRio.MONGODB_CONNECTION_STRING.value)
 
     connection = get_mongodb_connection_string(secret_name)
@@ -40,7 +40,7 @@ with Flow(
 
     collection = get_mongodb_collection(client, TaxiRio.MONGODB_DATABASE_NAME.value, table_id)
 
-    start_date, end_date = get_dates_for_dump_mode(dump_mode, collection)
+    start_date, end_date = get_dates_for_dump_mode(dump_mode, collection, "dateTime")
 
     data_path = dump_collection_from_mongodb_per_period(
         collection=collection,

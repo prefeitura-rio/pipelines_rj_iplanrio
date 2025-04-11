@@ -22,7 +22,7 @@ from pipelines.taxirio.tasks import (
 )
 
 with Flow(
-    name="IPLANRIO: races - Dump da tabela do MongoDB do TaxiRio",
+    name="IPLANRIO: races - Dump da collection do MongoDB do TaxiRio",
     state_handlers=[handler_inject_bd_credentials],
     skip_if_running=True,
     parallelism=1,

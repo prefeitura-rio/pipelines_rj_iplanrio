@@ -45,11 +45,15 @@ def get_mongodb_collection(client: MongoClient, database: str, collection: str) 
 
 
 @task(checkpoint=False)
-def get_dates_for_dump_mode(dump_mode: str, collection: Collection) -> tuple[datetime, datetime]:
+def get_dates_for_dump_mode(
+    dump_mode: str,
+    collection: Collection,
+    date_field: str = "createdAt",
+) -> tuple[datetime, datetime]:
     """Get dates based on dump mode."""
     if dump_mode == "overwrite":
-        base_start = utils.get_mongodb_date_in_collection(collection, order=1)
-        base_end = utils.get_mongodb_date_in_collection(collection, order=-1)
+        base_start = utils.get_mongodb_date_in_collection(collection, order=1, date_field=date_field)
+        base_end = utils.get_mongodb_date_in_collection(collection, order=-1, date_field=date_field)
         delta = 30
     else:
         base_start = base_end = datetime.now(UTC)

@@ -28,14 +28,18 @@ def log(message: str, level: str = "info") -> None:
     context.logger.log(levels[level], message)
 
 
-def get_mongodb_date_in_collection(collection: Collection, order: int) -> datetime:
+def get_mongodb_date_in_collection(
+    collection: Collection,
+    order: int,
+    date_field: str,
+) -> datetime:
     """Get the smallest or latest date from a MongoDB collection based on sort order."""
     log(f"Getting the {'earliest' if order == 1 else 'latest'} date from *{collection.name}* collection")
 
     pipeline = [
-        {"$sort": {"createdAt": order}},
+        {"$sort": {date_field: order}},
         {"$limit": 1},
-        {"$project": {"date": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}}}},
+        {"$project": {"date": {"$dateToString": {"format": "%Y-%m-%d", "date": f"${date_field}"}}}},
         {"$unset": "_id"},
     ]
 

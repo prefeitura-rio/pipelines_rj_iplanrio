@@ -39,7 +39,7 @@ def get_mongodb_date_in_collection(
     pipeline = [
         {"$sort": {date_field: order}},
         {"$limit": 1},
-        {"$project": {"date": {"$dateToString": {"format": "%Y-%m-%d", "date": "$createdAt"}}}},
+        {"$project": {"date": {"$dateToString": {"format": "%Y-%m-%d", "date": f"${date_field}"}}}},
         {"$unset": "_id"},
     ]
 

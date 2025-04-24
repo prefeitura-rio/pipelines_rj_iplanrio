@@ -33,7 +33,9 @@ with Flow(
     table_id = Parameter("table_id")
     billing_project_id = Parameter("billing_project_id", required=False)
     bd_project_mode = Parameter("bd_project_mode", required=False, default="prod")
-    materialize_after_dump = Parameter("materialize_after_dump", default=False, required=False)
+    materialize_after_dump = Parameter(
+        "materialize_after_dump", default=False, required=False
+    )
 
     rename_flow_run = rename_current_flow_run_dataset_table(
         prefix="Dump SICI API: ",
@@ -56,7 +58,7 @@ with Flow(
         dataset_id=dataset_id,
         table_id=table_id,
         dump_mode="overwrite",
-        biglake_table=False,
+        biglake_table=True,
     )
     create_table.set_upstream(path)
 

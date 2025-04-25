@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from prefect import Parameter, case
+from prefect import Parameter
 from prefect.run_configs import KubernetesRun
 from prefect.storage import GCS
 from prefeitura_rio.pipelines_utils.custom import Flow
@@ -10,7 +10,6 @@ from prefeitura_rio.pipelines_utils.state_handlers import (
 from prefeitura_rio.pipelines_utils.tasks import (
     create_table_and_upload_to_gcs,
     rename_current_flow_run_dataset_table,
-    task_run_dbt_model_task,
 )
 
 from pipelines.constants import Constants
@@ -33,9 +32,6 @@ with Flow(
     table_id = Parameter("table_id")
     billing_project_id = Parameter("billing_project_id", required=False)
     bd_project_mode = Parameter("bd_project_mode", required=False, default="prod")
-    materialize_after_dump = Parameter(
-        "materialize_after_dump", default=False, required=False
-    )
 
     rename_flow_run = rename_current_flow_run_dataset_table(
         prefix="Dump SICI API: ",
@@ -61,13 +57,6 @@ with Flow(
         biglake_table=True,
     )
     create_table.set_upstream(path)
-
-    with case(materialize_after_dump, True):
-        run_dbt = task_run_dbt_model_task(
-            dataset_id="unidades_administrativas",
-            table_id="orgaos",
-        )
-        run_dbt.set_upstream(create_table)
 
 # Flow configuration
 rj_iplanrio__sici__dump_api__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)

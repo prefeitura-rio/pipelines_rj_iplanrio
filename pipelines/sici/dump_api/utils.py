@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 import pandas as pd
+import pytz
 
 
 def xml_to_dataframe(xml: object) -> pd.DataFrame:
@@ -19,5 +22,5 @@ def xml_to_dataframe(xml: object) -> pd.DataFrame:
 
     # Create the DataFrame
     df = pd.DataFrame(data, columns=columns)
-
+    df["updated_at"] = datetime.now(pytz.timezone("America/Sao_Paulo"))
     return df

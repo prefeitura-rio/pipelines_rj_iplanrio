@@ -12,7 +12,7 @@ from pipelines.constants import Constants
 from pipelines.taxirio.constants import Constants as TaxiRio
 from pipelines.taxirio.passengers.constants import Constants as Passengers
 from pipelines.taxirio.passengers.mongodb import generate_pipeline, schema
-from pipelines.taxirio.schedules import every_week
+from pipelines.taxirio.schedules import every_day
 from pipelines.taxirio.tasks import (
     dump_collection_from_mongodb_per_period,
     get_dates_for_dump_mode,
@@ -63,7 +63,7 @@ with Flow(
 
 rj_iplanrio__taxirio__passengers__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 
-rj_iplanrio__taxirio__passengers__flow.schedule = every_week(2024, 9, 10)
+rj_iplanrio__taxirio__passengers__flow.schedule = every_day(2025, 4, 28, 1, 0)
 
 rj_iplanrio__taxirio__passengers__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,

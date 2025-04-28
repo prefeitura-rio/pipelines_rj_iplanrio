@@ -24,6 +24,7 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
                 "ano_particao": {"$dateToString": {"format": "%Y", "date": "$dateTime"}},
                 "mes_particao": {"$dateToString": {"format": "%m", "date": "$dateTime"}},
                 "dia_particao": {"$dateToString": {"format": "%d", "date": "$dateTime"}},
+                "dateTime": {"$toString": "$dateTime"},
             },
         },
         {
@@ -34,11 +35,12 @@ def generate_pipeline(start: datetime, end: datetime) -> list[dict[str, Any]]:
 
 schema = Schema(
     {
-        "id": string(),
-        "driver": string(),
-        "associatedDiscount": string(),
         "ano_particao": string(),
         "mes_particao": string(),
         "dia_particao": string(),
+        "id": string(),
+        "driver": string(),
+        "associatedDiscount": string(),
+        "dateTime": string(),
     },
 )

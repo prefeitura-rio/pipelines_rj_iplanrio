@@ -62,7 +62,7 @@ with Flow(
 
 rj_iplanrio__taxirio__races__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 
-rj_iplanrio__taxirio__races__flow.schedule = every_day(2024, 10, 10, 2, 0)
+rj_iplanrio__taxirio__races__flow.schedule = every_day(2025, 4, 28, 1, 0)
 
 rj_iplanrio__taxirio__races__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,

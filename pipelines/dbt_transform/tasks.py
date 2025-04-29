@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+import os
+
 from prefect import task
 from prefeitura_rio.pipelines_utils.infisical import get_secret
 from prefeitura_rio.pipelines_utils.logging import log
-import os
 
 DBT_SECRETS = [
     "DBT_BQ_MONITORING_GCP_BIGQUERY_AUDIT_LOGS_TABLE",
     "DBT_BQ_MONITORING_GCP_BILLING_EXPORT_DATASET",
-    "DBT_BQ_MONITORING_GCP_BILLING_EXPORT_TABLE"
+    "DBT_BQ_MONITORING_GCP_BILLING_EXPORT_TABLE",
 ]
 
 

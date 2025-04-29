@@ -6,7 +6,6 @@ from prefect.storage import GCS
 from prefeitura_rio.pipelines_templates.dbt_transform.flows import (
     templates__dbt_transform__flow,
 )
-
 from prefeitura_rio.pipelines_utils.prefect import set_default_parameters
 from prefeitura_rio.pipelines_utils.state_handlers import handler_inject_bd_credentials
 
@@ -17,6 +16,7 @@ from pipelines.dbt_transform.schedules import (
 from pipelines.dbt_transform.tasks import (
     add_dbt_secrets_to_env,
 )
+
 secrets = add_dbt_secrets_to_env()
 rj_iplanrio__dbt_transform__flow = deepcopy(templates__dbt_transform__flow)
 rj_iplanrio__dbt_transform__flow.state_handlers = [handler_inject_bd_credentials]
@@ -27,9 +27,7 @@ rj_iplanrio__dbt_transform__flow.run_config = KubernetesRun(
     labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],
 )
 
-rj_iplanrio__dbt_transform__flow.set_dependencies(
-    task=secrets
-)
+rj_iplanrio__dbt_transform__flow.set_dependencies(task=secrets)
 
 rj_iplanrio__dbt_transform__flow = set_default_parameters(
     rj_iplanrio__dbt_transform__flow,

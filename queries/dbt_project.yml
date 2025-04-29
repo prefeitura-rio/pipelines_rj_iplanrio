@@ -20,6 +20,9 @@ models:
     relation: true
     columns: true
   queries:
+    brutos_bcadastro:
+      +materialized: table
+      +schema: brutos_bcadastro
     adm_processo_interno_processorio:
       +materialized: table
       +schema: adm_processo_interno_processorio

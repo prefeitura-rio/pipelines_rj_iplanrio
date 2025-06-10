@@ -39,9 +39,7 @@ with Flow(
         dataset_id=dataset_id,
         table_id=table_id,
     )
-    path = download_equipamentos_from_datario(
-        url=url, path="/tmp/equipamentos", crs=crs
-    )
+    path = download_equipamentos_from_datario(url=url, path="/tmp/equipamentos", crs=crs)
     path.set_upstream(rename_flow_run)
 
     create_table = create_table_and_upload_to_gcs(
@@ -54,9 +52,7 @@ with Flow(
     create_table.set_upstream(path)
 
 # Flow configuration
-rj_iplanrio__dump_equipamentos_datario__flow.storage = GCS(
-    Constants.GCS_FLOWS_BUCKET.value
-)
+rj_iplanrio__dump_equipamentos_datario__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 rj_iplanrio__dump_equipamentos_datario__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
     labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],

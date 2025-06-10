@@ -4,8 +4,8 @@ from typing import Union
 
 import geopandas as gpd
 import pandas as pd
-from prefect import task
 import requests
+from prefect import task
 from prefeitura_rio.pipelines_utils.logging import log
 
 

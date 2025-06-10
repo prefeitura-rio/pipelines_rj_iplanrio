@@ -13,8 +13,12 @@ from prefeitura_rio.pipelines_utils.tasks import (
 )
 
 from pipelines.constants import Constants
-from pipelines.rj_sme.escolas_geo.schedules import escolas_geo_schedule
-from pipelines.rj_sme.escolas_geo.tasks import download_and_dump_escolas_geo
+from pipelines.dump_equipamentos.equipamentos_datario.schedules import (
+    schedules_equipamentos,
+)
+from pipelines.dump_equipamentos.equipamentos_datario.tasks import (
+    download_equipamentos_from_datario,
+)
 
 with Flow(
     name="SME: DUMP ESCOLAS GEOLOCALIZADAS FROM DATARIO",
@@ -24,17 +28,18 @@ with Flow(
     ],
     parallelism=10,
     skip_if_running=False,
-) as rj_iplanrio__escolas_geo__dump_datario__flow:
-    url = Parameter("https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Educacao/SME/MapServer/1/query")
-    dataset_id = Parameter("brutos_educacao_basica")
-    table_id = Parameter("escolas_geolocalizadas")
+) as rj_iplanrio__dump_equipamentos_datario__flow:
+    url = Parameter("URL")
+    crs = Parameter("EPSG:XXXX")
+    dataset_id = Parameter("brutos_equipamentos")
+    table_id = Parameter("table_id")
 
     rename_flow_run = rename_current_flow_run_dataset_table(
-        prefix="Dump Escolas: ",
+        prefix="Dump: ",
         dataset_id=dataset_id,
         table_id=table_id,
     )
-    path = download_and_dump_escolas_geo(url=url, path="/tmp/escolas_geo")
+    path = download_equipamentos_from_datario(url=url, path="/tmp/escolas_geo", crs=crs)
     path.set_upstream(rename_flow_run)
 
     create_table = create_table_and_upload_to_gcs(
@@ -47,9 +52,9 @@ with Flow(
     create_table.set_upstream(path)
 
 # Flow configuration
-rj_iplanrio__escolas_geo__dump_datario__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
-rj_iplanrio__escolas_geo__dump_datario__flow.run_config = KubernetesRun(
+rj_iplanrio__dump_equipamentos_datario__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
+rj_iplanrio__dump_equipamentos_datario__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
     labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],
 )
-rj_iplanrio__escolas_geo__dump_datario__flow.schedule = escolas_geo_schedule
+rj_iplanrio__dump_equipamentos_datario__flow.schedule = schedules_equipamentos

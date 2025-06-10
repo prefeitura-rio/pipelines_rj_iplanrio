@@ -8,14 +8,20 @@ import requests
 from prefeitura_rio.pipelines_utils.logging import log
 
 
-def download_and_dump_escolas_geo(
-    url: str = "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Educacao/SME/MapServer/1/query",
+def download_equipamentos_from_datario(
+    url: str = "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Educacao/SME/MapServer/1",
     path: Union[str, Path] = "/tmp/escolas_geo/",
+    crs: str = None,
 ) -> Path:
     """
     Baixa todos os dados de escolas municipais do Rio de Janeiro de um serviço ArcGIS REST,
     cria um GeoDataFrame com as coordenadas corretas e o retorna.
     """
+    url = url[:-1] if url.endswith("/") else url
+    url = url + "/query" if not url.endswith("/query") else url
+
+    log(f"Using url:\n{url}")
+
     params = {
         "where": "1=1",
         "outFields": "*",
@@ -25,7 +31,8 @@ def download_and_dump_escolas_geo(
     offset = 0
     all_features = []
 
-    log("Iniciando o download dos dados das escolas...")
+    log("Iniciando o download...")
+    pages = 0
     while True:
         params["resultOffset"] = offset
         try:
@@ -43,7 +50,8 @@ def download_and_dump_escolas_geo(
 
         all_features.extend(features)
         offset += len(features)
-
+        pages += 1
+        log(f"Página {pages} baixada com {len(features)} registros.")
         if not data.get("exceededTransferLimit", False):
             break
 
@@ -51,7 +59,8 @@ def download_and_dump_escolas_geo(
         log("Nenhum dado de escola foi encontrado.")
         return None
 
-    log(f"\nDownload completo! Total de {len(all_features)} escolas encontradas.")
+    log(f"Download completo!\nTotal de {pages} páginas.\nTotal de {len(all_features)} rows.")
+
     log("Processando dados e criando GeoDataFrame...")
 
     processed_data = []
@@ -67,54 +76,21 @@ def download_and_dump_escolas_geo(
 
     # --- CORREÇÃO APLICADA AQUI ---
     # Cria o GeoDataFrame na ordem correta: (x=longitude, y=latitude)
+
     dataframe = gpd.GeoDataFrame(
         dataframe,
         geometry=gpd.points_from_xy(dataframe.longitude, dataframe.latitude),
-        crs="EPSG:31983",  # Define o CRS original (UTM)
+        crs=crs,  # Define o CRS original (UTM)
     )
 
-    log("Convertendo coordenadas para WGS 84 (Lat/Lon)...")
+    log(f"Convertendo coordenadas para de {crs} para EPSG:4326 (Lat/Lon)...")
     # Converte o GeoDataFrame para o sistema de coordenadas geográficas padrão
     dataframe = dataframe.to_crs("EPSG:4326")
     dataframe["latitude"] = dataframe.geometry.y
     dataframe["longitude"] = dataframe.geometry.x
-
-    # dataframe["tipo_denominacao"] = dataframe["denominacao"].apply(
-    #     lambda x: x.split(" - ")[0]
-    # )
-    # dataframe["nome_denominacao"] = dataframe["denominacao"].apply(
-    #     lambda x: x.split(" - ")[1] if len(x.split(" - ")) == 2 else x
-    # )
-
-    # l = []
-    # for tipo, den in zip(
-    #     dataframe["tipo"].tolist(), dataframe["tipo_denominacao"].tolist()
-    # ):
-    #     l.append(
-    #         den.replace(tipo, "")
-    #         .strip()
-    #         .replace("de ", "")
-    #         .replace("do ", "")
-    #         .replace("da ", "")
-    #     )
-    # dataframe["tipo_denominacao"] = l
-
-    dataframe["cre"] = dataframe["cre"].astype(int).apply(lambda x: str(x) if len(str(x)) >= 2 else f"0{x}")
-    rename_cols = {
-        # "objectid": "objectid",
-        "cre": "cre",
-        "designacao": "designacao",
-        "tipo": "tipo",
-        "denominacao": "nome",
-        "latitude": "latitude",
-        "longitude": "longitude",
-        "geometry": "geometry",
-        # "tipo_denominacao": "tipo_denominacao",
-        # "nome_denominacao": "nome_denominacao",
-    }
-    dataframe = dataframe.rename(columns=rename_cols).reset_index(drop=True)
-    dataframe = dataframe[list(rename_cols.values())]
     log("Processo concluído!")
+
+    log(f"Dataframe:\n{dataframe.head()}")
 
     path = Path(path)
     path.mkdir(parents=True, exist_ok=True)

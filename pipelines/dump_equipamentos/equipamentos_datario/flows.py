@@ -29,19 +29,21 @@ with Flow(
     parallelism=10,
     skip_if_running=False,
 ) as rj_iplanrio__dump_equipamentos_datario__flow:
-    url = Parameter("URL")
-    crs = Parameter("EPSG:XXXX")
-    dataset_id = Parameter("brutos_equipamentos")
-    table_id = Parameter("table_id")
+    url = Parameter(
+        "url",
+        default="https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Cultura/Equipamentos_SMC/MapServer/0",
+        required=True,
+    )
+    crs = Parameter("crs", default="EPSG:31983", required=True)
+    dataset_id = Parameter("dataset_id", default="brutos_equipamentos", required=True)
+    table_id = Parameter("table_id", default="culturais", required=True)
 
     rename_flow_run = rename_current_flow_run_dataset_table(
         prefix="Dump: ",
         dataset_id=dataset_id,
         table_id=table_id,
     )
-    path = download_equipamentos_from_datario(
-        url=url, path="/tmp/equipamentos", crs=crs
-    )
+    path = download_equipamentos_from_datario(url=url, path="/tmp/equipamentos", crs=crs)
     path.set_upstream(rename_flow_run)
 
     create_table = create_table_and_upload_to_gcs(
@@ -54,9 +56,7 @@ with Flow(
     create_table.set_upstream(path)
 
 # Flow configuration
-rj_iplanrio__dump_equipamentos_datario__flow.storage = GCS(
-    Constants.GCS_FLOWS_BUCKET.value
-)
+rj_iplanrio__dump_equipamentos_datario__flow.storage = GCS(Constants.GCS_FLOWS_BUCKET.value)
 rj_iplanrio__dump_equipamentos_datario__flow.run_config = KubernetesRun(
     image=Constants.DOCKER_IMAGE.value,
     labels=[Constants.RJ_IPLANRIO_AGENT_LABEL.value],

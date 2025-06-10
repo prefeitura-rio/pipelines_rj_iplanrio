@@ -4,10 +4,12 @@ from typing import Union
 
 import geopandas as gpd
 import pandas as pd
+from prefect import task
 import requests
 from prefeitura_rio.pipelines_utils.logging import log
 
 
+@task
 def download_equipamentos_from_datario(
     url: str = "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Educacao/SME/MapServer/1",
     path: Union[str, Path] = "/tmp/escolas_geo/",
@@ -17,7 +19,6 @@ def download_equipamentos_from_datario(
     Baixa todos os dados de escolas municipais do Rio de Janeiro de um serviço ArcGIS REST,
     cria um GeoDataFrame com as coordenadas corretas e o retorna.
     """
-    url = str(url)
     url = url[:-1] if url.endswith("/") else url
     url = url + "/query" if not url.endswith("/query") else url
 

@@ -17,6 +17,7 @@ def download_equipamentos_from_datario(
     Baixa todos os dados de escolas municipais do Rio de Janeiro de um serviço ArcGIS REST,
     cria um GeoDataFrame com as coordenadas corretas e o retorna.
     """
+    url = str(url)
     url = url[:-1] if url.endswith("/") else url
     url = url + "/query" if not url.endswith("/query") else url
 
@@ -59,7 +60,9 @@ def download_equipamentos_from_datario(
         log("Nenhum dado de escola foi encontrado.")
         return None
 
-    log(f"Download completo!\nTotal de {pages} páginas.\nTotal de {len(all_features)} rows.")
+    log(
+        f"Download completo!\nTotal de {pages} páginas.\nTotal de {len(all_features)} rows."
+    )
 
     log("Processando dados e criando GeoDataFrame...")
 

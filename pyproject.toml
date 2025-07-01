@@ -19,7 +19,7 @@ pyarrow = "^17.0.0"
 pymongo = "^4.8.0"
 pymongoarrow = "^1.5.2"
 zeep = "^4.2.1"
-prefeitura-rio = { git = "https://github.com/prefeitura-rio/prefeitura-rio", rev = "b1ae07d584852f9f39b74f21192c232949744f2d", extras = [
+prefeitura-rio = { git = "https://github.com/prefeitura-rio/prefeitura-rio", rev = "9cc9a52c47df911c005c7c5470f568ffa9271d60", extras = [
   "pipelines",
   "pipelines-templates",
   "actions",
@@ -28,6 +28,7 @@ aiohttp = "^3.11.14"
 discord = "^2.3.2"
 gitpython = "^3.1.44"
 dbt-core = "1.8.4"
+marshmallow = "3.20.2"
 
 [tool.poetry.group.dev]
 optional = true

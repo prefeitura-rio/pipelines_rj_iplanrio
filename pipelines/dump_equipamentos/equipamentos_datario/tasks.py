@@ -7,6 +7,7 @@ import pandas as pd
 import requests
 from prefect import task
 from prefeitura_rio.pipelines_utils.logging import log
+from shapely.geometry import Polygon, Point
 
 
 @task
@@ -16,14 +17,8 @@ def download_equipamentos_from_datario(
     crs: str = None,
 ) -> Path:
     """
-    Baixa dados de equipamentos municipais do Rio de Janeiro de um serviço ArcGIS REST,
-    Cria o GeoDataFrame e salva os dados em um arquivo CSV.
-    Parameters:
-        - url: URL do serviço ArcGIS REST.
-        - path: Caminho onde os dados serão salvos.
-        - crs: Sistema de referência de coordenadas (CRS) original dos dados.
-    Returns:
-        - path: Caminho para o diretório onde os dados foram salvos.
+    Baixa todos os dados de escolas municipais do Rio de Janeiro de um serviço ArcGIS REST,
+    cria um GeoDataFrame com as coordenadas corretas e o retorna.
     """
     url = url[:-1] if url.endswith("/") else url
     url = url + "/query" if not url.endswith("/query") else url
@@ -67,39 +62,45 @@ def download_equipamentos_from_datario(
         log("Nenhum dado de escola foi encontrado.")
         return None
 
-    log(f"Download completo!\nTotal de {pages} páginas.\nTotal de {len(all_features)} rows.")
+    log(
+        f"Download completo!\nTotal de {pages} páginas.\nTotal de {len(all_features)} rows."
+    )
 
     log("Processando dados e criando GeoDataFrame...")
 
     processed_data = []
     for feature in all_features:
         attributes = feature.get("attributes", {})
-        geometry = feature.get("geometry", {})
-        if geometry:
-            attributes["longitude"] = geometry.get("x")
-            attributes["latitude"] = geometry.get("y")
-        processed_data.append(attributes)
+        geometry_data = feature.get("geometry", {})
+
+        current_attributes = attributes.copy()
+
+        if geometry_data:
+            if "rings" in geometry_data and geometry_data["rings"]:
+                shell = geometry_data["rings"][0]
+                holes = geometry_data["rings"][1:]
+                polygon = Polygon(shell, holes)
+                current_attributes["geometry"] = polygon
+                processed_data.append(current_attributes)
+            elif "x" in geometry_data and "y" in geometry_data:
+                point = Point(geometry_data.get("x"), geometry_data.get("y"))
+                current_attributes["latitude"] = geometry_data.get("y")
+                current_attributes["longitude"] = geometry_data.get("x")
+                current_attributes["geometry"] = point
+                processed_data.append(current_attributes)
 
     dataframe = pd.DataFrame(processed_data)
-
-    # --- CORREÇÃO APLICADA AQUI ---
-    # Cria o GeoDataFrame na ordem correta: (x=longitude, y=latitude)
-
     dataframe = gpd.GeoDataFrame(
         dataframe,
-        geometry=gpd.points_from_xy(dataframe.longitude, dataframe.latitude),
         crs=crs,  # Define o CRS original (UTM)
     )
-
     log(f"Convertendo coordenadas para de {crs} para EPSG:4326 (Lat/Lon)...")
     # Converte o GeoDataFrame para o sistema de coordenadas geográficas padrão
     dataframe = dataframe.to_crs("EPSG:4326")
-    dataframe["latitude"] = dataframe.geometry.y
-    dataframe["longitude"] = dataframe.geometry.x
+    if "latitude" in dataframe.columns:
+        dataframe["latitude"] = dataframe.geometry.y
+        dataframe["longitude"] = dataframe.geometry.x
     log("Processo concluído!")
-
-    log(f"Dataframe:\n{dataframe.head()}")
-
     path = Path(path)
     path.mkdir(parents=True, exist_ok=True)
     dataframe.to_csv(path / "data.csv", index=False)

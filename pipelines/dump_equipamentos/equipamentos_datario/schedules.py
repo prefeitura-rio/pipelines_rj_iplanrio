@@ -11,6 +11,24 @@ from pipelines.constants import Constants
 
 schedules_parameters = [
     {
+        "url": "https://services1.arcgis.com/OlP4dGNtIcnD3RYf/ArcGIS/rest/services/OSA2/FeatureServer/0",
+        "crs": "EPSG:31983",
+        "dataset_id": "brutos_equipamentos",
+        "table_id": "unidades_saude_arcgis",
+    },
+    {
+        "url": "https://services1.arcgis.com/OlP4dGNtIcnD3RYf/ArcGIS/rest/services/OSA2/FeatureServer/1",
+        "crs": "EPSG:31983",
+        "dataset_id": "brutos_equipamentos",
+        "table_id": "unidades_saude_poligonos_arcgis",
+    },
+    {
+        "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Educacao/SME/MapServer/1",
+        "crs": "EPSG:31983",
+        "dataset_id": "brutos_equipamentos",
+        "table_id": "escolas_datario",
+    },
+    {
         "url": "https://pgeo3.rio.rj.gov.br/arcgis/rest/services/Educacao/SME/MapServer/1",
         "crs": "EPSG:31983",
         "dataset_id": "brutos_equipamentos",

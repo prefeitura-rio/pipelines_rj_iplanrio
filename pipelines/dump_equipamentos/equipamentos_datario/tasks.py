@@ -7,7 +7,7 @@ import pandas as pd
 import requests
 from prefect import task
 from prefeitura_rio.pipelines_utils.logging import log
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Point, Polygon
 
 
 @task
@@ -62,9 +62,7 @@ def download_equipamentos_from_datario(
         log("Nenhum dado de escola foi encontrado.")
         return None
 
-    log(
-        f"Download completo!\nTotal de {pages} páginas.\nTotal de {len(all_features)} rows."
-    )
+    log(f"Download completo!\nTotal de {pages} páginas.\nTotal de {len(all_features)} rows.")
 
     log("Processando dados e criando GeoDataFrame...")
 
@@ -76,7 +74,7 @@ def download_equipamentos_from_datario(
         current_attributes = attributes.copy()
 
         if geometry_data:
-            if "rings" in geometry_data and geometry_data["rings"]:
+            if geometry_data.get("rings"):
                 shell = geometry_data["rings"][0]
                 holes = geometry_data["rings"][1:]
                 polygon = Polygon(shell, holes)

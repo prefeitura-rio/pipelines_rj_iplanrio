@@ -533,13 +533,6 @@ sicop_infra_clocks = generate_dump_db_schedules(
     dataset_id="administracao_servicos_publicos",
     infisical_secret_path="/db-sicop",
     table_parameters=_sicop_queries,
-
-
-}
-
-
-
-
 )
 
 sicop_infra_daily_update_schedule = Schedule(clocks=untuple(sicop_infra_clocks))
